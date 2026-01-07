@@ -1,0 +1,162 @@
+import { useState, useEffect } from 'react';
+import { useAuth } from '../../features/auth/authStore';
+import { authApi } from '../../features/auth/authApi';
+import { Order, Vendor, SupportContact } from '../../features/auth/types';
+import { OrderCard } from '../../components/portal/OrderCard';
+import { ContactCard } from '../../components/portal/ContactCard';
+import Loader from '../../components/ui/Loader';
+
+export function PartnerPortalPage() {
+  const { user, logout } = useAuth();
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [vendor, setVendor] = useState<Vendor | null>(null);
+  const [support, setSupport] = useState<SupportContact[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [activeTab, setActiveTab] = useState<'orders' | 'contacts'>('orders');
+
+  useEffect(() => {
+    loadData();
+  }, [user]);
+
+  const loadData = async () => {
+    if (!user) return;
+    
+    setIsLoading(true);
+    try {
+      const [ordersData, supportData] = await Promise.all([
+        authApi.getOrders(user.id),
+        authApi.getSupportContacts()
+      ]);
+      
+      setOrders(ordersData);
+      setSupport(supportData);
+
+      if (user.vendorId) {
+        const vendorData = await authApi.getVendor(user.vendorId);
+        setVendor(vendorData || null);
+      }
+    } catch (error) {
+      console.error('Error loading data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const activeOrders = orders.filter(o => o.status !== 'entregado' && o.status !== 'cancelado');
+  const completedOrders = orders.filter(o => o.status === 'entregado' || o.status === 'cancelado');
+
+  if (!user) return null;
+
+  return (
+    <div className="portal-page">
+      <div className="portal-header">
+        <div className="portal-header__info">
+          <h1>Bienvenido, {user.name}</h1>
+          <p className="muted">{user.company}</p>
+        </div>
+        <button onClick={logout} className="btn btn-secondary">
+          Cerrar Sesión
+        </button>
+      </div>
+
+      <div className="portal-stats">
+        <div className="stat-card">
+          <div className="stat-card__icon">📦</div>
+          <div className="stat-card__content">
+            <h3>{activeOrders.length}</h3>
+            <p>Pedidos Activos</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-card__icon">✅</div>
+          <div className="stat-card__content">
+            <h3>{completedOrders.length}</h3>
+            <p>Pedidos Completados</p>
+          </div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-card__icon">📞</div>
+          <div className="stat-card__content">
+            <h3>{support.length}</h3>
+            <p>Contactos de Soporte</p>
+          </div>
+        </div>
+      </div>
+
+      <div className="portal-tabs">
+        <button
+          className={`portal-tab ${activeTab === 'orders' ? 'active' : ''}`}
+          onClick={() => setActiveTab('orders')}
+        >
+          Mis Pedidos
+        </button>
+        <button
+          className={`portal-tab ${activeTab === 'contacts' ? 'active' : ''}`}
+          onClick={() => setActiveTab('contacts')}
+        >
+          Contactos
+        </button>
+      </div>
+
+      {isLoading ? (
+        <Loader />
+      ) : (
+        <div className="portal-content">
+          {activeTab === 'orders' && (
+            <div className="portal-orders">
+              {activeOrders.length > 0 && (
+                <section className="orders-section">
+                  <h2>Pedidos Activos</h2>
+                  <div className="orders-grid">
+                    {activeOrders.map(order => (
+                      <OrderCard key={order.id} order={order} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {completedOrders.length > 0 && (
+                <section className="orders-section">
+                  <h2>Historial</h2>
+                  <div className="orders-grid">
+                    {completedOrders.map(order => (
+                      <OrderCard key={order.id} order={order} />
+                    ))}
+                  </div>
+                </section>
+              )}
+
+              {orders.length === 0 && (
+                <div className="empty-state">
+                  <p>No tienes pedidos registrados</p>
+                </div>
+              )}
+            </div>
+          )}
+
+          {activeTab === 'contacts' && (
+            <div className="portal-contacts">
+              {vendor && (
+                <section className="contacts-section">
+                  <h2>Tu Vendedor Asignado</h2>
+                  <div className="contacts-grid">
+                    <ContactCard contact={vendor} type="vendor" />
+                  </div>
+                </section>
+              )}
+
+              <section className="contacts-section">
+                <h2>Soporte Amilab</h2>
+                <div className="contacts-grid">
+                  {support.map(contact => (
+                    <ContactCard key={contact.id} contact={contact} type="support" />
+                  ))}
+                </div>
+              </section>
+            </div>
+          )}
+        </div>
+      )}
+    </div>
+  );
+}

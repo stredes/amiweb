@@ -1,0 +1,11 @@
+Familia,Subfamilia,Codigo,Producto,Unidad,Unidad de,Bodega,Ubicacion,N° Serie,Lote,Fecha Vencimiento,Por llegar,Reserva,Saldo stock
+CONTROL DE QC,CORE,601001,(DM) Cl Bioq,Unidades,,,,,,,0,0,0
+CONTROL DE QC,CORE,601011,(DM) Control,Unidades,Amilab,Bodega Principal,13-A1-A1,,25081,10/08/2027,0,0,4
+CORE,Coagulacion,101002,(DM) Control,Unidades,Amilab,Bodega Principal,13-A2,,N0340227,31/03/2027,0,0,0
+CORE,Coagulacion,101002,(DM) Control,Unidades,Amilab,Bodega Principal,13-A5,,N0340227,31/03/2027,0,0,0
+CORE,Coagulacion,101002,(DM) Control,Unidades,Amilab,Bodega Principal,14-B1,,n0532085,30/06/2026,0,0,0
+REACTIVOS,Hematologia,201001,Reactivo Hemograma,Unidades,Amilab,Bodega Central,A1-B2,,LOT45678,15/12/2026,5,2,25
+REACTIVOS,Bioquimica,201002,Reactivo Glucosa,Unidades,Amilab,Bodega Central,A2-C1,,LOT45679,20/11/2026,0,1,45
+EQUIPOS,Centrifugas,301001,Centrifuga 5000rpm,Unidades,Amilab,Bodega Equipos,E1-A1,SN123456,,31/12/2028,0,0,3
+EQUIPOS,Microscopios,301002,Microscopio Optico,Unidades,Amilab,Bodega Equipos,E1-B2,SN789012,,31/12/2029,1,0,5
+INSUMOS,Tubos,401001,Tubos Tapa Roja,Cajas,Amilab,Bodega Insumos,I1-A1,,BATCH001,30/09/2026,10,5,120
