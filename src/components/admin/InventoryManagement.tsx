@@ -10,19 +10,28 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
   const [filterFamily, setFilterFamily] = useState('');
   const [sortBy, setSortBy] = useState<'codigo' | 'producto' | 'stock'>('producto');
   const [currentPage, setCurrentPage] = useState(1);
+  const [isInitializing, setIsInitializing] = useState(true);
   const itemsPerPage = 100;
 
   // Obtener familias únicas
   const families = ['all', ...new Set(items.map(item => item.familia).filter(Boolean))];
 
-  // Establecer familia random al cargar
+  // Establecer familia random al cargar - CRÍTICO para rendimiento
   useEffect(() => {
     if (items.length > 0 && !filterFamily) {
-      const familiesWithoutAll = families.filter(f => f !== 'all');
-      if (familiesWithoutAll.length > 0) {
-        const randomFamily = familiesWithoutAll[Math.floor(Math.random() * familiesWithoutAll.length)];
-        setFilterFamily(randomFamily);
-      }
+      setIsInitializing(true);
+      
+      // Usar setTimeout para no bloquear el thread
+      setTimeout(() => {
+        const familiesWithoutAll = families.filter(f => f !== 'all');
+        if (familiesWithoutAll.length > 0) {
+          const randomFamily = familiesWithoutAll[Math.floor(Math.random() * familiesWithoutAll.length)];
+          setFilterFamily(randomFamily);
+        }
+        setIsInitializing(false);
+      }, 50);
+    } else if (items.length === 0) {
+      setIsInitializing(false);
     }
   }, [items.length]);
 
@@ -111,24 +120,31 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
 
   return (
     <div className="inventory-management">
-      <div className="inventory-header-info">
-        <h2>📦 Gestión de Inventario</h2>
-        {filterFamily && filterFamily !== 'all' && (
-          <p className="muted">
-            📂 Mostrando familia: <strong>{filterFamily}</strong>
-            {' '}({filteredItems.length} productos)
-            <button 
-              onClick={() => setFilterFamily('all')}
-              className="btn-link"
-              style={{ marginLeft: '10px' }}
-            >
-              Ver todas las familias
-            </button>
-          </p>
-        )}
-      </div>
+      {isInitializing ? (
+        <div className="inventory-loading">
+          <div className="loader-spinner"></div>
+          <p>Preparando inventario...</p>
+        </div>
+      ) : (
+        <>
+          <div className="inventory-header-info">
+            <h2>📦 Gestión de Inventario</h2>
+            {filterFamily && filterFamily !== 'all' && (
+              <p className="muted">
+                📂 Mostrando familia: <strong>{filterFamily}</strong>
+                {' '}({filteredItems.length} productos)
+                <button 
+                  onClick={() => setFilterFamily('all')}
+                  className="btn-link"
+                  style={{ marginLeft: '10px' }}
+                >
+                  Ver todas las familias
+                </button>
+              </p>
+            )}
+          </div>
 
-      <div className="inventory-stats-grid">
+          <div className="inventory-stats-grid">
         <div className="stat-card">
           <div className="stat-card__icon">📦</div>
           <div className="stat-card__content">
@@ -301,6 +317,8 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
           )}
         </div>
       </div>
+        </>
+      )}
     </div>
   );
 }
