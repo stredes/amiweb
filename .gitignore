@@ -56,3 +56,5 @@ desktop.ini
 
 # Archivos de ejemplo (opcional - descomentar si no quieres subir el ejemplo)
 # ejemplo-stock.csv
+.vercel
+.env*.local

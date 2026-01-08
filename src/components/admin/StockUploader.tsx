@@ -3,6 +3,7 @@ import * as XLSX from 'xlsx';
 import { StockItem, InventoryUploadProduct, InventoryUploadResult } from '../../features/inventory/types';
 import { uploadInventory } from '../../features/inventory/inventoryApi';
 import { auth } from '../../lib/firebase';
+import { API_BASE_URL } from '../../config/env';
 
 interface StockUploaderProps {
   onUploadComplete: (items: StockItem[]) => void;
@@ -506,13 +507,41 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
 
       setUploadResult(aggregateResult);
       onUploadComplete([]);
-      setSuccess(
-        `✅ Carga completada: ${aggregateResult.data.successful} exitosos, ${aggregateResult.data.failed} fallidos`
-      );
+      
+      // Detectar si se usó el modo mock
+      const usingMock = API_BASE_URL.includes('localhost') || !API_BASE_URL || 
+                       aggregateResult.data.successful === deduped.length;
+      
+      let successMessage = `✅ Carga completada: ${aggregateResult.data.successful} exitosos, ${aggregateResult.data.failed} fallidos`;
+      
+      if (usingMock || aggregateResult.data.successful === deduped.length) {
+        successMessage += '\n\n🔧 Modo MOCK: Los datos se procesaron localmente. ' +
+                         'Para guardar en la base de datos real, configura el backend en producción.';
+      }
+      
+      setSuccess(successMessage);
       setProgress(100);
       setProgressLabel('Carga finalizada');
     } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al procesar el archivo');
+      console.error('❌ Error en StockUploader:', err);
+      
+      let errorMessage = 'Error al procesar el archivo';
+      if (err instanceof Error) {
+        errorMessage = err.message;
+        
+        // Agregar ayuda contextual según el tipo de error
+        if (err.message.includes('No se pudo conectar')) {
+          errorMessage += '\n\n💡 Posibles causas:\n' +
+            '• El backend está apagado o no responde\n' +
+            '• Problemas de CORS en el servidor\n' +
+            '• URL del backend incorrecta\n' +
+            '• Sin conexión a Internet';
+        } else if (err.message.includes('Usuario no autenticado')) {
+          errorMessage += '\n\n💡 Solución: Cierra sesión y vuelve a iniciar sesión';
+        }
+      }
+      
+      setError(errorMessage);
       setProgress(0);
       setProgressLabel(null);
     } finally {
@@ -531,6 +560,20 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           Sube un archivo CSV o Excel con columnas de productos (Nombre, Slug, Categoria ID, Marca, etc.).
         </p>
       </div>
+
+      {/* Alerta de estado del backend */}
+      {(!API_BASE_URL || API_BASE_URL.includes('localhost')) && (
+        <div className="alert alert-info" style={{ backgroundColor: '#e3f2fd', borderColor: '#2196f3', color: '#1565c0' }}>
+          <strong>ℹ️ Modo Desarrollo</strong>
+          <p style={{ marginTop: '0.5rem', marginBottom: 0 }}>
+            El backend no está configurado o está en localhost. Los productos se procesarán en modo mock.
+            <br />
+            <small>
+              Backend configurado: <code>{API_BASE_URL || 'No configurado'}</code>
+            </small>
+          </p>
+        </div>
+      )}
 
       {error && (
         <div className="alert alert-error">
