@@ -136,6 +136,17 @@ const mockSupport: SupportContact[] = [
 
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
+/**
+ * IMPORTANTE: Para usar Firebase Auth, debes crear los usuarios en Firebase Console:
+ * 1. Ve a Firebase Console > Authentication > Users
+ * 2. Crea usuarios con los emails de mockUsers y contraseñas correspondientes:
+ *    - socio@amilab.com / demo123
+ *    - admin@amilab.com / admin123  
+ *    - root@amilab.com / root2026
+ *    - vendedor1@amilab.com / vende123
+ *    - vendedor2@amilab.com / vende123
+ */
+
 export const authApi = {
   async login(credentials: LoginCredentials): Promise<AuthResponse> {
     await delay(800);

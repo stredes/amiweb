@@ -4,6 +4,8 @@ import { useAuth } from '../../features/auth/authStore';
 import { authApi } from '../../features/auth/authApi';
 import { Button } from '../../components/ui/Button';
 import TextInput from '../../components/ui/TextInput';
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from '../../lib/firebase';
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -20,10 +22,17 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
-      const response = await authApi.login({ email, password });
-      login(response.user, response.token);
+      // 1. Autenticar con Firebase Auth
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const firebaseToken = await userCredential.user.getIdToken();
       
-      // Redirigir según el rol
+      // 2. Obtener datos del usuario del backend/mock
+      const response = await authApi.login({ email, password });
+      
+      // 3. Guardar en el contexto (con token de Firebase)
+      login(response.user, firebaseToken);
+      
+      // 4. Redirigir según el rol
       if (response.user.role === 'admin' || response.user.role === 'root') {
         navigate('/admin');
       } else if (response.user.role === 'vendedor') {
@@ -31,8 +40,17 @@ export function LoginPage() {
       } else {
         navigate('/portal-socios');
       }
-    } catch (err) {
-      setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
+    } catch (err: any) {
+      // Manejar errores de Firebase Auth
+      if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
+        setError('Credenciales inválidas');
+      } else if (err.code === 'auth/invalid-email') {
+        setError('Email inválido');
+      } else if (err.code === 'auth/too-many-requests') {
+        setError('Demasiados intentos. Intenta más tarde.');
+      } else {
+        setError(err instanceof Error ? err.message : 'Error al iniciar sesión');
+      }
     } finally {
       setIsLoading(false);
     }

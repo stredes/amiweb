@@ -1,5 +1,7 @@
 import { createContext, ReactNode, useContext, useState, useEffect } from 'react';
 import { User } from './types';
+import { auth } from '../../lib/firebase';
+import { onAuthStateChanged, signOut } from 'firebase/auth';
 
 type AuthContextValue = {
   user: User | null;
@@ -7,7 +9,7 @@ type AuthContextValue = {
   isAuthenticated: boolean;
   isLoading: boolean;
   login: (user: User, token: string) => void;
-  logout: () => void;
+  logout: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
@@ -19,20 +21,34 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [token, setToken] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(true);
 
-  // Load auth from localStorage on mount
+  // Sincronizar con Firebase Auth
   useEffect(() => {
-    try {
-      const stored = localStorage.getItem(AUTH_STORAGE_KEY);
-      if (stored) {
-        const parsed = JSON.parse(stored);
-        setUser(parsed.user);
-        setToken(parsed.token);
+    const unsubscribe = onAuthStateChanged(auth, async (firebaseUser) => {
+      try {
+        if (firebaseUser) {
+          // Usuario autenticado en Firebase
+          const stored = localStorage.getItem(AUTH_STORAGE_KEY);
+          if (stored) {
+            const parsed = JSON.parse(stored);
+            setUser(parsed.user);
+            // Obtener token fresco de Firebase
+            const freshToken = await firebaseUser.getIdToken();
+            setToken(freshToken);
+          }
+        } else {
+          // No hay sesión Firebase, limpiar
+          setUser(null);
+          setToken(null);
+          localStorage.removeItem(AUTH_STORAGE_KEY);
+        }
+      } catch (error) {
+        console.error('Error syncing auth:', error);
+      } finally {
+        setIsLoading(false);
       }
-    } catch (error) {
-      console.error('Error loading auth:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    });
+
+    return () => unsubscribe();
   }, []);
 
   const login = (newUser: User, newToken: string) => {
@@ -41,7 +57,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user: newUser, token: newToken }));
   };
 
-  const logout = () => {
+  const logout = async () => {
+    try {
+      await signOut(auth);
+    } catch (error) {
+      console.error('Error signing out:', error);
+    }
     setUser(null);
     setToken(null);
     localStorage.removeItem(AUTH_STORAGE_KEY);
