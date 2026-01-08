@@ -14,6 +14,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
   const [success, setSuccess] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [uploadResult, setUploadResult] = useState<InventoryUploadResult | null>(null);
   const [overwriteExisting, setOverwriteExisting] = useState(false);
   const [progressLabel, setProgressLabel] = useState<string | null>(null);
@@ -220,35 +221,26 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
 
   const dedupeProducts = (products: InventoryUploadProduct[]) => {
     const seen = new Set<string>();
+    const counts = new Map<string, number>();
     const deduped: InventoryUploadProduct[] = [];
     const duplicates: string[] = [];
 
     products.forEach((product, index) => {
-      let slugKey = product.slug.toLowerCase();
-      if (seen.has(slugKey)) {
-        let suffix = '';
-        const specs = product.specs ?? {};
-        const lote = typeof specs.lote === 'string' ? specs.lote : '';
-        const numeroSerie =
-          typeof (specs as Record<string, string>).numeroSerie === 'string'
-            ? (specs as Record<string, string>).numeroSerie
-            : '';
-        const hint = normalizeText(lote || numeroSerie || `${index + 1}`);
-        if (hint) {
-          suffix = `-${generateSlug(hint)}`;
-        } else {
-          suffix = `-dup-${index + 1}`;
-        }
-        const uniqueSlug = `${product.slug}${suffix}`;
+      const baseSlugKey = product.slug.toLowerCase();
+      const count = counts.get(baseSlugKey) ?? 0;
+      counts.set(baseSlugKey, count + 1);
+
+      if (count > 0) {
+        const uniqueSlug = `${product.slug}-dup-${count + 1}`;
         duplicates.push(
           `Fila ${index + 2}: slug duplicado (${product.slug}), ajustado a ${uniqueSlug}`
         );
-        slugKey = uniqueSlug.toLowerCase();
-        seen.add(slugKey);
+        seen.add(uniqueSlug.toLowerCase());
         deduped.push({ ...product, slug: uniqueSlug });
         return;
       }
-      seen.add(slugKey);
+
+      seen.add(baseSlugKey);
       deduped.push(product);
     });
 
@@ -322,6 +314,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     setSuccess(null);
     setProgress(0);
     setValidationErrors([]);
+    setValidationWarnings([]);
     setUploadResult(null);
     setProgressLabel('Leyendo archivo...');
 
@@ -329,8 +322,8 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       setProgress(10);
       const { products, errors } = await parseExcelFile(file);
       const { deduped, duplicates } = dedupeProducts(products);
-      const combinedErrors = [...errors, ...duplicates];
-      setValidationErrors(combinedErrors);
+      setValidationErrors(errors);
+      setValidationWarnings(duplicates);
       setProgress(30);
 
       if (deduped.length === 0) {
@@ -458,6 +451,22 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           </ul>
           {validationErrors.length > 6 && (
             <p className="muted">Se omitieron {validationErrors.length - 6} errores más.</p>
+          )}
+        </div>
+      )}
+
+      {validationWarnings.length > 0 && (
+        <div className="alert alert-warning">
+          <strong>Avisos de validación:</strong>
+          <ul>
+            {validationWarnings.slice(0, 6).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          {validationWarnings.length > 6 && (
+            <p className="muted">
+              Se omitieron {validationWarnings.length - 6} avisos más.
+            </p>
           )}
         </div>
       )}
