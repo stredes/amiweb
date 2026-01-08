@@ -224,14 +224,32 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     const counts = new Map<string, number>();
     const deduped: InventoryUploadProduct[] = [];
     const duplicates: string[] = [];
+    const duplicateGroups = new Map<string, number[]>(); // slug -> filas
+    const trueDuplicates = new Map<string, number[]>(); // nombre+sku -> filas
 
     products.forEach((product, index) => {
       const baseSlugKey = product.slug.toLowerCase();
       const count = counts.get(baseSlugKey) ?? 0;
       counts.set(baseSlugKey, count + 1);
 
+      // Detectar duplicados verdaderos (mismo nombre y SKU)
+      if (product.name && product.sku) {
+        const trueKey = `${product.name.toLowerCase()}|${product.sku.toLowerCase()}`;
+        if (!trueDuplicates.has(trueKey)) {
+          trueDuplicates.set(trueKey, []);
+        }
+        trueDuplicates.get(trueKey)!.push(index + 2);
+      }
+
       if (count > 0) {
         const uniqueSlug = `${product.slug}-dup-${count + 1}`;
+        
+        // Agrupar duplicados para resumen
+        if (!duplicateGroups.has(product.slug)) {
+          duplicateGroups.set(product.slug, []);
+        }
+        duplicateGroups.get(product.slug)!.push(index + 2);
+        
         duplicates.push(
           `Fila ${index + 2}: slug duplicado (${product.slug}), ajustado a ${uniqueSlug}`
         );
@@ -244,7 +262,40 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       deduped.push(product);
     });
 
-    return { deduped, duplicates };
+    // Generar resumen de duplicados
+    const duplicateSummary: string[] = [];
+    
+    // Detectar productos completamente duplicados
+    const realDupes = Array.from(trueDuplicates.entries()).filter(([_, rows]) => rows.length > 1);
+    if (realDupes.length > 0) {
+      duplicateSummary.push(`⚠️  Se encontraron ${realDupes.length} productos completamente duplicados (mismo nombre + SKU):`);
+      realDupes.slice(0, 3).forEach(([key, rows]) => {
+        const [name] = key.split('|');
+        duplicateSummary.push(`   • "${name}" en filas: ${rows.join(', ')}`);
+      });
+      if (realDupes.length > 3) {
+        duplicateSummary.push(`   ... y ${realDupes.length - 3} más`);
+      }
+      duplicateSummary.push('');
+    }
+    
+    if (duplicateGroups.size > 0) {
+      duplicateSummary.push(`ℹ️  Se encontraron ${duplicates.length} productos con slugs duplicados (ajustados automáticamente)`);
+      
+      // Mostrar solo los primeros 5 grupos de duplicados
+      const entries = Array.from(duplicateGroups.entries()).slice(0, 5);
+      entries.forEach(([slug, rows]) => {
+        duplicateSummary.push(`   • "${slug}" en filas: ${rows.join(', ')}`);
+      });
+      
+      if (duplicateGroups.size > 5) {
+        duplicateSummary.push(`   ... y ${duplicateGroups.size - 5} grupos más`);
+      }
+      
+      duplicateSummary.push(`\n💡 Los slugs duplicados se ajustaron automáticamente con sufijo "-dup-N"`);
+    }
+
+    return { deduped, duplicates, duplicateSummary };
   };
 
   const chunkProducts = (products: InventoryUploadProduct[], size: number) => {
@@ -321,9 +372,16 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     try {
       setProgress(10);
       const { products, errors } = await parseExcelFile(file);
-      const { deduped, duplicates } = dedupeProducts(products);
+      const { deduped, duplicates, duplicateSummary } = dedupeProducts(products);
       setValidationErrors(errors);
-      setValidationWarnings(duplicates);
+      
+      // Mostrar resumen de duplicados en lugar de lista completa
+      if (duplicateSummary && duplicateSummary.length > 0) {
+        setValidationWarnings(duplicateSummary);
+      } else {
+        setValidationWarnings(duplicates);
+      }
+      
       setProgress(30);
 
       if (deduped.length === 0) {
@@ -458,15 +516,24 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       {validationWarnings.length > 0 && (
         <div className="alert alert-warning">
           <strong>Avisos de validación:</strong>
-          <ul>
-            {validationWarnings.slice(0, 6).map((item) => (
-              <li key={item}>{item}</li>
-            ))}
-          </ul>
-          {validationWarnings.length > 6 && (
-            <p className="muted">
-              Se omitieron {validationWarnings.length - 6} avisos más.
-            </p>
+          {/* Si es el nuevo formato de resumen, mostrarlo sin lista */}
+          {validationWarnings.length <= 10 || validationWarnings[0]?.startsWith('⚠️') ? (
+            <div style={{ marginTop: '0.5rem', whiteSpace: 'pre-line' }}>
+              {validationWarnings.join('\n')}
+            </div>
+          ) : (
+            <>
+              <ul>
+                {validationWarnings.slice(0, 6).map((item, idx) => (
+                  <li key={`warning-${idx}`}>{item}</li>
+                ))}
+              </ul>
+              {validationWarnings.length > 6 && (
+                <p className="muted">
+                  Se omitieron {validationWarnings.length - 6} avisos más.
+                </p>
+              )}
+            </>
           )}
         </div>
       )}

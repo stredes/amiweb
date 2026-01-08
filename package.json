@@ -9,7 +9,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "lint": "eslint src --ext .ts,.tsx",
-    "test": "vitest"
+    "test": "vitest",
+    "create-users": "node create-firebase-users.js",
+    "setup-firebase": "node setup-firebase-guide.js"
   },
   "dependencies": {
     "firebase": "^12.7.0",
