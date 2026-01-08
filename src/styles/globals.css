@@ -312,6 +312,18 @@ textarea {
   font-weight: 500;
 }
 
+.location-map {
+  display: grid;
+  gap: var(--spacing-sm);
+}
+
+.location-map iframe {
+  width: 100%;
+  height: 260px;
+  border: 0;
+  border-radius: var(--radius-lg);
+}
+
 .actions {
   display: flex;
   gap: var(--spacing-md);
