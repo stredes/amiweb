@@ -42,7 +42,9 @@ export interface InventoryUploadProduct {
 export interface InventoryUploadError {
   index: number;
   name: string;
+  slug?: string;
   error: string;
+  isTransient?: boolean;
 }
 
 export interface InventoryUploadResult {

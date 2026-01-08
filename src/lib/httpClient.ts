@@ -8,6 +8,29 @@ type HttpClientOptions = {
   headers?: Record<string, string>;
 };
 
+export async function checkBackendConnection() {
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), 5000);
+
+  try {
+    const response = await fetch(`${API_BASE_URL}/health`, {
+      method: 'GET',
+      signal: controller.signal,
+    });
+    console.info('[backend] Health check', {
+      url: `${API_BASE_URL}/health`,
+      status: response.status,
+    });
+  } catch (error) {
+    console.info('[backend] Health check failed', {
+      url: `${API_BASE_URL}/health`,
+      error,
+    });
+  } finally {
+    window.clearTimeout(timeoutId);
+  }
+}
+
 export async function httpRequest<T>(
   endpoint: string,
   { method = 'GET', body, headers }: HttpClientOptions = {}

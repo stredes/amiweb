@@ -8,6 +8,9 @@ import './styles/layout.css';
 import { SearchProvider } from './features/search/searchStore';
 import { AuthProvider } from './features/auth/authStore';
 import './lib/firebase';
+import { checkBackendConnection } from './lib/httpClient';
+
+checkBackendConnection();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>

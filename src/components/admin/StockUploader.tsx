@@ -16,6 +16,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
   const [validationErrors, setValidationErrors] = useState<string[]>([]);
   const [uploadResult, setUploadResult] = useState<InventoryUploadResult | null>(null);
   const [overwriteExisting, setOverwriteExisting] = useState(false);
+  const [progressLabel, setProgressLabel] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const normalizeText = (value: unknown) => {
@@ -144,6 +145,46 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     return { products: parsedProducts, errors };
   };
 
+  const dedupeProducts = (products: InventoryUploadProduct[]) => {
+    const seen = new Set<string>();
+    const deduped: InventoryUploadProduct[] = [];
+    const duplicates: string[] = [];
+
+    products.forEach((product, index) => {
+      const slugKey = product.slug.toLowerCase();
+      if (seen.has(slugKey)) {
+        duplicates.push(`Fila ${index + 2}: slug duplicado (${product.slug})`);
+        return;
+      }
+      seen.add(slugKey);
+      deduped.push(product);
+    });
+
+    return { deduped, duplicates };
+  };
+
+  const chunkProducts = (products: InventoryUploadProduct[], size: number) => {
+    const chunks: InventoryUploadProduct[][] = [];
+    for (let i = 0; i < products.length; i += size) {
+      chunks.push(products.slice(i, i + size));
+    }
+    return chunks;
+  };
+
+  const mergeResults = (base: InventoryUploadResult, next: InventoryUploadResult) => {
+    return {
+      success: base.success && next.success,
+      data: {
+        totalProcessed: base.data.totalProcessed + next.data.totalProcessed,
+        successful: base.data.successful + next.data.successful,
+        failed: base.data.failed + next.data.failed,
+        skipped: base.data.skipped + next.data.skipped,
+        errors: [...base.data.errors, ...next.data.errors],
+        createdIds: [...base.data.createdIds, ...next.data.createdIds],
+      },
+    };
+  };
+
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -154,18 +195,18 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     setProgress(0);
     setValidationErrors([]);
     setUploadResult(null);
+    setProgressLabel('Leyendo archivo...');
 
     try {
-      setProgress(20);
+      setProgress(10);
       const { products, errors } = await parseExcelFile(file);
-      setValidationErrors(errors);
-      setProgress(50);
+      const { deduped, duplicates } = dedupeProducts(products);
+      const combinedErrors = [...errors, ...duplicates];
+      setValidationErrors(combinedErrors);
+      setProgress(30);
 
-      if (products.length === 0) {
+      if (deduped.length === 0) {
         throw new Error('El archivo no contiene productos válidos');
-      }
-      if (products.length > 500) {
-        throw new Error('Máximo 500 productos por carga');
       }
 
       const user = auth.currentUser;
@@ -174,22 +215,62 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       }
 
       const token = await user.getIdToken();
-      setProgress(70);
+      setProgressLabel('Subiendo productos al backend...');
+      setProgress(40);
 
-      const result = await uploadInventory(products, {
-        token,
-        overwriteExisting,
-      });
+      const batchSize = 200;
+      const batches = chunkProducts(deduped, batchSize);
+      let aggregateResult: InventoryUploadResult | null = null;
+      const totalSteps = batches.length * 2;
+      let completedSteps = 0;
 
-      setUploadResult(result);
+      for (let i = 0; i < batches.length; i += 1) {
+        const batch = batches[i];
+        setProgressLabel(`Subiendo lote ${i + 1} de ${batches.length}...`);
+        const batchResult = await uploadInventory(batch, {
+          token,
+          overwriteExisting,
+        });
+
+        aggregateResult = aggregateResult ? mergeResults(aggregateResult, batchResult) : batchResult;
+        completedSteps += 1;
+        setProgress(Math.min(90, Math.round((completedSteps / totalSteps) * 100)));
+
+        const transientErrors = batchResult.data.errors.filter((item) => item.isTransient);
+        if (transientErrors.length > 0) {
+          const retryProducts = transientErrors
+            .map((item) => batch[item.index])
+            .filter((item): item is InventoryUploadProduct => Boolean(item));
+
+          if (retryProducts.length > 0) {
+            setProgressLabel(`Reintentando ${retryProducts.length} productos...`);
+            const retryResult = await uploadInventory(retryProducts, {
+              token,
+              overwriteExisting,
+            });
+            aggregateResult = mergeResults(aggregateResult, retryResult);
+          }
+        }
+
+        completedSteps += 1;
+        setProgress(Math.min(95, Math.round((completedSteps / totalSteps) * 100)));
+      }
+
+      if (!aggregateResult) {
+        throw new Error('No se obtuvo respuesta del backend');
+      }
+
+      setUploadResult(aggregateResult);
       onUploadComplete([]);
       setSuccess(
-        `✅ Carga completada: ${result.data.successful} exitosos, ${result.data.failed} fallidos`
+        `✅ Carga completada: ${aggregateResult.data.successful} exitosos, ${aggregateResult.data.failed} fallidos`
       );
       setProgress(100);
+      setProgressLabel('Carga finalizada');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al procesar el archivo');
       setProgress(0);
+      setProgressLabel(null);
     } finally {
       setIsProcessing(false);
       if (fileInputRef.current) {
@@ -239,7 +320,9 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           <ul>
             {uploadResult.data.errors.slice(0, 6).map((item) => (
               <li key={`${item.index}-${item.name}`}>
-                #{item.index}: {item.name} - {item.error}
+                #{item.index}: {item.name}
+                {item.slug ? ` (${item.slug})` : ''} - {item.error}
+                {item.isTransient ? ' (reintento recomendado)' : ''}
               </li>
             ))}
           </ul>
@@ -257,7 +340,9 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="progress-text">Procesando archivo... {progress}%</p>
+          <p className="progress-text">
+            {progressLabel ?? 'Procesando archivo...'} {progress}%
+          </p>
         </div>
       )}
 
