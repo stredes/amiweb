@@ -127,8 +127,16 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       const sku = normalizeText(
         getRowValue(row, ['SKU', 'sku']) || getNormalizedValue(normalizedRow, ['codigo'])
       );
+      const loteValue = normalizeText(getNormalizedValue(normalizedRow, ['lote']));
+      const numeroSerieValue = normalizeText(
+        getNormalizedValue(normalizedRow, ['n serie', 'numero serie'])
+      );
       const slug = slugInput || (name ? generateSlug(name) : '');
-      const slugWithSku = sku ? `${slug}-${generateSlug(sku)}` : slug;
+      const slugParts = [slug];
+      if (sku) slugParts.push(generateSlug(sku));
+      if (loteValue) slugParts.push(generateSlug(loteValue));
+      else if (numeroSerieValue) slugParts.push(generateSlug(numeroSerieValue));
+      const slugWithSku = slugParts.filter(Boolean).join('-');
       const categoryId = normalizeText(
         getRowValue(row, ['Categoria ID', 'categoryId', 'CategoriaId']) ||
           getNormalizedValue(normalizedRow, ['categoria id', 'categoria', 'subfamilia', 'familia'])
@@ -165,11 +173,11 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
 
       const derivedSpecs = {
         codigo: normalizeText(getNormalizedValue(normalizedRow, ['codigo'])),
-        lote: normalizeText(getNormalizedValue(normalizedRow, ['lote'])),
+        lote: loteValue,
         bodega: normalizeText(getNormalizedValue(normalizedRow, ['bodega'])),
         ubicacion: normalizeText(getNormalizedValue(normalizedRow, ['ubicacion'])),
         unidad: normalizeText(getNormalizedValue(normalizedRow, ['unidad'])),
-        numeroSerie: normalizeText(getNormalizedValue(normalizedRow, ['n serie', 'numero serie'])),
+        numeroSerie: numeroSerieValue,
       };
       const derivedSpecsText = Object.entries(derivedSpecs)
         .filter(([, value]) => value)
@@ -216,9 +224,28 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     const duplicates: string[] = [];
 
     products.forEach((product, index) => {
-      const slugKey = product.slug.toLowerCase();
+      let slugKey = product.slug.toLowerCase();
       if (seen.has(slugKey)) {
-        duplicates.push(`Fila ${index + 2}: slug duplicado (${product.slug})`);
+        let suffix = '';
+        const specs = product.specs ?? {};
+        const lote = typeof specs.lote === 'string' ? specs.lote : '';
+        const numeroSerie =
+          typeof (specs as Record<string, string>).numeroSerie === 'string'
+            ? (specs as Record<string, string>).numeroSerie
+            : '';
+        const hint = normalizeText(lote || numeroSerie || `${index + 1}`);
+        if (hint) {
+          suffix = `-${generateSlug(hint)}`;
+        } else {
+          suffix = `-dup-${index + 1}`;
+        }
+        const uniqueSlug = `${product.slug}${suffix}`;
+        duplicates.push(
+          `Fila ${index + 2}: slug duplicado (${product.slug}), ajustado a ${uniqueSlug}`
+        );
+        slugKey = uniqueSlug.toLowerCase();
+        seen.add(slugKey);
+        deduped.push({ ...product, slug: uniqueSlug });
         return;
       }
       seen.add(slugKey);
@@ -308,9 +335,6 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
 
       if (deduped.length === 0) {
         throw new Error('El archivo no contiene productos válidos');
-      }
-      if (deduped.length > 500) {
-        throw new Error('Máximo 500 productos por carga');
       }
 
       const user = auth.currentUser;
