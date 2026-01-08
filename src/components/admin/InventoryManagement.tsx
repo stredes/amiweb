@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { StockItem, InventoryStats } from '../../features/inventory/types';
 
 interface InventoryManagementProps {
@@ -7,33 +7,13 @@ interface InventoryManagementProps {
 
 export function InventoryManagement({ items }: InventoryManagementProps) {
   const [searchTerm, setSearchTerm] = useState('');
-  const [filterFamily, setFilterFamily] = useState('');
+  const [filterFamily, setFilterFamily] = useState('all');
   const [sortBy, setSortBy] = useState<'codigo' | 'producto' | 'stock'>('producto');
   const [currentPage, setCurrentPage] = useState(1);
-  const [isInitializing, setIsInitializing] = useState(true);
   const itemsPerPage = 100;
 
   // Obtener familias únicas
   const families = ['all', ...new Set(items.map(item => item.familia).filter(Boolean))];
-
-  // Establecer familia random al cargar - CRÍTICO para rendimiento
-  useEffect(() => {
-    if (items.length > 0 && !filterFamily) {
-      setIsInitializing(true);
-      
-      // Usar setTimeout para no bloquear el thread
-      setTimeout(() => {
-        const familiesWithoutAll = families.filter(f => f !== 'all');
-        if (familiesWithoutAll.length > 0) {
-          const randomFamily = familiesWithoutAll[Math.floor(Math.random() * familiesWithoutAll.length)];
-          setFilterFamily(randomFamily);
-        }
-        setIsInitializing(false);
-      }, 50);
-    } else if (items.length === 0) {
-      setIsInitializing(false);
-    }
-  }, [items.length]);
 
   // Calcular estadísticas solo de items filtrados para mejor rendimiento
   const getFilteredItems = () => {
@@ -120,29 +100,23 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
 
   return (
     <div className="inventory-management">
-      {isInitializing ? (
-        <div className="inventory-loading">
-          <div className="loader-spinner"></div>
-          <p>Preparando inventario...</p>
+      <>
+        <div className="inventory-header-info">
+          <h2>Gestión de Inventario</h2>
+          {filterFamily && filterFamily !== 'all' && (
+            <p className="muted">
+              Mostrando familia: <strong>{filterFamily}</strong>
+              {' '}({filteredItems.length} productos)
+              <button 
+                onClick={() => setFilterFamily('all')}
+                className="btn-link"
+                style={{ marginLeft: '10px' }}
+              >
+                Ver todas las familias
+              </button>
+            </p>
+          )}
         </div>
-      ) : (
-        <>
-          <div className="inventory-header-info">
-            <h2>📦 Gestión de Inventario</h2>
-            {filterFamily && filterFamily !== 'all' && (
-              <p className="muted">
-                📂 Mostrando familia: <strong>{filterFamily}</strong>
-                {' '}({filteredItems.length} productos)
-                <button 
-                  onClick={() => setFilterFamily('all')}
-                  className="btn-link"
-                  style={{ marginLeft: '10px' }}
-                >
-                  Ver todas las familias
-                </button>
-              </p>
-            )}
-          </div>
 
           <div className="inventory-stats-grid">
         <div className="stat-card">
@@ -185,7 +159,7 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
       <div className="inventory-filters">
         <input
           type="text"
-          placeholder="🔍 Buscar por producto, código o familia..."
+          placeholder="Buscar por producto, código o familia..."
           value={searchTerm}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="inventory-search"
@@ -196,12 +170,12 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
           onChange={(e) => handleFamilyChange(e.target.value)}
           className="inventory-filter"
         >
-          <option value="all">📂 Todas las familias ({items.length})</option>
+          <option value="all">Todas las familias ({items.length})</option>
           {families.filter(f => f !== 'all').map(family => {
             const count = items.filter(i => i.familia === family).length;
             return (
               <option key={family} value={family}>
-                📁 {family} ({count})
+                {family} ({count})
               </option>
             );
           })}
@@ -225,19 +199,32 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
       ) : (
         <div className="inventory-table-wrapper">
           <table className="inventory-table">
+            <colgroup>
+              <col style={{ width: '120px' }} />
+              <col style={{ width: '260px' }} />
+              <col style={{ width: '140px' }} />
+              <col style={{ width: '120px' }} />
+              <col style={{ width: '120px' }} />
+              <col style={{ width: '90px' }} />
+              <col style={{ width: '120px' }} />
+              <col style={{ width: '70px' }} />
+              <col style={{ width: '70px' }} />
+              <col style={{ width: '90px' }} />
+              <col style={{ width: '90px' }} />
+            </colgroup>
             <thead>
               <tr>
-                <th style={{ minWidth: '100px' }}>Código</th>
-                <th style={{ minWidth: '200px' }}>Producto</th>
-                <th style={{ minWidth: '120px' }}>Familia</th>
-                <th style={{ minWidth: '100px' }}>Bodega</th>
-                <th style={{ minWidth: '100px' }}>Ubicación</th>
-                <th style={{ minWidth: '80px' }}>Lote</th>
-                <th style={{ minWidth: '100px' }}>Vencimiento</th>
-                <th style={{ minWidth: '60px' }}>Stock</th>
-                <th style={{ minWidth: '60px' }}>Reserva</th>
-                <th style={{ minWidth: '80px' }}>Por Llegar</th>
-                <th style={{ minWidth: '80px' }}>Estado</th>
+                <th>Código</th>
+                <th>Producto</th>
+                <th>Familia</th>
+                <th>Bodega</th>
+                <th>Ubicación</th>
+                <th>Lote</th>
+                <th>Vencimiento</th>
+                <th>Stock</th>
+                <th>Reserva</th>
+                <th>Por Llegar</th>
+                <th>Estado</th>
               </tr>
             </thead>
             <tbody>
@@ -317,8 +304,7 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
           )}
         </div>
       </div>
-        </>
-      )}
+      </>
     </div>
   );
 }

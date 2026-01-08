@@ -1,6 +1,8 @@
 import { useState, useRef, ChangeEvent } from 'react';
-import { StockItem } from '../../features/inventory/types';
-import { inventoryStore } from '../../features/inventory/inventoryStore';
+import * as XLSX from 'xlsx';
+import { StockItem, InventoryUploadProduct, InventoryUploadResult } from '../../features/inventory/types';
+import { uploadInventory } from '../../features/inventory/inventoryApi';
+import { auth } from '../../lib/firebase';
 
 interface StockUploaderProps {
   onUploadComplete: (items: StockItem[]) => void;
@@ -11,40 +13,135 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [progress, setProgress] = useState(0);
+  const [validationErrors, setValidationErrors] = useState<string[]>([]);
+  const [uploadResult, setUploadResult] = useState<InventoryUploadResult | null>(null);
+  const [overwriteExisting, setOverwriteExisting] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const processChunk = (lines: string[], startIndex: number): StockItem[] => {
-    const items: StockItem[] = [];
-    
-    for (let i = 0; i < lines.length; i++) {
-      const line = lines[i].trim();
-      if (!line) continue;
-      
-      const values = line.split(/[,\t]/);
-      
-      // Mapear columnas del Excel
-      const item: StockItem = {
-        id: `stock-${Date.now()}-${startIndex + i}`,
-        familia: values[0]?.trim() || '',
-        subfamilia: values[1]?.trim() || '',
-        codigo: values[2]?.trim() || '',
-        producto: values[3]?.trim() || '',
-        unidad: values[4]?.trim() || '',
-        unidadDe: values[5]?.trim() || '',
-        bodega: values[6]?.trim() || '',
-        ubicacion: values[7]?.trim() || '',
-        nSerie: values[8]?.trim() || '',
-        lote: values[9]?.trim() || '',
-        fechaVencimiento: values[10]?.trim() || '',
-        porLlegar: parseInt(values[11]) || 0,
-        reserva: parseInt(values[12]) || 0,
-        saldoStock: parseInt(values[13]) || 0
-      };
-      
-      items.push(item);
+  const normalizeText = (value: unknown) => {
+    if (value === null || value === undefined) return '';
+    if (typeof value === 'string') return value.trim();
+    if (typeof value === 'number') return `${value}`.trim();
+    if (typeof value === 'boolean') return value ? 'true' : 'false';
+    return `${value}`.trim();
+  };
+
+  const generateSlug = (text: string): string => {
+    return text
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/^-+|-+$/g, '');
+  };
+
+  const parseSpecs = (specsString: string): Record<string, string> => {
+    if (!specsString) return {};
+    const specs: Record<string, string> = {};
+    const pairs = specsString.split(';');
+    pairs.forEach((pair) => {
+      const [key, value] = pair.split(':');
+      if (key && value) {
+        specs[key.trim()] = value.trim();
+      }
+    });
+    return specs;
+  };
+
+  const parseBoolean = (value: unknown) => {
+    if (typeof value === 'boolean') return value;
+    const normalized = normalizeText(value).toLowerCase();
+    return ['si', 'sí', 'true', '1', 'yes'].includes(normalized);
+  };
+
+  const parseNumber = (value: unknown) => {
+    if (value === null || value === undefined || value === '') return undefined;
+    const normalized = normalizeText(value).replace(/,/g, '.');
+    const numberValue = Number(normalized);
+    if (Number.isFinite(numberValue)) return numberValue;
+    return undefined;
+  };
+
+  const getRowValue = (row: Record<string, unknown>, keys: string[]) => {
+    for (const key of keys) {
+      if (row[key] !== undefined && row[key] !== null && row[key] !== '') {
+        return row[key];
+      }
     }
-    
-    return items;
+    return '';
+  };
+
+  const parseExcelFile = async (file: File) => {
+    const data = await file.arrayBuffer();
+    const workbook = XLSX.read(data, { type: 'array' });
+    const firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+    const rows = XLSX.utils.sheet_to_json<Record<string, unknown>>(firstSheet, {
+      defval: '',
+    });
+
+    const parsedProducts: InventoryUploadProduct[] = [];
+    const errors: string[] = [];
+
+    rows.forEach((row, index) => {
+      const rowValues = Object.values(row).map((value) => normalizeText(value));
+      if (rowValues.length === 0 || rowValues.every((value) => value === '')) {
+        return;
+      }
+
+      const name = normalizeText(getRowValue(row, ['Nombre', 'name', 'Name']));
+      const slugInput = normalizeText(getRowValue(row, ['Slug', 'slug']));
+      const slug = slugInput || (name ? generateSlug(name) : '');
+      const categoryId = normalizeText(getRowValue(row, ['Categoria ID', 'categoryId', 'CategoriaId']));
+      const brand = normalizeText(getRowValue(row, ['Marca', 'brand']));
+      const shortDescription = normalizeText(
+        getRowValue(row, ['Descripcion Corta', 'shortDescription', 'Descripcion corta'])
+      );
+      const longDescription = normalizeText(
+        getRowValue(row, ['Descripcion', 'longDescription', 'Descripción', 'Descripcion larga'])
+      );
+      const specsValue = normalizeText(getRowValue(row, ['Especificaciones', 'specs']));
+      const requiresInstallation = parseBoolean(
+        getRowValue(row, ['Requiere Instalacion', 'requiresInstallation'])
+      );
+      const isActiveRaw = getRowValue(row, ['Activo', 'isActive', 'Activa']);
+      const isActiveText = normalizeText(isActiveRaw);
+      const isActive = isActiveText ? parseBoolean(isActiveRaw) : true;
+      const stockValue = parseNumber(getRowValue(row, ['Stock']));
+      const priceValue = parseNumber(getRowValue(row, ['Precio', 'price']));
+      const sku = normalizeText(getRowValue(row, ['SKU', 'sku']));
+
+      const rowErrors: string[] = [];
+      if (!name || name.length < 2) rowErrors.push('name');
+      if (!slug || slug.length < 2) rowErrors.push('slug');
+      if (!categoryId) rowErrors.push('categoryId');
+      if (!brand) rowErrors.push('brand');
+      if (!shortDescription || shortDescription.length < 2) rowErrors.push('shortDescription');
+      if (!longDescription || longDescription.length < 2) rowErrors.push('longDescription');
+
+      if (rowErrors.length > 0) {
+        errors.push(
+          `Fila ${index + 2}: faltan o son inválidos (${rowErrors.join(', ')})`
+        );
+        return;
+      }
+
+      parsedProducts.push({
+        sku: sku || undefined,
+        name,
+        slug,
+        categoryId,
+        brand,
+        shortDescription,
+        longDescription,
+        specs: parseSpecs(specsValue),
+        requiresInstallation,
+        isActive,
+        stock: typeof stockValue === 'number' ? Math.trunc(stockValue) : undefined,
+        price: typeof priceValue === 'number' ? priceValue : undefined,
+      });
+    });
+
+    return { products: parsedProducts, errors };
   };
 
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
@@ -55,40 +152,41 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     setError(null);
     setSuccess(null);
     setProgress(0);
+    setValidationErrors([]);
+    setUploadResult(null);
 
     try {
-      const text = await file.text();
-      const lines = text.split('\n');
-      
-      // Saltar header
-      const dataLines = lines.slice(1);
-      
-      // Procesar en chunks de 1000 líneas
-      const chunkSize = 1000;
-      const allItems: StockItem[] = [];
-      
-      for (let i = 0; i < dataLines.length; i += chunkSize) {
-        const chunk = dataLines.slice(i, Math.min(i + chunkSize, dataLines.length));
-        const chunkItems = processChunk(chunk, i);
-        allItems.push(...chunkItems);
-        
-        // Actualizar progreso
-        const currentProgress = Math.round(((i + chunk.length) / dataLines.length) * 100);
-        setProgress(currentProgress);
-        
-        // Dar tiempo al navegador para actualizar UI
-        await new Promise(resolve => setTimeout(resolve, 10));
+      setProgress(20);
+      const { products, errors } = await parseExcelFile(file);
+      setValidationErrors(errors);
+      setProgress(50);
+
+      if (products.length === 0) {
+        throw new Error('El archivo no contiene productos válidos');
+      }
+      if (products.length > 500) {
+        throw new Error('Máximo 500 productos por carga');
       }
 
-      inventoryStore.setItems(allItems);
-      
-      // Esperar a que React actualice el estado antes de notificar
-      await new Promise(resolve => setTimeout(resolve, 100));
-      
-      onUploadComplete(allItems);
-      setSuccess(`✅ ${allItems.length} productos cargados correctamente`);
+      const user = auth.currentUser;
+      if (!user) {
+        throw new Error('Usuario no autenticado en Firebase');
+      }
+
+      const token = await user.getIdToken();
+      setProgress(70);
+
+      const result = await uploadInventory(products, {
+        token,
+        overwriteExisting,
+      });
+
+      setUploadResult(result);
+      onUploadComplete([]);
+      setSuccess(
+        `✅ Carga completada: ${result.data.successful} exitosos, ${result.data.failed} fallidos`
+      );
       setProgress(100);
-      
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al procesar el archivo');
       setProgress(0);
@@ -100,20 +198,12 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     }
   };
 
-  const handleClearStock = () => {
-    if (confirm('¿Estás seguro de eliminar todo el inventario cargado?')) {
-      inventoryStore.clearItems();
-      setSuccess('Inventario limpiado');
-      setError(null);
-    }
-  };
-
   return (
     <div className="stock-uploader">
       <div className="stock-uploader__header">
         <h3>📊 Cargar Inventario desde Excel</h3>
         <p className="muted">
-          Sube un archivo CSV o Excel con las columnas: Familia, Subfamilia, Código, Producto, etc.
+          Sube un archivo CSV o Excel con columnas de productos (Nombre, Slug, Categoria ID, Marca, etc.).
         </p>
       </div>
 
@@ -126,6 +216,36 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       {success && (
         <div className="alert alert-success">
           {success}
+        </div>
+      )}
+
+      {validationErrors.length > 0 && (
+        <div className="alert alert-warning">
+          <strong>Errores de validación:</strong>
+          <ul>
+            {validationErrors.slice(0, 6).map((item) => (
+              <li key={item}>{item}</li>
+            ))}
+          </ul>
+          {validationErrors.length > 6 && (
+            <p className="muted">Se omitieron {validationErrors.length - 6} errores más.</p>
+          )}
+        </div>
+      )}
+
+      {uploadResult && uploadResult.data.errors.length > 0 && (
+        <div className="alert alert-warning">
+          <strong>Errores del backend:</strong>
+          <ul>
+            {uploadResult.data.errors.slice(0, 6).map((item) => (
+              <li key={`${item.index}-${item.name}`}>
+                #{item.index}: {item.name} - {item.error}
+              </li>
+            ))}
+          </ul>
+          {uploadResult.data.errors.length > 6 && (
+            <p className="muted">Se omitieron {uploadResult.data.errors.length - 6} errores más.</p>
+          )}
         </div>
       )}
 
@@ -147,31 +267,33 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           <input
             ref={fileInputRef}
             type="file"
-            accept=".csv,.xlsx,.xls,.txt"
+            accept=".csv,.xlsx,.xls"
             onChange={handleFileChange}
             disabled={isProcessing}
             style={{ display: 'none' }}
           />
         </label>
 
-        <button
-          onClick={handleClearStock}
-          className="btn btn-secondary"
-          disabled={isProcessing}
-        >
-          🗑️ Limpiar Inventario
-        </button>
+        <label className="checkbox-inline">
+          <input
+            type="checkbox"
+            checked={overwriteExisting}
+            onChange={(event) => setOverwriteExisting(event.target.checked)}
+            disabled={isProcessing}
+          />
+          <span>Actualizar existentes (overwrite)</span>
+        </label>
       </div>
 
       <div className="stock-uploader__info">
         <h4>📋 Formato esperado:</h4>
         <ul>
-          <li>Familia, Subfamilia, Código, Producto, Unidad</li>
-          <li>Unidad de, Bodega, Ubicación, N° Serie, Lote</li>
-          <li>Fecha Vencimiento, Por llegar, Reserva, Saldo stock</li>
+          <li>Nombre, Slug, Categoria ID, Marca</li>
+          <li>Descripcion Corta, Descripcion, Especificaciones</li>
+          <li>Requiere Instalacion, Stock, Precio</li>
         </ul>
         <p className="muted">
-          <strong>Nota:</strong> El archivo debe ser CSV (separado por comas o tabulaciones) o puedes copiar desde Excel y pegar en un archivo .txt
+          <strong>Nota:</strong> Maximo 500 productos por carga. Slug puede omitirse y se genera desde el nombre.
         </p>
       </div>
     </div>

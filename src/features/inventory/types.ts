@@ -23,3 +23,36 @@ export interface InventoryStats {
   itemsBajoStock: number;
   itemsProximosVencer: number;
 }
+
+export interface InventoryUploadProduct {
+  sku?: string;
+  name: string;
+  slug: string;
+  categoryId: string;
+  brand: string;
+  shortDescription: string;
+  longDescription: string;
+  specs?: Record<string, string>;
+  requiresInstallation?: boolean;
+  isActive?: boolean;
+  stock?: number;
+  price?: number;
+}
+
+export interface InventoryUploadError {
+  index: number;
+  name: string;
+  error: string;
+}
+
+export interface InventoryUploadResult {
+  success: boolean;
+  data: {
+    totalProcessed: number;
+    successful: number;
+    failed: number;
+    skipped: number;
+    errors: InventoryUploadError[];
+    createdIds: string[];
+  };
+}

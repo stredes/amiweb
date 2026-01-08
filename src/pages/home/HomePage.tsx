@@ -1,6 +1,7 @@
 import { useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ProductCategoryGrid from '../../components/products/ProductCategoryGrid';
+import Carousel from '../../components/ui/Carousel';
 import { productCategories } from '../../features/catalog/mockData';
 import { ROUTES } from '../../config/routes';
 
@@ -26,21 +27,17 @@ function HomePage() {
           </div>
         </div>
         <div className="hero__visual">
-          <div className="placeholder-visual">Imagen/visual de laboratorio</div>
+          <div className="hero-carousel">
+            <Carousel
+              baseWidth={320}
+              autoplay={true}
+              autoplayDelay={3000}
+              pauseOnHover={true}
+              loop={true}
+              round={false}
+            />
+          </div>
         </div>
-      </section>
-
-      <section>
-        <h2>Nuestra propuesta</h2>
-        <p>
-          Nos enfocamos en las necesidades reales de los laboratorios clínicos: equipos confiables,
-          reactivos consistentes, insumos seguros y un servicio técnico que asegura continuidad
-          operacional.
-        </p>
-        <p>
-          Diseñamos soluciones integrales que combinan tecnología, capacitación y acompañamiento
-          cercano para que cada laboratorio opere con estándares altos todos los días.
-        </p>
       </section>
 
       <ProductCategoryGrid categories={productCategories} />
