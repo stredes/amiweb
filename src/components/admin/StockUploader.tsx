@@ -124,7 +124,11 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
         getRowValue(row, ['Slug', 'slug']) ||
           getNormalizedValue(normalizedRow, ['slug'])
       );
+      const sku = normalizeText(
+        getRowValue(row, ['SKU', 'sku']) || getNormalizedValue(normalizedRow, ['codigo'])
+      );
       const slug = slugInput || (name ? generateSlug(name) : '');
+      const slugWithSku = sku ? `${slug}-${generateSlug(sku)}` : slug;
       const categoryId = normalizeText(
         getRowValue(row, ['Categoria ID', 'categoryId', 'CategoriaId']) ||
           getNormalizedValue(normalizedRow, ['categoria id', 'categoria', 'subfamilia', 'familia'])
@@ -158,9 +162,6 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       const priceValue = parseNumber(
         getRowValue(row, ['Precio', 'price']) || getNormalizedValue(normalizedRow, ['precio'])
       );
-      const sku = normalizeText(
-        getRowValue(row, ['SKU', 'sku']) || getNormalizedValue(normalizedRow, ['codigo'])
-      );
 
       const derivedSpecs = {
         codigo: normalizeText(getNormalizedValue(normalizedRow, ['codigo'])),
@@ -193,7 +194,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       parsedProducts.push({
         sku: sku || undefined,
         name,
-        slug,
+        slug: slugWithSku,
         categoryId,
         brand,
         shortDescription,
