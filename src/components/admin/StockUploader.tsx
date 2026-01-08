@@ -17,6 +17,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
   const [validationWarnings, setValidationWarnings] = useState<string[]>([]);
   const [uploadResult, setUploadResult] = useState<InventoryUploadResult | null>(null);
   const [overwriteExisting, setOverwriteExisting] = useState(false);
+  const [removeDuplicates, setRemoveDuplicates] = useState(true);
   const [progressLabel, setProgressLabel] = useState<string | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -219,27 +220,56 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     return { products: parsedProducts, errors };
   };
 
-  const dedupeProducts = (products: InventoryUploadProduct[]) => {
+  const dedupeProducts = (products: InventoryUploadProduct[], removeRealDuplicates: boolean = true) => {
     const seen = new Set<string>();
     const counts = new Map<string, number>();
     const deduped: InventoryUploadProduct[] = [];
     const duplicates: string[] = [];
     const duplicateGroups = new Map<string, number[]>(); // slug -> filas
     const trueDuplicates = new Map<string, number[]>(); // nombre+sku -> filas
+    const trueDuplicatesSeen = new Set<string>(); // Para eliminar duplicados verdaderos
+    const trueDuplicateCounts = new Map<string, number>(); // Para ajustar slugs de duplicados verdaderos
 
     products.forEach((product, index) => {
       const baseSlugKey = product.slug.toLowerCase();
-      const count = counts.get(baseSlugKey) ?? 0;
-      counts.set(baseSlugKey, count + 1);
-
+      
       // Detectar duplicados verdaderos (mismo nombre y SKU)
+      let isRealDuplicate = false;
+      let realDupeCount = 0;
       if (product.name && product.sku) {
         const trueKey = `${product.name.toLowerCase()}|${product.sku.toLowerCase()}`;
+        
+        // Registrar para estadísticas
         if (!trueDuplicates.has(trueKey)) {
           trueDuplicates.set(trueKey, []);
         }
         trueDuplicates.get(trueKey)!.push(index + 2);
+        
+        // Si está habilitado eliminar duplicados y ya vimos este producto, saltar
+        if (removeRealDuplicates && trueDuplicatesSeen.has(trueKey)) {
+          return; // Skip this duplicate
+        }
+        
+        // Si NO se eliminan, ajustar el slug con sufijo basado en duplicados verdaderos
+        if (!removeRealDuplicates) {
+          const count = trueDuplicateCounts.get(trueKey) ?? 0;
+          trueDuplicateCounts.set(trueKey, count + 1);
+          
+          if (count > 0) {
+            isRealDuplicate = true;
+            realDupeCount = count + 1;
+            // Modificar el slug para que sea único
+            product = { ...product, slug: `${product.slug}-v${realDupeCount}` };
+          }
+        }
+        
+        trueDuplicatesSeen.add(trueKey);
       }
+
+      // Manejo de slugs duplicados (después de ajustar por duplicados verdaderos)
+      const finalSlugKey = product.slug.toLowerCase();
+      const count = counts.get(finalSlugKey) ?? 0;
+      counts.set(finalSlugKey, count + 1);
 
       if (count > 0) {
         const uniqueSlug = `${product.slug}-dup-${count + 1}`;
@@ -258,7 +288,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
         return;
       }
 
-      seen.add(baseSlugKey);
+      seen.add(finalSlugKey);
       deduped.push(product);
     });
 
@@ -267,14 +297,29 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     
     // Detectar productos completamente duplicados
     const realDupes = Array.from(trueDuplicates.entries()).filter(([_, rows]) => rows.length > 1);
+    const totalRealDupes = realDupes.reduce((sum, [_, rows]) => sum + rows.length - 1, 0);
+    
     if (realDupes.length > 0) {
-      duplicateSummary.push(`⚠️  Se encontraron ${realDupes.length} productos completamente duplicados (mismo nombre + SKU):`);
-      realDupes.slice(0, 3).forEach(([key, rows]) => {
-        const [name] = key.split('|');
-        duplicateSummary.push(`   • "${name}" en filas: ${rows.join(', ')}`);
-      });
-      if (realDupes.length > 3) {
-        duplicateSummary.push(`   ... y ${realDupes.length - 3} más`);
+      if (removeRealDuplicates) {
+        duplicateSummary.push(`✅ Se eliminaron ${totalRealDupes} productos duplicados (mismo nombre + SKU)`);
+        duplicateSummary.push(`   Grupos de duplicados encontrados: ${realDupes.length}`);
+        realDupes.slice(0, 3).forEach(([key, rows]) => {
+          const [name] = key.split('|');
+          duplicateSummary.push(`   • "${name}" en filas: ${rows.join(', ')} → se mantuvo solo la primera`);
+        });
+        if (realDupes.length > 3) {
+          duplicateSummary.push(`   ... y ${realDupes.length - 3} grupos más`);
+        }
+      } else {
+        duplicateSummary.push(`ℹ️  Se encontraron ${realDupes.length} productos duplicados (mismo nombre + SKU)`);
+        duplicateSummary.push(`   Se mantuvieron todos con slugs únicos (sufijo -v2, -v3, etc.)`);
+        realDupes.slice(0, 3).forEach(([key, rows]) => {
+          const [name] = key.split('|');
+          duplicateSummary.push(`   • "${name}" en filas: ${rows.join(', ')}`);
+        });
+        if (realDupes.length > 3) {
+          duplicateSummary.push(`   ... y ${realDupes.length - 3} más`);
+        }
       }
       duplicateSummary.push('');
     }
@@ -372,7 +417,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     try {
       setProgress(10);
       const { products, errors } = await parseExcelFile(file);
-      const { deduped, duplicates, duplicateSummary } = dedupeProducts(products);
+      const { deduped, duplicates, duplicateSummary } = dedupeProducts(products, removeDuplicates);
       setValidationErrors(errors);
       
       // Mostrar resumen de duplicados en lugar de lista completa
@@ -583,15 +628,35 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           />
         </label>
 
-        <label className="checkbox-inline">
-          <input
-            type="checkbox"
-            checked={overwriteExisting}
-            onChange={(event) => setOverwriteExisting(event.target.checked)}
-            disabled={isProcessing}
-          />
-          <span>Actualizar existentes (overwrite)</span>
-        </label>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <label className="checkbox-inline">
+            <input
+              type="checkbox"
+              checked={overwriteExisting}
+              onChange={(event) => setOverwriteExisting(event.target.checked)}
+              disabled={isProcessing}
+            />
+            <span>Actualizar existentes (overwrite)</span>
+          </label>
+
+          <label className="checkbox-inline">
+            <input
+              type="checkbox"
+              checked={removeDuplicates}
+              onChange={(event) => setRemoveDuplicates(event.target.checked)}
+              disabled={isProcessing}
+            />
+            <span>
+              Eliminar productos duplicados
+              <br />
+              <small style={{ color: '#666', fontSize: '0.85em' }}>
+                {removeDuplicates 
+                  ? '✅ Solo se mantendrá la primera ocurrencia' 
+                  : 'ℹ️ Se mantendrán todos con slugs únicos (-v2, -v3, etc.)'}
+              </small>
+            </span>
+          </label>
+        </div>
       </div>
 
       <div className="stock-uploader__info">
