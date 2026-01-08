@@ -63,7 +63,33 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     return undefined;
   };
 
+  const normalizeKey = (value: string) => {
+    return value
+      .toLowerCase()
+      .normalize('NFD')
+      .replace(/[\u0300-\u036f]/g, '')
+      .replace(/[^a-z0-9]+/g, ' ')
+      .trim();
+  };
+
+  const getNormalizedRow = (row: Record<string, unknown>) => {
+    const normalized: Record<string, unknown> = {};
+    Object.entries(row).forEach(([key, value]) => {
+      normalized[normalizeKey(key)] = value;
+    });
+    return normalized;
+  };
+
   const getRowValue = (row: Record<string, unknown>, keys: string[]) => {
+    for (const key of keys) {
+      if (row[key] !== undefined && row[key] !== null && row[key] !== '') {
+        return row[key];
+      }
+    }
+    return '';
+  };
+
+  const getNormalizedValue = (row: Record<string, unknown>, keys: string[]) => {
     for (const key of keys) {
       if (row[key] !== undefined && row[key] !== null && row[key] !== '') {
         return row[key];
@@ -84,32 +110,70 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     const errors: string[] = [];
 
     rows.forEach((row, index) => {
+      const normalizedRow = getNormalizedRow(row);
       const rowValues = Object.values(row).map((value) => normalizeText(value));
       if (rowValues.length === 0 || rowValues.every((value) => value === '')) {
         return;
       }
 
-      const name = normalizeText(getRowValue(row, ['Nombre', 'name', 'Name']));
-      const slugInput = normalizeText(getRowValue(row, ['Slug', 'slug']));
+      const name = normalizeText(
+        getRowValue(row, ['Nombre', 'name', 'Name']) ||
+          getNormalizedValue(normalizedRow, ['producto', 'product'])
+      );
+      const slugInput = normalizeText(
+        getRowValue(row, ['Slug', 'slug']) ||
+          getNormalizedValue(normalizedRow, ['slug'])
+      );
       const slug = slugInput || (name ? generateSlug(name) : '');
-      const categoryId = normalizeText(getRowValue(row, ['Categoria ID', 'categoryId', 'CategoriaId']));
-      const brand = normalizeText(getRowValue(row, ['Marca', 'brand']));
+      const categoryId = normalizeText(
+        getRowValue(row, ['Categoria ID', 'categoryId', 'CategoriaId']) ||
+          getNormalizedValue(normalizedRow, ['categoria id', 'categoria', 'subfamilia', 'familia'])
+      );
+      const brand = normalizeText(
+        getRowValue(row, ['Marca', 'brand']) ||
+          getNormalizedValue(normalizedRow, ['marca', 'unidad de negocio', 'unidad negocio'])
+      );
       const shortDescription = normalizeText(
-        getRowValue(row, ['Descripcion Corta', 'shortDescription', 'Descripcion corta'])
+        getRowValue(row, ['Descripcion Corta', 'shortDescription', 'Descripcion corta']) ||
+          name
       );
       const longDescription = normalizeText(
-        getRowValue(row, ['Descripcion', 'longDescription', 'Descripción', 'Descripcion larga'])
+        getRowValue(row, ['Descripcion', 'longDescription', 'Descripción', 'Descripcion larga']) ||
+          name
       );
-      const specsValue = normalizeText(getRowValue(row, ['Especificaciones', 'specs']));
+      const specsValue = normalizeText(
+        getRowValue(row, ['Especificaciones', 'specs']) ||
+          getNormalizedValue(normalizedRow, ['especificaciones'])
+      );
       const requiresInstallation = parseBoolean(
-        getRowValue(row, ['Requiere Instalacion', 'requiresInstallation'])
+        getRowValue(row, ['Requiere Instalacion', 'requiresInstallation']) ||
+          getNormalizedValue(normalizedRow, ['requiere instalacion'])
       );
       const isActiveRaw = getRowValue(row, ['Activo', 'isActive', 'Activa']);
       const isActiveText = normalizeText(isActiveRaw);
       const isActive = isActiveText ? parseBoolean(isActiveRaw) : true;
-      const stockValue = parseNumber(getRowValue(row, ['Stock']));
-      const priceValue = parseNumber(getRowValue(row, ['Precio', 'price']));
-      const sku = normalizeText(getRowValue(row, ['SKU', 'sku']));
+      const stockValue = parseNumber(
+        getRowValue(row, ['Stock']) || getNormalizedValue(normalizedRow, ['saldo stock', 'stock'])
+      );
+      const priceValue = parseNumber(
+        getRowValue(row, ['Precio', 'price']) || getNormalizedValue(normalizedRow, ['precio'])
+      );
+      const sku = normalizeText(
+        getRowValue(row, ['SKU', 'sku']) || getNormalizedValue(normalizedRow, ['codigo'])
+      );
+
+      const derivedSpecs = {
+        codigo: normalizeText(getNormalizedValue(normalizedRow, ['codigo'])),
+        lote: normalizeText(getNormalizedValue(normalizedRow, ['lote'])),
+        bodega: normalizeText(getNormalizedValue(normalizedRow, ['bodega'])),
+        ubicacion: normalizeText(getNormalizedValue(normalizedRow, ['ubicacion'])),
+        unidad: normalizeText(getNormalizedValue(normalizedRow, ['unidad'])),
+        numeroSerie: normalizeText(getNormalizedValue(normalizedRow, ['n serie', 'numero serie'])),
+      };
+      const derivedSpecsText = Object.entries(derivedSpecs)
+        .filter(([, value]) => value)
+        .map(([key, value]) => `${key}:${value}`)
+        .join(';');
 
       const rowErrors: string[] = [];
       if (!name || name.length < 2) rowErrors.push('name');
@@ -134,7 +198,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
         brand,
         shortDescription,
         longDescription,
-        specs: parseSpecs(specsValue),
+        specs: parseSpecs(specsValue || derivedSpecsText),
         requiresInstallation,
         isActive,
         stock: typeof stockValue === 'number' ? Math.trunc(stockValue) : undefined,
