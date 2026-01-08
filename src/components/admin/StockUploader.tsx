@@ -185,6 +185,42 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     };
   };
 
+  const sleep = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
+
+  const reconcileRetryResult = (
+    aggregate: InventoryUploadResult,
+    retryResult: InventoryUploadResult,
+    retryProducts: InventoryUploadProduct[]
+  ) => {
+    const retryErrorKeys = new Set(
+      retryResult.data.errors.map((item) => item.slug ?? item.name)
+    );
+    const retryProductKeys = retryProducts.map((item) => item.slug ?? item.name);
+    const recoveredKeys = retryProductKeys.filter((key) => !retryErrorKeys.has(key));
+    const recoveredCount = recoveredKeys.length;
+
+    const remainingErrorKeys = new Set(
+      retryResult.data.errors.map((item) => item.slug ?? item.name)
+    );
+
+    const updatedErrors = aggregate.data.errors
+      .filter((item) => {
+        const key = item.slug ?? item.name;
+        return !recoveredKeys.includes(key) && !remainingErrorKeys.has(key);
+      })
+      .concat(retryResult.data.errors);
+
+    return {
+      ...aggregate,
+      data: {
+        ...aggregate.data,
+        successful: aggregate.data.successful + recoveredCount,
+        failed: Math.max(0, aggregate.data.failed - recoveredCount),
+        errors: updatedErrors,
+      },
+    };
+  };
+
   const handleFileChange = async (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
     if (!file) return;
@@ -208,6 +244,9 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       if (deduped.length === 0) {
         throw new Error('El archivo no contiene productos válidos');
       }
+      if (deduped.length > 500) {
+        throw new Error('Máximo 500 productos por carga');
+      }
 
       const user = auth.currentUser;
       if (!user) {
@@ -223,37 +262,57 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       let aggregateResult: InventoryUploadResult | null = null;
       const totalSteps = batches.length * 2;
       let completedSteps = 0;
+      const retryDelays = [800, 1600];
 
       for (let i = 0; i < batches.length; i += 1) {
         const batch = batches[i];
         setProgressLabel(`Subiendo lote ${i + 1} de ${batches.length}...`);
-        const batchResult = await uploadInventory(batch, {
-          token,
-          overwriteExisting,
-        });
+        let batchResult: InventoryUploadResult;
+
+        try {
+          batchResult = await uploadInventory(batch, {
+            token,
+            overwriteExisting,
+          });
+        } catch (uploadError) {
+          setProgressLabel(`Reintentando lote ${i + 1}...`);
+          await sleep(retryDelays[0]);
+          batchResult = await uploadInventory(batch, {
+            token,
+            overwriteExisting,
+          });
+        }
 
         aggregateResult = aggregateResult ? mergeResults(aggregateResult, batchResult) : batchResult;
         completedSteps += 1;
         setProgress(Math.min(90, Math.round((completedSteps / totalSteps) * 100)));
 
         const transientErrors = batchResult.data.errors.filter((item) => item.isTransient);
-        if (transientErrors.length > 0) {
-          const retryProducts = transientErrors
-            .map((item) => batch[item.index])
-            .filter((item): item is InventoryUploadProduct => Boolean(item));
+        let retryProducts = transientErrors
+          .map((item) => batch[item.index])
+          .filter((item): item is InventoryUploadProduct => Boolean(item));
 
-          if (retryProducts.length > 0) {
-            setProgressLabel(`Reintentando ${retryProducts.length} productos...`);
-            const retryResult = await uploadInventory(retryProducts, {
-              token,
-              overwriteExisting,
-            });
-            aggregateResult = mergeResults(aggregateResult, retryResult);
+        for (let attempt = 0; attempt < retryDelays.length && retryProducts.length > 0; attempt += 1) {
+          setProgressLabel(`Reintentando ${retryProducts.length} productos...`);
+          await sleep(retryDelays[attempt]);
+          const retryResult = await uploadInventory(retryProducts, {
+            token,
+            overwriteExisting,
+          });
+
+          if (aggregateResult) {
+            aggregateResult = reconcileRetryResult(aggregateResult, retryResult, retryProducts);
           }
+
+          retryProducts = retryResult.data.errors
+            .filter((item) => item.isTransient)
+            .map((item) => retryProducts[item.index])
+            .filter((item): item is InventoryUploadProduct => Boolean(item));
         }
 
         completedSteps += 1;
         setProgress(Math.min(95, Math.round((completedSteps / totalSteps) * 100)));
+        await sleep(200);
       }
 
       if (!aggregateResult) {
