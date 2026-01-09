@@ -1,0 +1,32 @@
+.infinite-scroll-trigger {
+  width: 100%;
+  min-height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+}
+
+.infinite-scroll-trigger__loading {
+  width: 100%;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 24px;
+}
+
+.infinite-scroll-trigger__end {
+  text-align: center;
+  color: var(--color-text-secondary);
+  padding: 20px;
+}
+
+.infinite-scroll-trigger__end p {
+  margin: 0;
+  font-size: 0.95rem;
+}
+
+@media (max-width: 768px) {
+  .infinite-scroll-trigger__loading {
+    grid-template-columns: 1fr;
+  }
+}

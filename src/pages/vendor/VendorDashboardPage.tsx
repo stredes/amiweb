@@ -6,6 +6,7 @@ import { SalesMetricCard } from '../../components/vendor/SalesMetricCard';
 import { ClientCard } from '../../components/vendor/ClientCard';
 import { VendorOrderList } from '../../components/vendor/VendorOrderList';
 import Loader from '../../components/ui/Loader';
+import { FadeIn } from '../../components/ui/FadeIn';
 import { Navigate } from 'react-router-dom';
 
 export function VendorDashboardPage() {
@@ -72,7 +73,8 @@ export function VendorDashboardPage() {
 
   return (
     <div className="vendor-dashboard">
-      <div className="vendor-header">
+      <FadeIn direction="up">
+        <div className="vendor-header">
         <div className="vendor-header__info">
           <h1>Panel de Vendedor</h1>
           <p className="muted">
@@ -83,9 +85,11 @@ export function VendorDashboardPage() {
         <button onClick={logout} className="btn btn-secondary">
           Cerrar Sesión
         </button>
-      </div>
+        </div>
+      </FadeIn>
 
-      <div className="vendor-tabs">
+      <FadeIn direction="up" delay={0.1}>
+        <div className="vendor-tabs">
         <button
           className={`vendor-tab ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
@@ -104,7 +108,8 @@ export function VendorDashboardPage() {
         >
           📦 Pedidos ({orders.length})
         </button>
-      </div>
+        </div>
+      </FadeIn>
 
       {isLoading ? (
         <Loader />

@@ -5,6 +5,7 @@ import { Order, Vendor, SupportContact } from '../../features/auth/types';
 import { OrderCard } from '../../components/portal/OrderCard';
 import { ContactCard } from '../../components/portal/ContactCard';
 import Loader from '../../components/ui/Loader';
+import { FadeIn } from '../../components/ui/FadeIn';
 
 export function PartnerPortalPage() {
   const { user, logout } = useAuth();
@@ -49,7 +50,8 @@ export function PartnerPortalPage() {
 
   return (
     <div className="portal-page">
-      <div className="portal-header">
+      <FadeIn direction="up">
+        <div className="portal-header">
         <div className="portal-header__info">
           <h1>Bienvenido, {user.name}</h1>
           <p className="muted">{user.company}</p>
@@ -57,9 +59,11 @@ export function PartnerPortalPage() {
         <button onClick={logout} className="btn btn-secondary">
           Cerrar Sesión
         </button>
-      </div>
+        </div>
+      </FadeIn>
 
-      <div className="portal-stats">
+      <FadeIn direction="up" delay={0.1}>
+        <div className="portal-stats">
         <div className="stat-card">
           <div className="stat-card__icon">📦</div>
           <div className="stat-card__content">
@@ -81,9 +85,11 @@ export function PartnerPortalPage() {
             <p>Contactos de Soporte</p>
           </div>
         </div>
-      </div>
+        </div>
+      </FadeIn>
 
-      <div className="portal-tabs">
+      <FadeIn direction="up" delay={0.2}>
+        <div className="portal-tabs">
         <button
           className={`portal-tab ${activeTab === 'orders' ? 'active' : ''}`}
           onClick={() => setActiveTab('orders')}
@@ -96,7 +102,8 @@ export function PartnerPortalPage() {
         >
           Contactos
         </button>
-      </div>
+        </div>
+      </FadeIn>
 
       {isLoading ? (
         <Loader />

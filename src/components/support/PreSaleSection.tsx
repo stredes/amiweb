@@ -3,16 +3,17 @@ function PreSaleSection() {
     <section>
       <h2>Servicio de Pre Venta</h2>
       <p>
-        Acompañamos a los laboratorios clínicos con asesoría técnica y comercial antes de cada
-        adquisición.
+        Servicio creado para resolver sus consultas y guiarlo a través de nuestros diferentes productos 
+        para que pueda tomar la mejor decisión de acuerdo a sus necesidades.
       </p>
+      <p>Para esto contamos con:</p>
       <ul>
-        <li>Atención de representantes comerciales y especialistas.</li>
-        <li>Demostraciones y presentaciones de equipos y reactivos.</li>
-        <li>
-          Evaluación de necesidades y diseño de soluciones integrales {/* TODO: conectar con CRM. */}
-        </li>
+        <li>Atención directa de representantes.</li>
+        <li>Especialistas</li>
+        <li>Demostraciones</li>
+        <li>Presentaciones</li>
       </ul>
+      <p><strong>Estamos aquí para atender sus preguntas, contáctenos.</strong></p>
     </section>
   );
 }

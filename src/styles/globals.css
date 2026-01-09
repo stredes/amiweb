@@ -11,6 +11,9 @@
   --color-footer: #4B0082;         /* Lila oscuro */
   --color-text: #2D1619;           /* Texto oscuro */
   --color-text-light: #5A3940;     /* Texto medio */
+  --color-bg-primary: #FFFFFF;
+  --color-bg-secondary: #F5F5DC;
+  --color-border: #E8E8D8;
   
   /* Espaciado */
   --spacing-xs: 0.25rem;
@@ -33,10 +36,36 @@
   
   color-scheme: light;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  background-color: var(--color-light);
+  background-color: var(--color-bg-secondary);
   color: var(--color-text);
   line-height: 1.65;
   font-size: 16px;
+}
+
+/* Dark mode */
+[data-theme='dark'] {
+  --color-primary: #D45D79;
+  --color-primary-light: #E17A93;
+  --color-primary-dark: #B23D5A;
+  --color-secondary: #FF6B8A;
+  --color-accent: #FF4F6D;
+  --color-white: #1a1a1a;
+  --color-light: #0f0f0f;
+  --color-light-gray: #2a2a2a;
+  --color-footer: #1a1a1a;
+  --color-text: #e8e8e8;
+  --color-text-light: #b8b8b8;
+  --color-bg-primary: #1a1a1a;
+  --color-bg-secondary: #0f0f0f;
+  --color-border: #2a2a2a;
+  
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.5);
+  
+  color-scheme: dark;
+  background-color: var(--color-bg-primary);
+  color: var(--color-text);
 }
 
 * {

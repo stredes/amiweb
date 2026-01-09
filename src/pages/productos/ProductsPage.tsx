@@ -3,6 +3,7 @@ import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../../components/products/ProductCard';
 import ProductFilters from '../../components/products/ProductFilters';
 import Loader from '../../components/ui/Loader';
+import { FadeIn } from '../../components/ui/FadeIn';
 import useProducts from '../../hooks/useProducts';
 import { useSearchStore } from '../../features/search/searchStore';
 import { Product } from '../../features/catalog/types';
@@ -14,7 +15,7 @@ function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState(term);
   const [quotedProduct, setQuotedProduct] = useState<Product | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { products, categories, loading } = useProducts(
+  const { products, categories, loading, error } = useProducts(
     selectedCategory || undefined,
     searchTerm
   );
@@ -65,38 +66,54 @@ function ProductsPage() {
 
   return (
     <div className="page">
-      <header className="page__header">
-        <h1>Productos</h1>
+      <FadeIn direction="up">
+        <header className="page__header">
+          <h1>Productos</h1>
         <p>
           Catálogo de equipos, reactivos e insumos para laboratorios clínicos. {/* TODO: paginación
           y filtros conectados a backend. */}
         </p>
-      </header>
+        </header>
+      </FadeIn>
 
-      <ProductFilters
+      <FadeIn direction="up" delay={0.1}>
+        <ProductFilters
         categories={categories}
         selectedCategory={selectedCategory}
         searchTerm={searchTerm}
         onCategoryChange={handleCategoryChange}
         onSearchChange={handleSearchChange}
-      />
+        />
+      </FadeIn>
 
       {loading ? (
         <Loader />
+      ) : error ? (
+        <FadeIn direction="up" delay={0.2}>
+          <div className="card" style={{ padding: '2rem', textAlign: 'center' }}>
+            <h3 style={{ color: 'var(--color-error)' }}>❌ Error al cargar productos</h3>
+            <p>{error}</p>
+            <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-muted)' }}>
+              Verifica la consola del navegador para más detalles.
+            </p>
+          </div>
+        </FadeIn>
       ) : (
-        <div className="grid three">
-          {products.map((product) => (
+        <FadeIn direction="up" delay={0.2}>
+          <div className="grid three">
+            {products.map((product, index) => (
             <ProductCard
               key={product.id}
               product={product}
-              categoryName={categoryNameById.get(product.categoryId) ?? 'Sin categoría'}
+              categoryName={categoryNameById.get(product.categoryId) ?? product.familia ?? 'Sin categoría'}
               onQuote={handleQuote}
             />
           ))}
           {products.length === 0 && (
             <p>No hay productos que coincidan con los filtros seleccionados.</p>
           )}
-        </div>
+          </div>
+        </FadeIn>
       )}
 
       {quotedProduct && (

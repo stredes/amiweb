@@ -40,7 +40,7 @@ const DEFAULT_ITEMS = [
 const DRAG_BUFFER = 0;
 const VELOCITY_THRESHOLD = 500;
 const GAP = 16;
-const SPRING_OPTIONS = { type: 'spring', stiffness: 300, damping: 30 };
+const SPRING_OPTIONS = { type: 'spring' as const, stiffness: 300, damping: 30 };
 
 type CarouselItemData = {
   title: string;
@@ -107,7 +107,7 @@ function CarouselItem({
 
 export default function Carousel({
   items = DEFAULT_ITEMS,
-  baseWidth = 300,
+  baseWidth = 309,
   autoplay = false,
   autoplayDelay = 3000,
   pauseOnHover = false,
@@ -142,6 +142,7 @@ export default function Carousel({
         container.removeEventListener('mouseleave', handleMouseLeave);
       };
     }
+    return undefined;
   }, [pauseOnHover]);
 
   useEffect(() => {

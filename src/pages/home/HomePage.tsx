@@ -2,6 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import ProductCategoryGrid from '../../components/products/ProductCategoryGrid';
 import Carousel from '../../components/ui/Carousel';
+import { FadeIn } from '../../components/ui/FadeIn';
 import { productCategories } from '../../features/catalog/mockData';
 import { ROUTES } from '../../config/routes';
 
@@ -11,13 +12,16 @@ function HomePage() {
 
   return (
     <div className="page">
-      <section className="hero">
-        <div>
-          <p className="badge">Catálogo B2B para laboratorios clínicos</p>
+      <FadeIn direction="up">
+        <section className="hero">
+          <div>
+            <p className="badge">Soluciones integrales para laboratorios clínicos</p>
           <h1>Equipos, reactivos e insumos con soporte técnico especializado.</h1>
           <p>
-            AMILAB entrega soluciones integrales para laboratorios clínicos con equipos, reactivos e
-            insumos respaldados por servicio técnico preventivo y correctivo.
+            Nuestra empresa está orientada a satisfacer las necesidades del laboratorio, y en especial 
+            las de los Laboratorios Clínicos, en cuanto a Equipos, Reactivos, insumos y Servicio Técnico 
+            se refiere. Contamos con importantes representaciones al alcance de cualquier laboratorio, 
+            con productos de muy buena calidad.
           </p>
           <div className="actions">
             <Button onClick={() => navigate(ROUTES.products)}>Ver catálogo</Button>
@@ -38,16 +42,20 @@ function HomePage() {
             />
           </div>
         </div>
-      </section>
+        </section>
+      </FadeIn>
 
-      <ProductCategoryGrid categories={productCategories} />
+      <FadeIn direction="up" delay={0.2}>
+        <ProductCategoryGrid categories={productCategories} />
+      </FadeIn>
 
-      <section className="support-block">
-        <h2>Soporte integral</h2>
-        <p>
-          Acompañamos en la evaluación previa, en la implementación y en la operación diaria con
-          especialistas de producto y servicio técnico local.
-        </p>
+      <FadeIn direction="up" delay={0.3}>
+        <section className="support-block">
+          <h2>Soporte integral</h2>
+          <p>
+            Acompañamos en la evaluación previa, en la implementación y en la operación diaria con
+            especialistas de producto y servicio técnico local.
+          </p>
         <div className="grid two">
           <div className="card">
             <h3>Pre venta</h3>
@@ -61,9 +69,11 @@ function HomePage() {
         <Button variant="secondary" onClick={() => navigate(ROUTES.support)}>
           Ver soporte
         </Button>
-      </section>
+        </section>
+      </FadeIn>
 
-      <section>
+      <FadeIn direction="up" delay={0.4}>
+        <section>
         <h2>Confianza y experiencia</h2>
         <div className="grid three">
           <div className="card">
@@ -79,7 +89,8 @@ function HomePage() {
             <p>Cobertura nacional con soporte técnico y representantes locales.</p>
           </div>
         </div>
-      </section>
+        </section>
+      </FadeIn>
     </div>
   );
 }

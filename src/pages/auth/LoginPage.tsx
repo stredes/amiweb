@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../../features/auth/authStore';
 import { authApi } from '../../features/auth/authApi';
 import { Button } from '../../components/ui/Button';
+import { FadeIn } from '../../components/ui/FadeIn';
 import TextInput from '../../components/ui/TextInput';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
@@ -59,7 +60,8 @@ export function LoginPage() {
   return (
     <div className="login-page">
       <div className="login-container">
-        <div className="login-card">
+        <FadeIn direction="up">
+          <div className="login-card">
           <div className="login-header">
             <h1>Portal de Socios</h1>
             <p className="muted">Accede a tu cuenta de Amilab</p>
@@ -111,9 +113,11 @@ export function LoginPage() {
               <strong>Root:</strong> root@amilab.com / root2026
             </p>
           </div>
-        </div>
+          </div>
+        </FadeIn>
 
-        <div className="login-info">
+        <FadeIn direction="up" delay={0.2}>
+          <div className="login-info">
           <h2>Bienvenido al Portal de Socios Amilab</h2>
           <ul>
             <li>📦 Rastrea tus pedidos en tiempo real</li>
@@ -122,7 +126,8 @@ export function LoginPage() {
             <li>💬 Accede a soporte técnico</li>
             <li>📈 Visualiza tu historial de compras</li>
           </ul>
-        </div>
+          </div>
+        </FadeIn>
       </div>
     </div>
   );

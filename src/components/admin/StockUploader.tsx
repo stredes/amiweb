@@ -353,15 +353,19 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
   };
 
   const mergeResults = (base: InventoryUploadResult, next: InventoryUploadResult) => {
+    // Validación defensiva para evitar errores con createdIds undefined
+    const baseCreatedIds = base.data?.createdIds ?? [];
+    const nextCreatedIds = next.data?.createdIds ?? [];
+    
     return {
       success: base.success && next.success,
       data: {
-        totalProcessed: base.data.totalProcessed + next.data.totalProcessed,
-        successful: base.data.successful + next.data.successful,
-        failed: base.data.failed + next.data.failed,
-        skipped: base.data.skipped + next.data.skipped,
-        errors: [...base.data.errors, ...next.data.errors],
-        createdIds: [...base.data.createdIds, ...next.data.createdIds],
+        totalProcessed: (base.data?.totalProcessed ?? 0) + (next.data?.totalProcessed ?? 0),
+        successful: (base.data?.successful ?? 0) + (next.data?.successful ?? 0),
+        failed: (base.data?.failed ?? 0) + (next.data?.failed ?? 0),
+        skipped: (base.data?.skipped ?? 0) + (next.data?.skipped ?? 0),
+        errors: [...(base.data?.errors ?? []), ...(next.data?.errors ?? [])],
+        createdIds: [...baseCreatedIds, ...nextCreatedIds],
       },
     };
   };

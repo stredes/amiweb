@@ -1,41 +1,41 @@
 import { Product, ProductCategory } from './types';
 
-// Categorías principales del catálogo mock.
+// Categorías principales del catálogo (familias de productos reales de Firestore).
 export const productCategories: ProductCategory[] = [
   {
-    id: 'chemistry',
-    name: 'Química clínica',
-    description: 'Analizadores, reactivos y calibradores para química clínica.'
+    id: 'CONTROL DE CALIDAD',
+    name: 'Control de Calidad',
+    description: 'Productos y soluciones para el control de calidad en laboratorios clínicos, asegurando la precisión y confiabilidad de los resultados.'
   },
   {
-    id: 'hematology',
-    name: 'Hematología',
-    description: 'Equipos y consumibles para hemogramas y conteo celular.'
+    id: 'QC CORE',
+    name: 'QC Core',
+    description: 'Controles de calidad especializados para áreas críticas del laboratorio.'
   },
   {
-    id: 'urinalysis',
-    name: 'Orinas',
-    description: 'Tiras reactivas y analizadores automáticos para orinas.'
+    id: 'CORE',
+    name: 'Core',
+    description: 'Productos esenciales para las áreas centrales del laboratorio clínico: Coagulación, Electrolitos, HPLC, Hematología, Inmunología, Química Clínica, Uroanálisis, VHS y Veterinaria.'
   },
   {
-    id: 'microbiology',
+    id: 'INSUMOS',
+    name: 'Insumos',
+    description: 'Material de plástico, papeles y etiquetas, test rápidos y productos para toma de muestras.'
+  },
+  {
+    id: 'INTERNO',
+    name: 'Interno',
+    description: 'Productos complementarios, bioplates, EPP, despensa, papelería y material de marketing.'
+  },
+  {
+    id: 'MICROBIOLOGÍA',
     name: 'Microbiología',
-    description: 'Medios de cultivo, placas preparadas y suministros.'
+    description: 'Soluciones completas para microbiología: cultivos acelerados, hemocultivos, identificación y antibiograma, medios de cultivo, molecular y parasitológicos. Respaldado por Becton Dickinson.'
   },
   {
-    id: 'electrolytes',
-    name: 'Electrolitos',
-    description: 'Medición de electrolitos con equipos compactos y rápidos.'
-  },
-  {
-    id: 'tbc',
-    name: 'TBC',
-    description: 'Soluciones para diagnóstico y tinciones de TBC.'
-  },
-  {
-    id: 'sampling',
-    name: 'Toma de muestras',
-    description: 'Consumibles seguros para toma y transporte de muestras.'
+    id: 'PERIFÉRICOS',
+    name: 'Periféricos',
+    description: 'Equipamiento periférico y complementario: centrífugas, computación, microscopios y otros periféricos de equipamiento.'
   }
 ];
 

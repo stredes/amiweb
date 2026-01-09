@@ -9,26 +9,42 @@ function useProducts(selectedCategoryId?: string, termOverride?: string) {
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   const searchTerm = termOverride ?? term;
 
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
-      // TODO: reemplazar por llamadas HTTP reales.
-      const [catalog, availableCategories] = await Promise.all([
-        getProducts({ search: searchTerm, categoryId: selectedCategoryId }),
-        getCategories()
-      ]);
-      setProducts(catalog);
-      setCategories(availableCategories);
-      setLoading(false);
+      setError(null);
+      
+      try {
+        console.log('🔍 useProducts: Iniciando carga...', { searchTerm, selectedCategoryId });
+        
+        const [catalog, availableCategories] = await Promise.all([
+          getProducts({ search: searchTerm, categoryId: selectedCategoryId }),
+          getCategories()
+        ]);
+        
+        console.log('📦 useProducts: Datos recibidos', {
+          productos: catalog.length,
+          categorias: availableCategories.length
+        });
+        
+        setProducts(catalog);
+        setCategories(availableCategories);
+      } catch (err) {
+        console.error('❌ useProducts: Error al cargar datos', err);
+        setError(err instanceof Error ? err.message : 'Error desconocido');
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchData();
   }, [searchTerm, selectedCategoryId]);
 
-  return { products, categories, loading };
+  return { products, categories, loading, error };
 }
 
 export default useProducts;

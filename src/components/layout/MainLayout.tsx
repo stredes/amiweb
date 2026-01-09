@@ -1,6 +1,6 @@
 import { Outlet } from 'react-router-dom';
 import Navbar from './Navbar';
-import Footer from './Footer';
+import { RichFooter } from './RichFooter';
 
 function MainLayout() {
   return (
@@ -9,7 +9,7 @@ function MainLayout() {
       <main className="app-content">
         <Outlet />
       </main>
-      <Footer />
+      <RichFooter />
     </div>
   );
 }

@@ -15,6 +15,10 @@ export interface Product {
   requiresInstallation: boolean;
   imageUrl?: string;
   code?: string;
+  familia?: string;
+  subfamilia?: string;
+  precio?: number;
+  stock?: number;
 }
 
 export interface ProductFilters {

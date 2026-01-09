@@ -4,6 +4,12 @@
   padding: 0 1rem;
 }
 
+.navbar__actions {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-lg);
+}
+
 @media (max-width: 640px) {
   .navbar {
     flex-direction: column;
@@ -16,8 +22,12 @@
     flex-wrap: wrap;
   }
 
-  .navbar__search {
+  .navbar__actions {
     width: 100%;
     justify-content: center;
+  }
+  
+  .navbar__search {
+    flex: 1;
   }
 }

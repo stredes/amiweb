@@ -30,9 +30,12 @@ export async function uploadInventoryMock(
   const result: InventoryUploadResult = {
     success: true,
     data: {
+      totalProcessed: products.length,
       successful,
       failed: errors.length,
+      skipped: 0,
       errors,
+      createdIds: Array.from({ length: successful }, (_, i) => `mock-id-${Date.now()}-${i}`),
     },
   };
 

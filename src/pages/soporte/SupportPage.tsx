@@ -3,6 +3,7 @@ import PreSaleSection from '../../components/support/PreSaleSection';
 import PostSaleSection from '../../components/support/PostSaleSection';
 import MaintenancePlans from '../../components/support/MaintenancePlans';
 import SelectInput from '../../components/ui/SelectInput';
+import { FadeIn } from '../../components/ui/FadeIn';
 import TextInput from '../../components/ui/TextInput';
 import Button from '../../components/ui/Button';
 import { SupportRequest } from '../../features/support/types';
@@ -63,24 +64,31 @@ function SupportPage() {
 
   return (
     <div className="page">
-      <header className="page__header">
-        <h1>Soporte</h1>
+      <FadeIn direction="up">
+        <header className="page__header">
+          <h1>Soporte</h1>
         <p>
           Servicios de pre y post venta para acompañar a tu laboratorio clínico con especialistas y
           servicio técnico propio.
         </p>
-      </header>
+        </header>
+      </FadeIn>
 
-      <div className="grid two">
+      <FadeIn direction="up" delay={0.1}>
+        <div className="grid two">
         <PreSaleSection />
         <PostSaleSection />
-      </div>
+        </div>
+      </FadeIn>
 
-      <MaintenancePlans />
+      <FadeIn direction="up" delay={0.2}>
+        <MaintenancePlans />
+      </FadeIn>
 
-      <section>
-        <h2>Solicita soporte</h2>
-        <p className="muted">
+      <FadeIn direction="up" delay={0.3}>
+        <section>
+          <h2>Solicita soporte</h2>
+          <p className="muted">
           Completa tus datos y un especialista te contactará. Campos marcados como obligatorios se
           validan en el frontend.
         </p>
@@ -164,7 +172,8 @@ function SupportPage() {
           </Button>
           {success && <p className="success">Solicitud enviada (mock). Te contactaremos pronto.</p>}
         </form>
-      </section>
+        </section>
+      </FadeIn>
     </div>
   );
 }

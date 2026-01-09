@@ -17,15 +17,29 @@ export async function checkBackendConnection() {
       method: 'GET',
       signal: controller.signal,
     });
-    console.info('[backend] Health check', {
-      url: `${API_BASE_URL}/health`,
-      status: response.status,
-    });
+    
+    if (response.ok) {
+      console.log(
+        '%c✓ BACKEND CONECTADO',
+        'color: #10b981; font-weight: bold; font-size: 14px; background: #f0fdf4; padding: 8px 12px; border-radius: 4px;',
+        `\n  URL: ${API_BASE_URL}\n  Status: ${response.status} ${response.statusText}`
+      );
+      return true;
+    } else {
+      console.warn(
+        '%c⚠ BACKEND RESPONDE CON ERROR',
+        'color: #f59e0b; font-weight: bold; font-size: 14px; background: #fffbeb; padding: 8px 12px; border-radius: 4px;',
+        `\n  URL: ${API_BASE_URL}\n  Status: ${response.status} ${response.statusText}`
+      );
+      return false;
+    }
   } catch (error) {
-    console.info('[backend] Health check failed', {
-      url: `${API_BASE_URL}/health`,
-      error,
-    });
+    console.error(
+      '%c✗ BACKEND NO DISPONIBLE',
+      'color: #ef4444; font-weight: bold; font-size: 14px; background: #fef2f2; padding: 8px 12px; border-radius: 4px;',
+      `\n  URL: ${API_BASE_URL}\n  Error: ${error instanceof Error ? error.message : 'Connection failed'}`
+    );
+    return false;
   } finally {
     window.clearTimeout(timeoutId);
   }

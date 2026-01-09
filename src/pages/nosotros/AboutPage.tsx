@@ -1,10 +1,14 @@
 import TextType from '../../components/ui/TextType';
+import { FadeIn } from '../../components/ui/FadeIn';
 
 function AboutPage() {
   return (
     <div className="page">
-      <h1>Nosotros</h1>
-      <section>
+      <FadeIn direction="up">
+        <h1>Nosotros</h1>
+      </FadeIn>
+      <FadeIn direction="up" delay={0.1}>
+        <section>
         <TextType
           as="h2"
           text="Quiénes somos"
@@ -53,8 +57,10 @@ function AboutPage() {
           <li>Mindray (hematología y equipos clínicos)</li>
           <li>Britania (microbiología)</li>
         </ul>
-      </section>
-      <section>
+        </section>
+      </FadeIn>
+      <FadeIn direction="up" delay={0.4}>
+        <section>
         <TextType
           as="h2"
           text="Ventajas competitivas"
@@ -70,7 +76,8 @@ function AboutPage() {
           <li>Cobertura nacional con respuesta ágil.</li>
           <li>Capacitación constante a usuarios y equipos técnicos.</li>
         </ul>
-      </section>
+        </section>
+      </FadeIn>
     </div>
   );
 }

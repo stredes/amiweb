@@ -10,6 +10,7 @@ import { UserManagement } from '../../components/admin/UserManagement';
 import { StockUploader } from '../../components/admin/StockUploader';
 import { InventoryManagement } from '../../components/admin/InventoryManagement';
 import Loader from '../../components/ui/Loader';
+import { FadeIn } from '../../components/ui/FadeIn';
 import { Navigate } from 'react-router-dom';
 
 export function AdminDashboardPage() {
@@ -80,7 +81,8 @@ export function AdminDashboardPage() {
 
   return (
     <div className="admin-dashboard">
-      <div className="admin-header">
+      <FadeIn direction="up">
+        <div className="admin-header">
         <div className="admin-header__info">
           <h1>Panel de Administración</h1>
           <p className="muted">
@@ -91,19 +93,23 @@ export function AdminDashboardPage() {
         <button onClick={logout} className="btn btn-secondary">
           Cerrar Sesión
         </button>
-      </div>
+        </div>
+      </FadeIn>
 
       {user.role === 'root' && (
-        <div className="root-notice">
+        <FadeIn direction="up" delay={0.1}>
+          <div className="root-notice">
           <span className="root-notice__icon">⚠️</span>
           <div>
             <strong>Acceso Root</strong>
             <p>Tienes acceso completo al sistema como desarrollador</p>
           </div>
         </div>
+        </FadeIn>
       )}
 
-      <div className="admin-tabs">
+      <FadeIn direction="up" delay={0.2}>
+        <div className="admin-tabs">
         <button
           className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`}
           onClick={() => setActiveTab('overview')}
@@ -130,7 +136,8 @@ export function AdminDashboardPage() {
             🏭 Inventario ({stockItems.length})
           </button>
         )}
-      </div>
+        </div>
+      </FadeIn>
 
       {isLoading ? (
         <Loader />

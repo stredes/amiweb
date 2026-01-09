@@ -8,7 +8,7 @@ type UploadInventoryOptions = {
   useMock?: boolean; // Para forzar modo mock
 };
 
-const USE_MOCK_WHEN_BACKEND_DOWN = false; // Backend en producción: https://backend-amiweb.vercel.app
+const USE_MOCK_WHEN_BACKEND_DOWN = true; // Backend error 500 - usando mock temporalmente
 
 export async function uploadInventory(
   products: InventoryUploadProduct[],

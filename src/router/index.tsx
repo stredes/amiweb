@@ -12,8 +12,8 @@ import { PartnerPortalPage } from '../pages/portal/PartnerPortalPage';
 import { AdminDashboardPage } from '../pages/admin/AdminDashboardPage';
 import { VendorDashboardPage } from '../pages/vendor/VendorDashboardPage';
 import { ProtectedRoute } from '../components/auth/ProtectedRoute';
-import NotFoundPage from '../pages/not-found/NotFoundPage';
-import { ROUTES } from '../config/routes';
+import NotFoundPage from '../pages/not-found/NotFoundPage';import { BlogPage } from '../pages/blog/BlogPage';
+import { BlogPostPage } from '../pages/blog/BlogPostPage';import { ROUTES } from '../config/routes';
 
 function AppRouter() {
   return (
@@ -52,6 +52,8 @@ function AppRouter() {
             </ProtectedRoute>
           } 
         />
+        <Route path="/blog" element={<BlogPage />} />
+        <Route path="/blog/:slug" element={<BlogPostPage />} />
         <Route path={ROUTES.notFound} element={<NotFoundPage />} />
       </Route>
     </Routes>

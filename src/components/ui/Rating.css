@@ -1,0 +1,124 @@
+.rating {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--spacing-sm);
+}
+
+.rating__stars {
+  display: flex;
+  gap: 2px;
+}
+
+.rating__star {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.rating--readonly .rating__star {
+  cursor: default;
+}
+
+.rating:not(.rating--readonly) .rating__star:hover {
+  transform: scale(1.2);
+}
+
+.rating__star-icon {
+  color: #cbd5e0;
+  transition: color 0.2s ease;
+}
+
+.rating__star--filled .rating__star-icon--filled {
+  color: #f59e0b;
+}
+
+.rating__star--half .rating__star-icon--half {
+  color: #f59e0b;
+}
+
+.rating--sm .rating__star-icon {
+  width: 14px;
+  height: 14px;
+}
+
+.rating--md .rating__star-icon {
+  width: 18px;
+  height: 18px;
+}
+
+.rating--lg .rating__star-icon {
+  width: 24px;
+  height: 24px;
+}
+
+.rating__value {
+  font-size: 0.875rem;
+  color: var(--color-text-light);
+  font-weight: 500;
+}
+
+/* Review */
+.review {
+  padding: var(--spacing-lg);
+  background: var(--color-bg-primary);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--color-border);
+}
+
+.review__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: var(--spacing-md);
+  gap: var(--spacing-md);
+}
+
+.review__author {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-md);
+}
+
+.review__avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.review__avatar--placeholder {
+  background: var(--color-primary);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.25rem;
+  font-weight: 600;
+}
+
+.review__author-info {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+
+.review__author-name {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.review__date {
+  font-size: 0.75rem;
+  color: var(--color-text-light);
+}
+
+.review__comment {
+  margin: 0;
+  color: var(--color-text);
+  line-height: 1.6;
+}

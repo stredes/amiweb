@@ -1,0 +1,193 @@
+.progress-stepper {
+  display: flex;
+}
+
+.progress-stepper--horizontal {
+  flex-direction: row;
+  align-items: flex-start;
+}
+
+.progress-stepper--vertical {
+  flex-direction: column;
+}
+
+.progress-stepper__step {
+  flex: 1;
+  position: relative;
+}
+
+.progress-stepper--horizontal .progress-stepper__step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.progress-stepper--vertical .progress-stepper__step {
+  display: flex;
+  flex-direction: row;
+  gap: var(--spacing-lg);
+  padding-bottom: var(--spacing-xl);
+}
+
+.progress-stepper__step--clickable {
+  cursor: pointer;
+}
+
+.progress-stepper__step-marker {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.progress-stepper--horizontal .progress-stepper__step-marker {
+  flex-direction: column;
+  width: 100%;
+}
+
+.progress-stepper--vertical .progress-stepper__step-marker {
+  flex-direction: column;
+  align-items: center;
+}
+
+.progress-stepper__step-circle {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background: var(--color-bg-secondary);
+  border: 2px solid var(--color-border);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 600;
+  color: var(--color-text-light);
+  transition: all 0.3s ease;
+  position: relative;
+  z-index: 1;
+}
+
+.progress-stepper__step--active .progress-stepper__step-circle {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+  transform: scale(1.1);
+  box-shadow: 0 0 0 4px rgba(139, 21, 56, 0.1);
+}
+
+.progress-stepper__step--completed .progress-stepper__step-circle {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  color: white;
+}
+
+.progress-stepper__step--clickable:hover .progress-stepper__step-circle {
+  transform: scale(1.1);
+  border-color: var(--color-primary);
+}
+
+.progress-stepper__step-check {
+  width: 20px;
+  height: 20px;
+}
+
+.progress-stepper__step-icon {
+  display: flex;
+  align-items: center;
+  font-size: 1.25rem;
+}
+
+.progress-stepper__step-number {
+  font-size: 1rem;
+}
+
+.progress-stepper__step-line {
+  position: absolute;
+  background: var(--color-border);
+  transition: background 0.3s ease;
+}
+
+.progress-stepper--horizontal .progress-stepper__step-line {
+  top: 20px;
+  left: 50%;
+  right: calc(-100% + 20px);
+  height: 2px;
+}
+
+.progress-stepper--vertical .progress-stepper__step-line {
+  top: 40px;
+  bottom: 0;
+  left: 50%;
+  width: 2px;
+  transform: translateX(-50%);
+}
+
+.progress-stepper__step--completed .progress-stepper__step-line {
+  background: var(--color-primary);
+}
+
+.progress-stepper__step-content {
+  margin-top: var(--spacing-md);
+  text-align: center;
+}
+
+.progress-stepper--vertical .progress-stepper__step-content {
+  margin-top: 0;
+  text-align: left;
+  flex: 1;
+}
+
+.progress-stepper__step-label {
+  font-weight: 600;
+  color: var(--color-text);
+  font-size: 0.9375rem;
+  margin-bottom: 4px;
+}
+
+.progress-stepper__step--active .progress-stepper__step-label {
+  color: var(--color-primary);
+}
+
+.progress-stepper__step-description {
+  font-size: 0.8125rem;
+  color: var(--color-text-light);
+  line-height: 1.4;
+}
+
+@media (max-width: 768px) {
+  .progress-stepper--horizontal {
+    flex-direction: column;
+  }
+  
+  .progress-stepper--horizontal .progress-stepper__step {
+    flex-direction: row;
+    align-items: flex-start;
+    gap: var(--spacing-lg);
+    width: 100%;
+    padding-bottom: var(--spacing-xl);
+  }
+  
+  .progress-stepper--horizontal .progress-stepper__step-marker {
+    flex-direction: column;
+    width: auto;
+  }
+  
+  .progress-stepper--horizontal .progress-stepper__step-line {
+    top: 40px;
+    bottom: 0;
+    left: 50%;
+    right: auto;
+    width: 2px;
+    height: auto;
+    transform: translateX(-50%);
+  }
+  
+  .progress-stepper--horizontal .progress-stepper__step-content {
+    margin-top: 0;
+    text-align: left;
+    flex: 1;
+  }
+  
+  .progress-stepper__step-circle {
+    width: 36px;
+    height: 36px;
+  }
+}

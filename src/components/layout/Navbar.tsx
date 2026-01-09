@@ -3,6 +3,7 @@ import { NavLink, useNavigate } from 'react-router-dom';
 import { ROUTES } from '../../config/routes';
 import { useSearchStore } from '../../features/search/searchStore';
 import { useAuth } from '../../features/auth/authStore';
+import { ThemeToggle } from '../ui/ThemeToggle';
 
 function Navbar() {
   const { term, setTerm } = useSearchStore();
@@ -39,6 +40,9 @@ function Navbar() {
         <NavLink to={ROUTES.support} className={linkClassName}>
           Soporte
         </NavLink>
+        <NavLink to="/blog" className={linkClassName}>
+          Blog
+        </NavLink>
         <NavLink to={ROUTES.contact} className={linkClassName}>
           Contacto
         </NavLink>
@@ -64,19 +68,22 @@ function Navbar() {
           </NavLink>
         )}
       </nav>
-      <form className="navbar__search" onSubmit={handleSearchSubmit}>
-        <label className="sr-only" htmlFor="navbar-search">
-          Buscar productos
-        </label>
-        <input
-          id="navbar-search"
-          type="search"
-          value={term}
-          placeholder="Buscar productos..."
-          onChange={(e) => setTerm(e.target.value)}
-        />
-        <button type="submit">Buscar</button>
-      </form>
+      <div className="navbar__actions">
+        <form className="navbar__search" onSubmit={handleSearchSubmit}>
+          <label className="sr-only" htmlFor="navbar-search">
+            Buscar productos
+          </label>
+          <input
+            id="navbar-search"
+            type="search"
+            value={term}
+            placeholder="Buscar productos..."
+            onChange={(e) => setTerm(e.target.value)}
+          />
+          <button type="submit">Buscar</button>
+        </form>
+        <ThemeToggle />
+      </div>
     </header>
   );
 }

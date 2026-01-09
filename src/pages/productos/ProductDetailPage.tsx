@@ -2,6 +2,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import Button from '../../components/ui/Button';
 import Loader from '../../components/ui/Loader';
+import { FadeIn } from '../../components/ui/FadeIn';
 import { getCategories, getProductById } from '../../features/catalog/catalogApi';
 import { Product, ProductCategory } from '../../features/catalog/types';
 import { ROUTES } from '../../config/routes';
@@ -52,17 +53,22 @@ function ProductDetailPage() {
 
   return (
     <div className="page">
-      <Link to={ROUTES.products} className="breadcrumb">
-        ← Volver al catálogo
-      </Link>
-      <header className="page__header">
+      <FadeIn direction="up">
+        <Link to={ROUTES.products} className="breadcrumb">
+          ← Volver al catálogo
+        </Link>
+      </FadeIn>
+      <FadeIn direction="up" delay={0.1}>
+        <header className="page__header">
         <h1>{product.name}</h1>
         <p className="muted">
           {product.code ? `Código ${product.code} · ` : ''}
           {product.brand} · {categoryName}
         </p>
-      </header>
-      <div className="grid two">
+        </header>
+      </FadeIn>
+      <FadeIn direction="up" delay={0.2}>
+        <div className="grid two">
         <div className="card">
           <h3>Descripción</h3>
           <p>{product.longDescription}</p>
@@ -96,7 +102,8 @@ function ProductDetailPage() {
             <Button variant="secondary">Agregar a lista</Button>
           </div>
         </div>
-      </div>
+        </div>
+      </FadeIn>
       {quotedProduct && (
         <QuoteRequestModal product={quotedProduct} onClose={() => setQuotedProduct(null)} />
       )}
