@@ -1,8 +1,9 @@
 import { useState } from 'react';
 import { useCart } from '../../features/cart/cartContext';
-import { FiX, FiShoppingCart, FiTrash2, FiSend, FiDownload } from 'react-icons/fi';
+import { FiX, FiShoppingCart, FiTrash2, FiSend, FiDownload, FiCreditCard } from 'react-icons/fi';
 import { toast } from '../ui/Toast';
 import { syncQuote } from '../../lib/serviceWorker';
+import { CheckoutModal } from './CheckoutModal';
 import './CartDrawer.css';
 
 interface CartDrawerProps {
@@ -13,6 +14,7 @@ interface CartDrawerProps {
 export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
   const { items, removeItem, updateQuantity, updateNotes, clearCart } = useCart();
   const [isSending, setIsSending] = useState(false);
+  const [showCheckout, setShowCheckout] = useState(false);
 
   const handleSendQuote = async () => {
     setIsSending(true);
@@ -169,17 +171,36 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 Vaciar
               </button>
             </div>
-            <button
-              className="cart-drawer__send-btn"
-              onClick={handleSendQuote}
-              disabled={isSending}
-            >
-              <FiSend size={18} />
-              {isSending ? 'Enviando...' : 'Solicitar Cotización'}
-            </button>
+            <div className="cart-drawer__main-actions">
+              <button
+                className="cart-drawer__send-btn cart-drawer__send-btn--secondary"
+                onClick={handleSendQuote}
+                disabled={isSending}
+              >
+                <FiSend size={18} />
+                {isSending ? 'Enviando...' : 'Solicitar Cotización'}
+              </button>
+              <button
+                className="cart-drawer__send-btn cart-drawer__send-btn--primary"
+                onClick={() => setShowCheckout(true)}
+              >
+                <FiCreditCard size={18} />
+                Realizar Pedido
+              </button>
+            </div>
           </div>
         )}
       </div>
+
+      {/* Checkout Modal */}
+      <CheckoutModal
+        isOpen={showCheckout}
+        onClose={() => setShowCheckout(false)}
+        onSuccess={() => {
+          toast.success('¡Pedido realizado con éxito!');
+          onClose();
+        }}
+      />
     </>
   );
 }

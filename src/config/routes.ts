@@ -10,6 +10,7 @@ export const ROUTES = {
   partnerPortal: '/portal-socios',
   adminDashboard: '/admin',
   vendorDashboard: '/vendedor',
+  warehouseDashboard: '/bodega',
   notFound: '*'
 } as const;
 

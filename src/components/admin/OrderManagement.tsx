@@ -9,8 +9,9 @@ interface OrderManagementProps {
 
 const statusOptions: Array<{ value: Order['status']; label: string; color: string }> = [
   { value: 'pendiente', label: 'Pendiente', color: '#FFA500' },
-  { value: 'en-preparacion', label: 'En Preparación', color: '#2196F3' },
-  { value: 'en-transito', label: 'En Tránsito', color: '#9C27B0' },
+  { value: 'confirmado', label: 'Confirmado', color: '#00BCD4' },
+  { value: 'procesando', label: 'Procesando', color: '#2196F3' },
+  { value: 'enviado', label: 'Enviado', color: '#9C27B0' },
   { value: 'entregado', label: 'Entregado', color: '#4CAF50' },
   { value: 'cancelado', label: 'Cancelado', color: '#F44336' }
 ];
@@ -65,7 +66,7 @@ export function OrderManagement({ orders, onOrderUpdate }: OrderManagementProps)
                   <td>{new Date(order.date).toLocaleDateString('es-CL')}</td>
                   <td>
                     <div className="order-products-list">
-                      {order.products.length} producto(s)
+                      {(order.products || []).length} producto(s)
                     </div>
                   </td>
                   <td>

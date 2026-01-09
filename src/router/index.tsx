@@ -15,8 +15,10 @@ const ContactPage = lazy(() => import('../pages/contacto/ContactPage'));
 const CrimePreventionModelPage = lazy(() => import('../pages/accesos/CrimePreventionModelPage'));
 const LoginPage = lazy(() => import('../pages/auth/LoginPage').then(m => ({ default: m.LoginPage })));
 const PartnerPortalPage = lazy(() => import('../pages/portal/PartnerPortalPage').then(m => ({ default: m.PartnerPortalPage })));
+const OrderDetailPage = lazy(() => import('../pages/portal/OrderDetailPage').then(m => ({ default: m.OrderDetailPage })));
 const AdminDashboardPage = lazy(() => import('../pages/admin/AdminDashboardPage').then(m => ({ default: m.AdminDashboardPage })));
 const VendorDashboardPage = lazy(() => import('../pages/vendor/VendorDashboardPage').then(m => ({ default: m.VendorDashboardPage })));
+const WarehouseDashboardPage = lazy(() => import('../pages/warehouse/WarehouseDashboardPage'));
 const NotFoundPage = lazy(() => import('../pages/not-found/NotFoundPage'));
 const BlogPage = lazy(() => import('../pages/blog/BlogPage').then(m => ({ default: m.BlogPage })));
 const BlogPostPage = lazy(() => import('../pages/blog/BlogPostPage').then(m => ({ default: m.BlogPostPage })));
@@ -57,6 +59,14 @@ function AppRouter() {
             } 
           />
           <Route 
+            path="/portal/orders/:orderId" 
+            element={
+              <ProtectedRoute>
+                <OrderDetailPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
             path={ROUTES.adminDashboard} 
             element={
               <ProtectedRoute>
@@ -69,6 +79,14 @@ function AppRouter() {
             element={
               <ProtectedRoute>
                 <VendorDashboardPage />
+              </ProtectedRoute>
+            } 
+          />
+          <Route 
+            path={ROUTES.warehouseDashboard} 
+            element={
+              <ProtectedRoute>
+                <WarehouseDashboardPage />
               </ProtectedRoute>
             } 
           />

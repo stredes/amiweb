@@ -57,6 +57,10 @@ function Navbar() {
               <NavLink to={ROUTES.vendorDashboard} className={linkClassName}>
                 💼 Vendedor
               </NavLink>
+            ) : user?.role === 'bodega' ? (
+              <NavLink to={ROUTES.warehouseDashboard} className={linkClassName}>
+                📦 Bodega
+              </NavLink>
             ) : (
               <NavLink to={ROUTES.partnerPortal} className={linkClassName}>
                 🔐 Portal

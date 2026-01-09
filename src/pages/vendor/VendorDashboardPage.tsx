@@ -5,6 +5,7 @@ import { Order, User } from '../../features/auth/types';
 import { SalesMetricCard } from '../../components/vendor/SalesMetricCard';
 import { ClientCard } from '../../components/vendor/ClientCard';
 import { VendorOrderList } from '../../components/vendor/VendorOrderList';
+import { QuotationApproval } from '../../components/vendor/QuotationApproval';
 import Loader from '../../components/ui/Loader';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { Navigate } from 'react-router-dom';
@@ -15,7 +16,7 @@ export function VendorDashboardPage() {
   const [clients, setClients] = useState<Array<Omit<User, 'password'>>>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'clients' | 'orders'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'quotations' | 'clients' | 'orders'>('overview');
 
   // Verificar permisos
   if (user && user.role !== 'vendedor') {
@@ -61,6 +62,11 @@ export function VendorDashboardPage() {
 
   const completedOrders = orders.filter(o => o.status === 'entregado').length;
   
+  // Calcular cotizaciones pendientes
+  const pendingQuotations = orders.filter(
+    o => o.status === 'cotizacion' || o.status === 'pendiente_vendedor'
+  ).length;
+  
   // Calcular comisión estimada (5% de las ventas)
   const commission = totalSales * 0.05;
 
@@ -96,6 +102,12 @@ export function VendorDashboardPage() {
           onClick={() => setActiveTab('overview')}
         >
           📊 Resumen
+        </button>
+        <button
+          className={`vendor-tab ${activeTab === 'quotations' ? 'active' : ''}`}
+          onClick={() => setActiveTab('quotations')}
+        >
+          📋 Cotizaciones {pendingQuotations > 0 && <span className="badge">{pendingQuotations}</span>}
         </button>
         <button
           className={`vendor-tab ${activeTab === 'clients' ? 'active' : ''}`}
@@ -211,6 +223,14 @@ export function VendorDashboardPage() {
                     ))}
                   </div>
                 </section>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'quotations' && (
+            <div className="vendor-quotations">
+              <div className="vendor-section">
+                <QuotationApproval orders={orders} onOrderUpdate={loadData} />
               </div>
             </div>
           )}

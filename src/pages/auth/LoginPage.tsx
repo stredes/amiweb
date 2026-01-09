@@ -38,6 +38,8 @@ export function LoginPage() {
         navigate('/admin');
       } else if (response.user.role === 'vendedor') {
         navigate('/vendedor');
+      } else if (response.user.role === 'bodega') {
+        navigate('/bodega');
       } else {
         navigate('/portal-socios');
       }
@@ -109,6 +111,7 @@ export function LoginPage() {
               <strong>Credenciales de prueba:</strong><br />
               <strong>Socio:</strong> socio@amilab.com / demo123<br />
               <strong>Vendedor:</strong> vendedor1@amilab.com / vende123<br />
+              <strong>Bodega:</strong> bodega@amilab.com / bodega123<br />
               <strong>Admin:</strong> admin@amilab.com / admin123<br />
               <strong>Root:</strong> root@amilab.com / root2026
             </p>

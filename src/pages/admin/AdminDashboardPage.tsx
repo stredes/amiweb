@@ -6,6 +6,7 @@ import { StockItem } from '../../features/inventory/types';
 import { inventoryStore } from '../../features/inventory/inventoryStore';
 import { AdminStatCard } from '../../components/admin/AdminStatCard';
 import { OrderManagement } from '../../components/admin/OrderManagement';
+import { OrderApproval } from '../../components/admin/OrderApproval';
 import { UserManagement } from '../../components/admin/UserManagement';
 import { StockUploader } from '../../components/admin/StockUploader';
 import { InventoryManagement } from '../../components/admin/InventoryManagement';
@@ -22,7 +23,7 @@ export function AdminDashboardPage() {
   const [users, setUsers] = useState<Array<Omit<User, 'password'>>>([]);
   const [stockItems, setStockItems] = useState<StockItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'orders' | 'users' | 'inventory'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'orders' | 'users' | 'inventory'>('overview');
 
   // Verificar permisos
   if (user && user.role !== 'admin' && user.role !== 'root') {
@@ -73,6 +74,11 @@ export function AdminDashboardPage() {
 
   const completedOrders = orders.filter(o => o.status === 'entregado').length;
   const totalPartners = users.filter(u => u.role === 'socio').length;
+  
+  // Calcular pedidos pendientes de aprobación
+  const pendingApprovals = orders.filter(
+    o => o.status === 'pendiente_admin' || o.status === 'aprobado_vendedor'
+  ).length;
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-CL', {
@@ -118,6 +124,12 @@ export function AdminDashboardPage() {
           onClick={() => setActiveTab('overview')}
         >
           📊 Resumen
+        </button>
+        <button
+          className={`admin-tab ${activeTab === 'approvals' ? 'active' : ''}`}
+          onClick={() => setActiveTab('approvals')}
+        >
+          ✅ Aprobaciones {pendingApprovals > 0 && <span className="badge">{pendingApprovals}</span>}
         </button>
         <button
           className={`admin-tab ${activeTab === 'orders' ? 'active' : ''}`}
@@ -184,8 +196,9 @@ export function AdminDashboardPage() {
                   <div className="status-summary-grid">
                     {[
                       { status: 'pendiente', label: 'Pendientes', color: '#FFA500', icon: '⏳' },
-                      { status: 'en-preparacion', label: 'En Preparación', color: '#2196F3', icon: '📦' },
-                      { status: 'en-transito', label: 'En Tránsito', color: '#9C27B0', icon: '🚚' },
+                      { status: 'confirmado', label: 'Confirmados', color: '#00BCD4', icon: '✓' },
+                      { status: 'procesando', label: 'Procesando', color: '#2196F3', icon: '📦' },
+                      { status: 'enviado', label: 'Enviados', color: '#9C27B0', icon: '🚚' },
                       { status: 'entregado', label: 'Entregados', color: '#4CAF50', icon: '✅' },
                       { status: 'cancelado', label: 'Cancelados', color: '#F44336', icon: '❌' }
                     ].map(({ status, label, color, icon }) => {
@@ -230,13 +243,13 @@ export function AdminDashboardPage() {
                           color: '#4CAF50',
                         },
                         {
-                          label: 'En Tránsito',
-                          value: orders.filter((o) => o.status === 'en-transito').length,
+                          label: 'Enviados',
+                          value: orders.filter((o) => o.status === 'enviado').length,
                           color: '#9C27B0',
                         },
                         {
-                          label: 'En Preparación',
-                          value: orders.filter((o) => o.status === 'en-preparacion').length,
+                          label: 'Procesando',
+                          value: orders.filter((o) => o.status === 'procesando').length,
                           color: '#2196F3',
                         },
                         {
@@ -271,6 +284,14 @@ export function AdminDashboardPage() {
                     ))}
                   </div>
                 </section>
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'approvals' && (
+            <div className="admin-approvals">
+              <div className="admin-section">
+                <OrderApproval orders={orders} onOrderUpdate={loadData} />
               </div>
             </div>
           )}

@@ -6,8 +6,9 @@ interface VendorOrderListProps {
 
 const statusConfig = {
   'pendiente': { label: 'Pendiente', color: '#FFA500', icon: '⏳' },
-  'en-preparacion': { label: 'En Preparación', color: '#2196F3', icon: '📦' },
-  'en-transito': { label: 'En Tránsito', color: '#9C27B0', icon: '🚚' },
+  'confirmado': { label: 'Confirmado', color: '#00BCD4', icon: '✓' },
+  'procesando': { label: 'Procesando', color: '#2196F3', icon: '📦' },
+  'enviado': { label: 'Enviado', color: '#9C27B0', icon: '🚚' },
   'entregado': { label: 'Entregado', color: '#4CAF50', icon: '✅' },
   'cancelado': { label: 'Cancelado', color: '#F44336', icon: '❌' }
 };
@@ -46,7 +47,7 @@ export function VendorOrderList({ orders }: VendorOrderListProps) {
                   </td>
                   <td>{new Date(order.date).toLocaleDateString('es-CL')}</td>
                   <td>
-                    <span className="muted">{order.products.length} item(s)</span>
+                    <span className="muted">{(order.products || []).length} item(s)</span>
                   </td>
                   <td>
                     <strong className="amount">{formatCurrency(order.total)}</strong>

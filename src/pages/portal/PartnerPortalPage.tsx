@@ -116,7 +116,7 @@ export function PartnerPortalPage() {
                   <h2>Pedidos Activos</h2>
                   <div className="orders-grid">
                     {activeOrders.map(order => (
-                      <OrderCard key={order.id} order={order} />
+                      <OrderCard key={order.id} order={order} onOrderUpdated={loadData} />
                     ))}
                   </div>
                 </section>
@@ -127,7 +127,7 @@ export function PartnerPortalPage() {
                   <h2>Historial</h2>
                   <div className="orders-grid">
                     {completedOrders.map(order => (
-                      <OrderCard key={order.id} order={order} />
+                      <OrderCard key={order.id} order={order} onOrderUpdated={loadData} />
                     ))}
                   </div>
                 </section>

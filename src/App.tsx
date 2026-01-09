@@ -19,40 +19,49 @@ import { OfflineIndicator } from './components/ui/OfflineIndicator';
 import { useEffect } from 'react';
 import { registerServiceWorker } from './lib/serviceWorker';
 import { checkBackendConnection } from './lib/httpClient';
+import { ErrorBoundary } from './components/debug/ErrorBoundary';
+import { LogViewer } from './components/debug/LogViewer';
+import { usePageTracking } from './hooks/useLogger';
+import { logger } from './lib/logger';
 
 function App() {
   useScrollToTop();
+  usePageTracking();
   
   useEffect(() => {
+    logger.info('App initialized');
     registerServiceWorker();
     checkBackendConnection();
   }, []);
   
   return (
-    <ThemeProvider>
-      <NotificationProvider>
-        <SearchProvider>
-          <WishlistProvider>
-            <CompareProvider>
-              <CartProvider>
-                <TourProvider>
-                  <AppRouter />
-                  <ToastContainer />
-                  <WhatsAppButton phoneNumber="56912345678" message="Hola! Tengo una consulta sobre AMIWEB" />
-                  <CartButton />
-                  <CompareTable />
-                  <WishlistManager />
-                  <TourOverlay />
-                  <TourTrigger />
-                  <OfflineIndicator />
-                  <PWAInstallPrompt />
-                </TourProvider>
-              </CartProvider>
-            </CompareProvider>
-          </WishlistProvider>
-        </SearchProvider>
-      </NotificationProvider>
-    </ThemeProvider>
+    <ErrorBoundary>
+      <ThemeProvider>
+        <NotificationProvider>
+          <SearchProvider>
+            <WishlistProvider>
+              <CompareProvider>
+                <CartProvider>
+                  <TourProvider>
+                    <AppRouter />
+                    <ToastContainer />
+                    <WhatsAppButton phoneNumber="56912345678" message="Hola! Tengo una consulta sobre AMIWEB" />
+                    <CartButton />
+                    <CompareTable />
+                    <WishlistManager />
+                    <TourOverlay />
+                    <TourTrigger />
+                    <OfflineIndicator />
+                    <PWAInstallPrompt />
+                    {import.meta.env.DEV && <LogViewer />}
+                  </TourProvider>
+                </CartProvider>
+              </CompareProvider>
+            </WishlistProvider>
+          </SearchProvider>
+        </NotificationProvider>
+      </ThemeProvider>
+    </ErrorBoundary>
   );
 }
 

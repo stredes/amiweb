@@ -1,0 +1,237 @@
+.warehouse-stock {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.warehouse-stock__banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  background: #f9c063;
+  color: #4a2c00;
+  padding: 0.9rem 1.2rem;
+  border-radius: 10px;
+  font-weight: 600;
+}
+
+.warehouse-stock__close {
+  border: none;
+  background: transparent;
+  font-size: 1.4rem;
+  cursor: pointer;
+  color: #4a2c00;
+}
+
+.warehouse-stock__tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: 0.5rem;
+}
+
+.warehouse-stock__tab {
+  border: 1px solid var(--color-border);
+  background: #f4f6f8;
+  padding: 0.6rem 1rem;
+  border-radius: 8px 8px 0 0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  color: var(--color-text-secondary);
+}
+
+.warehouse-stock__tab.is-active {
+  background: #ffffff;
+  color: var(--color-text-primary);
+  border-bottom-color: #ffffff;
+  font-weight: 600;
+}
+
+.warehouse-stock__filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem 1.5rem;
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  padding: 1.25rem;
+}
+
+.filter-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  font-size: 0.9rem;
+}
+
+.filter-field label {
+  font-weight: 600;
+  color: var(--color-text-secondary);
+}
+
+.filter-field input,
+.filter-field select {
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  padding: 0.6rem 0.75rem;
+  background: #ffffff;
+}
+
+.filter-field--wide {
+  grid-column: span 2;
+}
+
+.filter-input-group {
+  display: grid;
+  grid-template-columns: auto 1fr 1fr auto;
+  border: 1px solid var(--color-border);
+  border-radius: 8px;
+  overflow: hidden;
+  background: #ffffff;
+}
+
+.filter-input-group input {
+  border: none;
+  padding: 0.6rem 0.75rem;
+  background: #f8f8f8;
+}
+
+.filter-input-group input:first-of-type {
+  background: #ffffff;
+}
+
+.filter-pill,
+.filter-icon {
+  border: none;
+  background: #ffffff;
+  padding: 0 0.75rem;
+  cursor: pointer;
+  font-weight: 700;
+  color: var(--color-text-secondary);
+}
+
+.filter-field--checkbox {
+  align-items: flex-start;
+  flex-direction: row;
+  gap: 0.5rem;
+}
+
+.filter-field--checkbox label {
+  font-weight: 500;
+  color: var(--color-text-primary);
+}
+
+.warehouse-stock__actions {
+  display: flex;
+  gap: 1rem;
+}
+
+.warehouse-stock__table-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.warehouse-stock__table-toolbar select,
+.warehouse-stock__table-toolbar input {
+  border: 1px solid var(--color-border);
+  border-radius: 6px;
+  padding: 0.4rem 0.6rem;
+}
+
+.toolbar-left,
+.toolbar-right {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.warehouse-stock__table {
+  background: #ffffff;
+  border: 1px solid var(--color-border);
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.warehouse-stock__error {
+  background: #ffe7e7;
+  border: 1px solid #f5b5b5;
+  color: #8a1c1c;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+}
+
+.warehouse-stock__table-head,
+.warehouse-stock__table-row {
+  display: grid;
+  grid-template-columns: 140px 120px 260px 90px 120px 140px 110px 120px 100px 110px 90px 90px 110px;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.75rem 1rem;
+}
+
+.warehouse-stock__table-head {
+  background: #f5f7fb;
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--color-text-secondary);
+  font-weight: 700;
+}
+
+.warehouse-stock__table-row {
+  border-top: 1px solid var(--color-border);
+  font-size: 0.85rem;
+}
+
+.warehouse-stock__table-row--empty {
+  grid-template-columns: 1fr;
+  justify-items: center;
+  color: var(--color-text-secondary);
+  font-weight: 600;
+}
+
+.warehouse-stock__table-row--total {
+  background: #e7f3ff;
+  font-weight: 700;
+}
+
+.warehouse-stock__pagination {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  color: var(--color-text-secondary);
+  font-size: 0.9rem;
+}
+
+.pagination-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+@media (max-width: 1024px) {
+  .filter-field--wide {
+    grid-column: span 1;
+  }
+
+  .warehouse-stock__table {
+    overflow-x: auto;
+  }
+
+  .warehouse-stock__table-head,
+  .warehouse-stock__table-row {
+    width: 1100px;
+  }
+}
+
+@media (max-width: 768px) {
+  .warehouse-stock__actions {
+    flex-direction: column;
+  }
+}

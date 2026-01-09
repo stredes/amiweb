@@ -1,0 +1,402 @@
+import { useState } from 'react';
+import { FiX, FiMapPin, FiCreditCard, FiCheck, FiAlertCircle } from 'react-icons/fi';
+import { useCart } from '../../features/cart/cartContext';
+import { orderService, CreateOrderData } from '../../features/cart/services/orderService';
+import { toast } from '../ui/Toast';
+import './CheckoutModal.css';
+
+interface CheckoutModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  onSuccess: () => void;
+}
+
+export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps) {
+  const { items, clearCart } = useCart();
+  const [step, setStep] = useState<'customer' | 'shipping' | 'payment' | 'confirm'>('customer');
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [customerData, setCustomerData] = useState({
+    customerName: '',
+    customerEmail: '',
+    customerPhone: '',
+    organization: '',
+    taxId: '',
+  });
+
+  const [shippingData, setShippingData] = useState({
+    street: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    country: 'Chile',
+    phone: '',
+    contactName: '',
+  });
+
+  const [paymentMethod, setPaymentMethod] = useState<'transferencia' | 'efectivo' | 'cheque' | 'tarjeta' | 'credito_30' | 'credito_60' | 'credito_90'>('transferencia');
+  const [notes, setNotes] = useState('');
+
+  const total = items.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+
+  const handleCustomerSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validar campos requeridos
+    if (!customerData.customerName || !customerData.customerEmail || !customerData.customerPhone || !customerData.organization) {
+      toast.error('Por favor completa todos los campos obligatorios');
+      return;
+    }
+
+    setStep('shipping');
+  };
+
+  const handleShippingSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    
+    // Validar campos requeridos
+    if (!shippingData.street || !shippingData.city || !shippingData.state || !shippingData.phone || !shippingData.contactName) {
+      toast.error('Por favor completa todos los campos de dirección');
+      return;
+    }
+
+    setStep('payment');
+  };
+
+  const handlePaymentSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setStep('confirm');
+  };
+
+  const handleConfirmOrder = async () => {
+    setIsSubmitting(true);
+    
+    try {
+      const orderData: CreateOrderData = {
+        products: items.map(item => ({
+          id: item.id,
+          name: item.name,
+          quantity: item.quantity,
+          price: item.price,
+        })),
+        shippingAddress: shippingData,
+        paymentMethod,
+        notes,
+      };
+
+      await orderService.createOrder(orderData);
+      
+      toast.success('¡Pedido realizado exitosamente!');
+      clearCart();
+      onSuccess();
+      onClose();
+      
+      // Reset form
+      setStep('shipping');
+      setShippingData({
+        street: '',
+        city: '',
+        region: '',
+        postalCode: '',
+        country: 'Chile',
+      });
+      setNotes('');
+    } catch (error) {
+      console.error('Error al crear orden:', error);
+      toast.error('Error al procesar el pedido. Por favor intenta de nuevo.');
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleBack = () => {
+    if (step === 'payment') setStep('shipping');
+    else if (step === 'confirm') setStep('payment');
+  };
+
+  if (!isOpen) return null;
+
+  return (
+    <>
+      <div className="checkout-modal-overlay" onClick={onClose} />
+      <div className="checkout-modal">
+        <div className="checkout-modal__header">
+          <h2>Finalizar Pedido</h2>
+          <button className="checkout-modal__close" onClick={onClose}>
+            <FiX size={24} />
+          </button>
+        </div>
+
+        {/* Progress Steps */}
+        <div className="checkout-steps">
+          <div className={`checkout-step ${step === 'shipping' ? 'active' : ''} ${['payment', 'confirm'].includes(step) ? 'completed' : ''}`}>
+            <div className="checkout-step__icon">
+              {['payment', 'confirm'].includes(step) ? <FiCheck /> : <FiMapPin />}
+            </div>
+            <span>Dirección</span>
+          </div>
+          <div className="checkout-step__line" />
+          <div className={`checkout-step ${step === 'payment' ? 'active' : ''} ${step === 'confirm' ? 'completed' : ''}`}>
+            <div className="checkout-step__icon">
+              {step === 'confirm' ? <FiCheck /> : <FiCreditCard />}
+            </div>
+            <span>Pago</span>
+          </div>
+          <div className="checkout-step__line" />
+          <div className={`checkout-step ${step === 'confirm' ? 'active' : ''}`}>
+            <div className="checkout-step__icon">
+              <FiCheck />
+            </div>
+            <span>Confirmar</span>
+          </div>
+        </div>
+
+        <div className="checkout-modal__content">
+          {/* Shipping Step */}
+          {step === 'shipping' && (
+            <form onSubmit={handleShippingSubmit} className="checkout-form">
+              <h3>Dirección de Envío</h3>
+              
+              <div className="form-group">
+                <label htmlFor="street">Calle y Número *</label>
+                <input
+                  id="street"
+                  type="text"
+                  value={shippingData.street}
+                  onChange={(e) => setShippingData({ ...shippingData, street: e.target.value })}
+                  placeholder="Ej: Av. Providencia 1234"
+                  required
+                />
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="city">Ciudad *</label>
+                  <input
+                    id="city"
+                    type="text"
+                    value={shippingData.city}
+                    onChange={(e) => setShippingData({ ...shippingData, city: e.target.value })}
+                    placeholder="Ej: Santiago"
+                    required
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="region">Región *</label>
+                  <select
+                    id="region"
+                    value={shippingData.region}
+                    onChange={(e) => setShippingData({ ...shippingData, region: e.target.value })}
+                    required
+                  >
+                    <option value="">Seleccionar</option>
+                    <option value="Región Metropolitana">Región Metropolitana</option>
+                    <option value="Valparaíso">Valparaíso</option>
+                    <option value="Biobío">Biobío</option>
+                    <option value="Maule">Maule</option>
+                    <option value="Los Lagos">Los Lagos</option>
+                    <option value="O'Higgins">O'Higgins</option>
+                    <option value="Araucanía">Araucanía</option>
+                    <option value="Antofagasta">Antofagasta</option>
+                    <option value="Coquimbo">Coquimbo</option>
+                    <option value="Atacama">Atacama</option>
+                    <option value="Aysén">Aysén</option>
+                    <option value="Magallanes">Magallanes</option>
+                    <option value="Tarapacá">Tarapacá</option>
+                    <option value="Arica y Parinacota">Arica y Parinacota</option>
+                    <option value="Los Ríos">Los Ríos</option>
+                    <option value="Ñuble">Ñuble</option>
+                  </select>
+                </div>
+              </div>
+
+              <div className="form-row">
+                <div className="form-group">
+                  <label htmlFor="postalCode">Código Postal</label>
+                  <input
+                    id="postalCode"
+                    type="text"
+                    value={shippingData.postalCode}
+                    onChange={(e) => setShippingData({ ...shippingData, postalCode: e.target.value })}
+                    placeholder="Opcional"
+                  />
+                </div>
+
+                <div className="form-group">
+                  <label htmlFor="country">País</label>
+                  <input
+                    id="country"
+                    type="text"
+                    value={shippingData.country}
+                    disabled
+                  />
+                </div>
+              </div>
+
+              <div className="checkout-form__actions">
+                <button type="button" className="btn btn--secondary" onClick={onClose}>
+                  Cancelar
+                </button>
+                <button type="submit" className="btn btn--primary">
+                  Continuar
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Payment Step */}
+          {step === 'payment' && (
+            <form onSubmit={handlePaymentSubmit} className="checkout-form">
+              <h3>Método de Pago</h3>
+              
+              <div className="payment-methods">
+                <label className={`payment-method ${paymentMethod === 'transferencia' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="transferencia"
+                    checked={paymentMethod === 'transferencia'}
+                    onChange={(e) => setPaymentMethod(e.target.value as any)}
+                  />
+                  <div className="payment-method__content">
+                    <FiCreditCard size={24} />
+                    <div>
+                      <strong>Transferencia Bancaria</strong>
+                      <p className="muted">Recibirás los datos para transferir</p>
+                    </div>
+                  </div>
+                </label>
+
+                <label className={`payment-method ${paymentMethod === 'credito' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="credito"
+                    checked={paymentMethod === 'credito'}
+                    onChange={(e) => setPaymentMethod(e.target.value as any)}
+                  />
+                  <div className="payment-method__content">
+                    <FiCreditCard size={24} />
+                    <div>
+                      <strong>Pago con Crédito</strong>
+                      <p className="muted">30 días de plazo</p>
+                    </div>
+                  </div>
+                </label>
+
+                <label className={`payment-method ${paymentMethod === 'contado' ? 'selected' : ''}`}>
+                  <input
+                    type="radio"
+                    name="payment"
+                    value="contado"
+                    checked={paymentMethod === 'contado'}
+                    onChange={(e) => setPaymentMethod(e.target.value as any)}
+                  />
+                  <div className="payment-method__content">
+                    <FiCreditCard size={24} />
+                    <div>
+                      <strong>Pago al Contado</strong>
+                      <p className="muted">Efectivo o débito en entrega</p>
+                    </div>
+                  </div>
+                </label>
+              </div>
+
+              <div className="form-group">
+                <label htmlFor="notes">Notas Adicionales</label>
+                <textarea
+                  id="notes"
+                  value={notes}
+                  onChange={(e) => setNotes(e.target.value)}
+                  placeholder="Agrega cualquier instrucción especial..."
+                  rows={3}
+                />
+              </div>
+
+              <div className="checkout-form__actions">
+                <button type="button" className="btn btn--secondary" onClick={handleBack}>
+                  Volver
+                </button>
+                <button type="submit" className="btn btn--primary">
+                  Continuar
+                </button>
+              </div>
+            </form>
+          )}
+
+          {/* Confirm Step */}
+          {step === 'confirm' && (
+            <div className="checkout-confirm">
+              <h3>Confirmar Pedido</h3>
+              
+              <div className="confirm-section">
+                <h4><FiMapPin /> Dirección de Envío</h4>
+                <p>{shippingData.street}</p>
+                <p>{shippingData.city}, {shippingData.region}</p>
+                <p>{shippingData.country} {shippingData.postalCode}</p>
+              </div>
+
+              <div className="confirm-section">
+                <h4><FiCreditCard /> Método de Pago</h4>
+                <p>
+                  {paymentMethod === 'transferencia' && 'Transferencia Bancaria'}
+                  {paymentMethod === 'credito' && 'Pago con Crédito (30 días)'}
+                  {paymentMethod === 'contado' && 'Pago al Contado'}
+                </p>
+              </div>
+
+              <div className="confirm-section">
+                <h4>Productos ({items.length})</h4>
+                <div className="confirm-products">
+                  {items.map(item => (
+                    <div key={item.id} className="confirm-product">
+                      <span>{item.name} x{item.quantity}</span>
+                      <span>${item.price.toLocaleString('es-CL')}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              {notes && (
+                <div className="confirm-section">
+                  <h4>Notas</h4>
+                  <p className="muted">{notes}</p>
+                </div>
+              )}
+
+              <div className="confirm-total">
+                <h3>Total</h3>
+                <h3 className="total-amount">${total.toLocaleString('es-CL')}</h3>
+              </div>
+
+              <div className="checkout-alert">
+                <FiAlertCircle />
+                <p>Al confirmar, aceptas nuestros términos y condiciones de venta</p>
+              </div>
+
+              <div className="checkout-form__actions">
+                <button 
+                  type="button" 
+                  className="btn btn--secondary" 
+                  onClick={handleBack}
+                  disabled={isSubmitting}
+                >
+                  Volver
+                </button>
+                <button 
+                  type="button" 
+                  className="btn btn--primary" 
+                  onClick={handleConfirmOrder}
+                  disabled={isSubmitting}
+                >
+                  {isSubmitting ? 'Procesando...' : 'Confirmar Pedido'}
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      </div>
+    </>
+  );
+}
