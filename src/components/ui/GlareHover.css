@@ -8,6 +8,8 @@
   position: relative;
   display: grid;
   place-items: center;
+  cursor: pointer;
+  will-change: transform;
 }
 
 .glare-hover::before {
@@ -29,10 +31,13 @@
   background-position:
     -100% -100%,
     0 0;
+  pointer-events: none;
+  will-change: background-position;
 }
 
 .glare-hover:hover {
   cursor: pointer;
+  transform: scale(1.01);
 }
 
 .glare-hover:hover::before {

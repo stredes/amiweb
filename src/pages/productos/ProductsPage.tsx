@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useState, useCallback, type UIEvent } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import ProductCard from '../../components/products/ProductCard';
 import ProductFilters from '../../components/products/ProductFilters';
@@ -19,6 +19,8 @@ function ProductsPage() {
     selectedCategory || undefined,
     searchTerm
   );
+  const [visibleCount, setVisibleCount] = useState(16);
+  const batchSize = 16;
 
   // Map de categorías para mostrar nombres en tarjetas.
   const categoryNameById = useMemo(
@@ -34,6 +36,10 @@ function ProductsPage() {
     setSearchTerm(q);
     setTerm(q);
   }, [searchParams, setTerm]);
+
+  useEffect(() => {
+    setVisibleCount(batchSize);
+  }, [selectedCategory, searchTerm]);
 
   const handleCategoryChange = (value: string) => {
     setSelectedCategory(value);
@@ -60,9 +66,25 @@ function ProductsPage() {
     });
   };
 
-  const handleQuote = (product: Product) => {
+  const handleQuote = useCallback((product: Product) => {
     setQuotedProduct(product);
-  };
+  }, []);
+
+  const handleGridScroll = useCallback(
+    (event: UIEvent<HTMLDivElement>) => {
+      const target = event.currentTarget;
+      const threshold = 200;
+      if (target.scrollHeight - target.scrollTop - target.clientHeight < threshold) {
+        setVisibleCount((prev) => Math.min(prev + batchSize, products.length));
+      }
+    },
+    [batchSize, products.length]
+  );
+
+  const visibleProducts = useMemo(
+    () => products.slice(0, visibleCount),
+    [products, visibleCount]
+  );
 
   return (
     <div className="page">
@@ -70,8 +92,7 @@ function ProductsPage() {
         <header className="page__header">
           <h1>Productos</h1>
         <p>
-          Catálogo de equipos, reactivos e insumos para laboratorios clínicos. {/* TODO: paginación
-          y filtros conectados a backend. */}
+          Catálogo de equipos, reactivos e insumos para laboratorios clínicos.
         </p>
         </header>
       </FadeIn>
@@ -100,18 +121,20 @@ function ProductsPage() {
         </FadeIn>
       ) : (
         <FadeIn direction="up" delay={0.2}>
-          <div className="grid three">
-            {products.map((product, index) => (
-            <ProductCard
-              key={product.id}
-              product={product}
-              categoryName={categoryNameById.get(product.categoryId) ?? product.familia ?? 'Sin categoría'}
-              onQuote={handleQuote}
-            />
-          ))}
-          {products.length === 0 && (
-            <p>No hay productos que coincidan con los filtros seleccionados.</p>
-          )}
+          <div className="products-grid-scroll" onScroll={handleGridScroll}>
+            <div className="grid three">
+              {visibleProducts.map((product) => (
+                <ProductCard
+                  key={product.id}
+                  product={product}
+                  categoryName={categoryNameById.get(product.categoryId) ?? product.familia ?? 'Sin categoría'}
+                  onQuote={handleQuote}
+                />
+              ))}
+              {products.length === 0 && (
+                <p>No hay productos que coincidan con los filtros seleccionados.</p>
+              )}
+            </div>
           </div>
         </FadeIn>
       )}

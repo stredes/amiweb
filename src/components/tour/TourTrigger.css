@@ -1,0 +1,74 @@
+/* Tour Trigger Button */
+
+.tour-trigger {
+  position: fixed;
+  bottom: 340px;
+  right: 24px;
+  width: 56px;
+  height: 56px;
+  background: var(--color-primary);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  transition: all 0.3s ease;
+  z-index: 1000;
+}
+
+.tour-trigger:hover {
+  transform: translateY(-2px) scale(1.05);
+  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.4);
+  background: var(--color-primary-dark);
+}
+
+.tour-trigger:active {
+  transform: translateY(0) scale(0.98);
+}
+
+.tour-trigger__badge {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: 12px;
+  height: 12px;
+  background: #f44336;
+  border: 2px solid white;
+  border-radius: 50%;
+  animation: pulse-badge 2s infinite;
+}
+
+@keyframes pulse-badge {
+  0%, 100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: scale(1.2);
+    opacity: 0.8;
+  }
+}
+
+/* Dark mode */
+[data-theme='dark'] .tour-trigger {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme='dark'] .tour-trigger:hover {
+  box-shadow: 0 6px 20px rgba(33, 150, 243, 0.6);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .tour-trigger {
+    width: 48px;
+    height: 48px;
+    font-size: 20px;
+    bottom: 320px;
+    right: 16px;
+  }
+}

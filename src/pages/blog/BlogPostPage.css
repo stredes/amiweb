@@ -15,7 +15,7 @@
 
 .blog-post-error h2 {
   margin: 0;
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .blog-post-error a {
@@ -44,7 +44,7 @@
   background: var(--color-bg-primary);
   border: 1px solid var(--color-border);
   border-radius: 6px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
   font-size: 0.95rem;
   cursor: pointer;
   transition: all 0.2s;
@@ -53,7 +53,7 @@
 
 .blog-post-back:hover {
   background: var(--color-bg-tertiary);
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .blog-post-meta {
@@ -75,7 +75,7 @@
 }
 
 .blog-post-date {
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
   font-size: 0.95rem;
 }
 
@@ -83,7 +83,7 @@
   margin: 0 0 24px 0;
   font-size: 3rem;
   font-weight: 700;
-  color: var(--color-text-primary);
+  color: var(--color-text);
   line-height: 1.2;
 }
 
@@ -91,7 +91,7 @@
   display: flex;
   gap: 24px;
   margin-bottom: 32px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
 }
 
 .blog-post-stats span {
@@ -122,12 +122,12 @@
 .blog-post-author__name {
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .blog-post-author__role {
   font-size: 0.9rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
 }
 
 /* Cover Image */
@@ -165,14 +165,14 @@
 .blog-post-excerpt {
   font-size: 1.2rem;
   line-height: 1.8;
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
   margin-bottom: 40px;
   padding-bottom: 40px;
   border-bottom: 1px solid var(--color-border);
 }
 
 .blog-post-body {
-  color: var(--color-text-primary);
+  color: var(--color-text);
   line-height: 1.8;
   font-size: 1.05rem;
   white-space: pre-line;
@@ -182,7 +182,7 @@
 .blog-post-body h2,
 .blog-post-body h3 {
   margin: 40px 0 20px 0;
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .blog-post-body h1 {
@@ -215,7 +215,7 @@
   background: var(--color-bg-secondary);
   border: 1px solid var(--color-border);
   border-radius: 20px;
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
   font-size: 0.9rem;
   font-weight: 500;
 }
@@ -272,12 +272,12 @@
 .author-card h3 {
   margin: 0 0 8px 0;
   font-size: 1.3rem;
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .author-card p {
   margin: 0;
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
 }
 
 .related-posts {
@@ -290,7 +290,7 @@
 .related-posts h3 {
   margin: 0 0 20px 0;
   font-size: 1.2rem;
-  color: var(--color-text-primary);
+  color: var(--color-text);
 }
 
 .related-post {
@@ -319,13 +319,13 @@
   margin: 0 0 8px 0;
   font-size: 0.95rem;
   font-weight: 600;
-  color: var(--color-text-primary);
+  color: var(--color-text);
   line-height: 1.4;
 }
 
 .related-post span {
   font-size: 0.8rem;
-  color: var(--color-text-secondary);
+  color: var(--color-text-light);
 }
 
 /* Responsive */

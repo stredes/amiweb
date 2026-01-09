@@ -1,6 +1,5 @@
 .fade-in {
   opacity: 0;
-  animation: fade-in-animation forwards;
 }
 
 .fade-in-visible {

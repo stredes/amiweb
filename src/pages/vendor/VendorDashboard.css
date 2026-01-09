@@ -1,0 +1,338 @@
+/* Vendor Dashboard Styles */
+
+.vendor-dashboard {
+  min-height: 100vh;
+  background: linear-gradient(135deg, #f0f8ff 0%, #e6f2ff 100%);
+  padding: 2rem;
+}
+
+/* Header */
+.vendor-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: var(--color-white);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  margin-bottom: 2rem;
+  border-top: 4px solid #2196F3;
+}
+
+.vendor-header__info h1 {
+  margin: 0 0 0.5rem 0;
+  color: #0D47A1;
+  font-size: 2rem;
+  font-weight: 700;
+}
+
+.vendor-header__info p {
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--color-text-light);
+}
+
+.vendor-badge {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+  padding: 0.375rem 0.875rem;
+  border-radius: var(--radius-md);
+  font-size: 0.85rem;
+  font-weight: 600;
+  box-shadow: 0 2px 8px rgba(33, 150, 243, 0.3);
+}
+
+.vendor-header button {
+  padding: 0.75rem 1.5rem;
+  font-size: 0.95rem;
+}
+
+/* Tabs */
+.vendor-tabs {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 2rem;
+  flex-wrap: wrap;
+}
+
+.vendor-tab {
+  background: var(--color-white);
+  border: 2px solid var(--color-border);
+  padding: 0.875rem 1.5rem;
+  border-radius: var(--radius-md);
+  font-size: 1rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--color-text);
+}
+
+.vendor-tab:hover {
+  background: var(--color-light);
+  border-color: #2196F3;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-sm);
+}
+
+.vendor-tab.active {
+  background: linear-gradient(135deg, #2196F3 0%, #1976D2 100%);
+  color: white;
+  border-color: #2196F3;
+  box-shadow: var(--shadow-md);
+}
+
+/* Content */
+.vendor-content {
+  animation: fadeInVendor 0.3s ease-in-out;
+}
+
+.vendor-overview {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+/* Sales Metrics Grid */
+.sales-metrics-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 1.5rem;
+}
+
+.sales-metric-card {
+  background: var(--color-white);
+  padding: 1.75rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  transition: all 0.3s ease;
+  border: 1px solid var(--color-border);
+  position: relative;
+  overflow: hidden;
+}
+
+.sales-metric-card::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 4px;
+  height: 100%;
+  background: linear-gradient(180deg, #2196F3 0%, #1976D2 100%);
+}
+
+.sales-metric-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+.sales-metric-card__icon {
+  font-size: 2.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 70px;
+  height: 70px;
+  border-radius: var(--radius-md);
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
+}
+
+.sales-metric-card__content {
+  flex: 1;
+}
+
+.sales-metric-card__title {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  margin: 0 0 0.5rem 0;
+  font-weight: 500;
+}
+
+.sales-metric-card__value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0D47A1;
+  margin: 0;
+  line-height: 1;
+}
+
+.sales-metric-card__trend {
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  font-weight: 500;
+}
+
+.sales-metric-card__trend.up {
+  color: #28a745;
+}
+
+.sales-metric-card__trend.down {
+  color: #dc3545;
+}
+
+/* Clients Section */
+.vendor-clients-section {
+  background: var(--color-white);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.vendor-clients-section h2 {
+  margin: 0 0 1.5rem 0;
+  color: #0D47A1;
+  font-size: 1.5rem;
+}
+
+.clients-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+/* Orders Section */
+.vendor-orders-section {
+  background: var(--color-white);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.vendor-orders-section h2 {
+  margin: 0 0 1.5rem 0;
+  color: #0D47A1;
+  font-size: 1.5rem;
+}
+
+/* Performance Chart */
+.vendor-performance {
+  background: var(--color-white);
+  padding: 2rem;
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--color-border);
+}
+
+.vendor-performance h2 {
+  margin: 0 0 1.5rem 0;
+  color: #0D47A1;
+  font-size: 1.5rem;
+}
+
+.performance-summary {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.performance-item {
+  text-align: center;
+  padding: 1.5rem;
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.05) 0%, rgba(33, 150, 243, 0.02) 100%);
+  border-radius: var(--radius-md);
+  border: 1px solid rgba(33, 150, 243, 0.1);
+}
+
+.performance-item__value {
+  font-size: 2rem;
+  font-weight: 700;
+  color: #0D47A1;
+  margin: 0 0 0.5rem 0;
+}
+
+.performance-item__label {
+  font-size: 0.9rem;
+  color: var(--color-text-light);
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .vendor-dashboard {
+    padding: 1rem;
+  }
+
+  .vendor-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.5rem;
+  }
+
+  .vendor-header button {
+    width: 100%;
+  }
+
+  .vendor-tabs {
+    flex-direction: column;
+  }
+
+  .vendor-tab {
+    width: 100%;
+  }
+
+  .sales-metrics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clients-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .performance-summary {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Dark Mode */
+[data-theme='dark'] .vendor-dashboard {
+  background: linear-gradient(135deg, #0a1929 0%, #071318 100%);
+}
+
+[data-theme='dark'] .vendor-header,
+[data-theme='dark'] .sales-metric-card,
+[data-theme='dark'] .vendor-clients-section,
+[data-theme='dark'] .vendor-orders-section,
+[data-theme='dark'] .vendor-performance {
+  background: var(--color-bg-primary);
+  border-color: var(--color-border);
+}
+
+[data-theme='dark'] .vendor-header {
+  border-top-color: #2196F3;
+}
+
+[data-theme='dark'] .vendor-tab {
+  background: var(--color-bg-primary);
+  border-color: var(--color-border);
+}
+
+[data-theme='dark'] .vendor-tab:hover {
+  background: var(--color-bg-secondary);
+}
+
+[data-theme='dark'] .performance-item {
+  background: linear-gradient(135deg, rgba(33, 150, 243, 0.1) 0%, rgba(33, 150, 243, 0.05) 100%);
+  border-color: rgba(33, 150, 243, 0.2);
+}
+
+@keyframes fadeInVendor {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

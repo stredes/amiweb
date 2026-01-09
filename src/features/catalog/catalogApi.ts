@@ -1,7 +1,37 @@
 import { collection, getDocs, doc, getDoc, query, where } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
-import { productCategories } from './mockData';
+import { productCategories, products as mockProducts } from './mockData';
 import { Product, ProductCategory, ProductFilters } from './types';
+
+const applyFilters = (items: Product[], filters?: ProductFilters) => {
+  console.log('🔍 applyFilters llamado:', { itemsCount: items.length, filters });
+  let filtered = items;
+
+  if (filters?.categoryId) {
+    const categoryId = filters.categoryId.toLowerCase();
+    filtered = filtered.filter((product) => {
+      const productCategory = (product.categoryId || product.familia || '').toLowerCase();
+      return productCategory === categoryId;
+    });
+    console.log(`📋 Filtrado por categoría '${categoryId}': ${filtered.length} productos`);
+  }
+
+  if (filters?.search) {
+    const term = filters.search.toLowerCase();
+    filtered = filtered.filter(
+      (product) =>
+        product.name?.toLowerCase().includes(term) ||
+        product.brand?.toLowerCase().includes(term) ||
+        product.shortDescription?.toLowerCase().includes(term) ||
+        product.familia?.toLowerCase().includes(term) ||
+        product.subfamilia?.toLowerCase().includes(term)
+    );
+    console.log(`🔎 Filtrado por búsqueda '${term}': ${filtered.length} productos`);
+  }
+
+  console.log(`✅ applyFilters resultado final: ${filtered.length} productos`);
+  return filtered;
+};
 
 // Devuelve categorías desde Firestore o desde las definidas localmente
 export async function getCategories(): Promise<ProductCategory[]> {
@@ -10,10 +40,10 @@ export async function getCategories(): Promise<ProductCategory[]> {
     const categoriesRef = collection(db, 'categories');
     const snapshot = await getDocs(categoriesRef);
     
-    if (snapshot.empty) {
-      // Si no hay categorías en Firestore, usar las definidas localmente
-      console.log('📋 Usando categorías locales (familias)');
-      return Promise.resolve(productCategories);
+      if (snapshot.empty) {
+        // Si no hay categorías en Firestore, usar las definidas localmente
+        console.log('📋 Usando categorías locales (familias)');
+        return Promise.resolve(productCategories);
     }
     
     const categories = snapshot.docs.map(doc => ({
@@ -31,11 +61,14 @@ export async function getCategories(): Promise<ProductCategory[]> {
 
 // Obtiene productos desde Firestore con filtros opcionales.
 export async function getProducts(filters?: ProductFilters): Promise<Product[]> {
+  console.log('🔵 getProducts llamado con filtros:', filters);
+  
   try {
     const productsRef = collection(db, 'products');
     
     // Si hay filtro de categoría, intentar filtrar
     if (filters?.categoryId) {
+      console.log('🔍 Filtrando por categoría:', filters.categoryId);
       // Intentar filtrar por 'familia' primero
       let productsQuery = query(productsRef, where('familia', '==', filters.categoryId));
       let snapshot = await getDocs(productsQuery);
@@ -44,6 +77,13 @@ export async function getProducts(filters?: ProductFilters): Promise<Product[]> 
         // Si no hay resultados, intentar con 'categoryId'
         productsQuery = query(productsRef, where('categoryId', '==', filters.categoryId));
         snapshot = await getDocs(productsQuery);
+      }
+      
+      if (snapshot.empty) {
+        console.warn('⚠️ No hay productos en Firestore para la categoría, usando mock local');
+        const mockFiltered = applyFilters(mockProducts, filters);
+        console.log('📦 Mock products devueltos:', mockFiltered.length);
+        return mockFiltered;
       }
       
       let products = snapshot.docs.map(doc => ({
@@ -57,36 +97,35 @@ export async function getProducts(filters?: ProductFilters): Promise<Product[]> 
         requiresInstallation: doc.data().requiresInstallation || false
       })) as Product[];
 
-      // Aplicar filtro de búsqueda
-      if (filters.search) {
-        const term = filters.search.toLowerCase();
-        products = products.filter(
-          (product) =>
-            product.name?.toLowerCase().includes(term) ||
-            product.brand?.toLowerCase().includes(term) ||
-            product.shortDescription?.toLowerCase().includes(term) ||
-            product.familia?.toLowerCase().includes(term) ||
-            product.subfamilia?.toLowerCase().includes(term)
-        );
-      }
+      products = applyFilters(products, filters);
 
       console.log(`✅ Productos filtrados: ${products.length} (categoría: ${filters.categoryId})`);
       return products;
     }
     
     // Sin filtro de categoría: cargar TODOS los productos
+    console.log('📦 Cargando TODOS los productos...');
     const snapshot = await getDocs(productsRef);
+    console.log('📊 Snapshot size:', snapshot.size, 'empty:', snapshot.empty);
+    
+    if (snapshot.empty) {
+      console.warn('⚠️ No hay productos en Firestore, usando mock local');
+      const mockFiltered = applyFilters(mockProducts, filters);
+      console.log('📦 Mock products devueltos:', mockFiltered.length);
+      return mockFiltered;
+    }
+
     let products = snapshot.docs.map(doc => {
       const data = doc.data();
       return {
         id: doc.id,
         name: data.nombre || data.name || 'Sin nombre',
         brand: data.marca || data.brand || 'Sin marca',
-        categoryId: data.familia || data.categoryId || 'Sin categoría',
-        familia: data.familia,
+        categoryId: data.familia || data.categoryId || 'sin-categoria',
+        familia: data.familia || data.categoryId,
         subfamilia: data.subfamilia,
-        shortDescription: data.descripcion || data.shortDescription || '',
-        longDescription: data.descripcion || data.longDescription || '',
+        shortDescription: data.descripcion || data.shortDescription || 'Sin descripción',
+        longDescription: data.descripcion || data.longDescription || 'Sin descripción',
         code: data.codigo || data.code,
         precio: data.precio,
         stock: data.stock,
@@ -96,24 +135,15 @@ export async function getProducts(filters?: ProductFilters): Promise<Product[]> 
       } as Product;
     });
 
-    // Aplicar filtro de búsqueda si existe
-    if (filters?.search) {
-      const term = filters.search.toLowerCase();
-      products = products.filter(
-        (product) =>
-          product.name?.toLowerCase().includes(term) ||
-          product.brand?.toLowerCase().includes(term) ||
-          product.shortDescription?.toLowerCase().includes(term) ||
-          product.familia?.toLowerCase().includes(term) ||
-          product.subfamilia?.toLowerCase().includes(term)
-      );
-    }
+    products = applyFilters(products, filters);
 
     console.log(`✅ Productos cargados desde Firestore: ${products.length}`);
     return products;
   } catch (error) {
     console.error('❌ Error al cargar productos desde Firestore:', error);
-    return [];
+    const mockFiltered = applyFilters(mockProducts, filters);
+    console.log('📦 Fallback a mock products:', mockFiltered.length);
+    return mockFiltered;
   }
 }
 

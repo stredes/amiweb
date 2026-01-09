@@ -22,12 +22,12 @@
 }
 
 .tour-tooltip {
-  background: var(--color-bg-primary);
-  border: 1px solid var(--color-border);
+  background: linear-gradient(135deg, var(--color-primary) 0%, var(--color-primary-dark) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.2);
   border-radius: 12px;
   padding: 20px;
   max-width: 400px;
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease;
 }
 
@@ -54,15 +54,15 @@
   background: transparent;
   border: none;
   border-radius: 6px;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
   transition: all 0.2s;
   font-size: 1.2rem;
 }
 
 .tour-tooltip__close:hover {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
 }
 
 .tour-tooltip__header {
@@ -76,7 +76,7 @@
 .tour-tooltip__header h3 {
   margin: 0;
   font-size: 1.3rem;
-  color: var(--color-text-primary);
+  color: white;
 }
 
 .tour-tooltip__progress {
@@ -90,7 +90,7 @@
 
 .tour-tooltip__content {
   margin-bottom: 20px;
-  color: var(--color-text-secondary);
+  color: rgba(255, 255, 255, 0.95);
   line-height: 1.6;
 }
 
@@ -107,18 +107,18 @@
 
 .tour-tooltip__skip {
   padding: 8px 16px;
-  background: transparent;
-  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.3);
   border-radius: 6px;
-  color: var(--color-text-secondary);
+  color: white;
   font-size: 0.9rem;
   cursor: pointer;
   transition: all 0.2s;
 }
 
 .tour-tooltip__skip:hover {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
+  background: rgba(255, 255, 255, 0.3);
+  color: white;
 }
 
 .tour-tooltip__navigation {
@@ -141,22 +141,22 @@
 }
 
 .tour-tooltip__prev {
-  background: var(--color-bg-secondary);
-  color: var(--color-text-primary);
-  border: 1px solid var(--color-border);
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
 }
 
 .tour-tooltip__prev:hover {
-  background: var(--color-bg-tertiary);
+  background: rgba(255, 255, 255, 0.3);
 }
 
 .tour-tooltip__next {
-  background: var(--color-primary);
-  color: white;
+  background: white;
+  color: var(--color-primary);
 }
 
 .tour-tooltip__next:hover {
-  background: var(--color-primary-dark);
+  background: rgba(255, 255, 255, 0.9);
   transform: translateY(-1px);
 }
 

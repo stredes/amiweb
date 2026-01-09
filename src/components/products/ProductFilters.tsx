@@ -17,7 +17,7 @@ function ProductFilters({
   onSearchChange
 }: ProductFiltersProps) {
   return (
-    <div className="filters">
+    <div className="filters" data-tour="filters-button">
       <SelectInput
         id="category-filter"
         label="Categoría"

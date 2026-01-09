@@ -21,8 +21,19 @@ function useProducts(selectedCategoryId?: string, termOverride?: string) {
       try {
         console.log('🔍 useProducts: Iniciando carga...', { searchTerm, selectedCategoryId });
         
+        // Construir filtros solo si tienen valores reales
+        const filters: any = {};
+        if (searchTerm && searchTerm.trim() !== '') {
+          filters.search = searchTerm;
+        }
+        if (selectedCategoryId && selectedCategoryId.trim() !== '') {
+          filters.categoryId = selectedCategoryId;
+        }
+        
+        console.log('📋 Filtros construidos:', filters);
+        
         const [catalog, availableCategories] = await Promise.all([
-          getProducts({ search: searchTerm, categoryId: selectedCategoryId }),
+          getProducts(Object.keys(filters).length > 0 ? filters : undefined),
           getCategories()
         ]);
         

@@ -8,6 +8,7 @@ import { VendorOrderList } from '../../components/vendor/VendorOrderList';
 import Loader from '../../components/ui/Loader';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { Navigate } from 'react-router-dom';
+import './VendorDashboard.css';
 
 export function VendorDashboardPage() {
   const { user, logout } = useAuth();

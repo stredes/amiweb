@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 interface StatCardProps {
   title: string;
   value: string | number;
@@ -9,7 +11,7 @@ interface StatCardProps {
   color?: string;
 }
 
-export function AdminStatCard({ title, value, icon, change, color = 'var(--color-primary)' }: StatCardProps) {
+export const AdminStatCard = memo(function AdminStatCard({ title, value, icon, change, color = 'var(--color-primary)' }: StatCardProps) {
   return (
     <div className="admin-stat-card" style={{ '--card-color': color } as any}>
       <div className="admin-stat-card__icon">{icon}</div>
@@ -24,4 +26,4 @@ export function AdminStatCard({ title, value, icon, change, color = 'var(--color
       </div>
     </div>
   );
-}
+});

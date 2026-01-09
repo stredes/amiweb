@@ -1,0 +1,67 @@
+/* Offline Indicator */
+
+.offline-indicator {
+  position: fixed;
+  top: 20px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 10000;
+  animation: slideDown 0.3s ease;
+}
+
+@keyframes slideDown {
+  from {
+    transform: translateX(-50%) translateY(-100%);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) translateY(0);
+    opacity: 1;
+  }
+}
+
+.offline-indicator__content {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 24px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  backdrop-filter: blur(10px);
+}
+
+.offline-indicator.offline .offline-indicator__content {
+  background: rgba(244, 67, 54, 0.95);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.offline-indicator.online .offline-indicator__content {
+  background: rgba(76, 175, 80, 0.95);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Dark mode */
+[data-theme='dark'] .offline-indicator__content {
+  backdrop-filter: blur(10px);
+}
+
+/* Mobile responsive */
+@media (max-width: 768px) {
+  .offline-indicator {
+    top: 10px;
+    left: 10px;
+    right: 10px;
+    transform: none;
+  }
+
+  .offline-indicator__content {
+    width: 100%;
+    justify-content: center;
+    padding: 10px 16px;
+    font-size: 0.875rem;
+  }
+}

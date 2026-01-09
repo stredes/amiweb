@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 
 type CardProps = {
   title?: string;
@@ -6,7 +6,7 @@ type CardProps = {
   actions?: ReactNode;
 };
 
-function Card({ title, children, actions }: CardProps) {
+const Card = memo(function Card({ title, children, actions }: CardProps) {
   return (
     <div className="card">
       {title && <h3 className="card__title">{title}</h3>}
@@ -14,6 +14,6 @@ function Card({ title, children, actions }: CardProps) {
       {actions && <div className="card__actions">{actions}</div>}
     </div>
   );
-}
+});
 
 export default Card;

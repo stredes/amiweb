@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sin conexión - AMILAB</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            color: #fff;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 500px;
+        }
+
+        .icon {
+            font-size: 120px;
+            margin-bottom: 30px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        h1 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            font-weight: 700;
+        }
+
+        p {
+            font-size: 1.125rem;
+            margin-bottom: 30px;
+            opacity: 0.9;
+            line-height: 1.6;
+        }
+
+        .actions {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+
+        button {
+            padding: 12px 30px;
+            font-size: 1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            background: rgba(255, 255, 255, 0.2);
+            color: #fff;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        button.primary {
+            background: #fff;
+            color: #667eea;
+        }
+
+        button.primary:hover {
+            background: #f0f0f0;
+        }
+
+        .features {
+            margin-top: 40px;
+            padding: 30px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+        }
+
+        .features h2 {
+            font-size: 1.25rem;
+            margin-bottom: 15px;
+        }
+
+        .features ul {
+            list-style: none;
+            text-align: left;
+        }
+
+        .features li {
+            padding: 8px 0;
+            opacity: 0.9;
+        }
+
+        .features li:before {
+            content: "✓ ";
+            font-weight: bold;
+            margin-right: 8px;
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2rem; }
+            p { font-size: 1rem; }
+            .icon { font-size: 80px; }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="icon">📡</div>
+        <h1>Sin Conexión</h1>
+        <p>
+            No pudimos conectarnos a internet. Verifica tu conexión y vuelve a intentarlo.
+        </p>
+        <div class="actions">
+            <button class="primary" onclick="location.reload()">
+                Reintentar
+            </button>
+            <button onclick="goHome()">
+                Ir al inicio
+            </button>
+        </div>
+
+        <div class="features">
+            <h2>Funciones disponibles offline:</h2>
+            <ul>
+                <li>Ver productos guardados en caché</li>
+                <li>Revisar tu carrito de cotizaciones</li>
+                <li>Ver tus listas de deseos</li>
+                <li>Las cotizaciones se enviarán cuando vuelva la conexión</li>
+            </ul>
+        </div>
+    </div>
+
+    <script>
+        function goHome() {
+            window.location.href = '/';
+        }
+
+        // Auto-retry every 5 seconds
+        let retryCount = 0;
+        const maxRetries = 10;
+
+        function checkConnection() {
+            if (navigator.onLine && retryCount < maxRetries) {
+                fetch('/')
+                    .then(() => {
+                        location.reload();
+                    })
+                    .catch(() => {
+                        retryCount++;
+                        if (retryCount < maxRetries) {
+                            setTimeout(checkConnection, 5000);
+                        }
+                    });
+            }
+        }
+
+        window.addEventListener('online', () => {
+            location.reload();
+        });
+
+        // Start checking
+        setTimeout(checkConnection, 5000);
+    </script>
+</body>
+</html>

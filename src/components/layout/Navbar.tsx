@@ -4,6 +4,7 @@ import { ROUTES } from '../../config/routes';
 import { useSearchStore } from '../../features/search/searchStore';
 import { useAuth } from '../../features/auth/authStore';
 import { ThemeToggle } from '../ui/ThemeToggle';
+import { NotificationCenter } from '../notifications/NotificationCenter';
 
 function Navbar() {
   const { term, setTerm } = useSearchStore();
@@ -69,7 +70,7 @@ function Navbar() {
         )}
       </nav>
       <div className="navbar__actions">
-        <form className="navbar__search" onSubmit={handleSearchSubmit}>
+        <form className="navbar__search" data-tour="search-bar" onSubmit={handleSearchSubmit}>
           <label className="sr-only" htmlFor="navbar-search">
             Buscar productos
           </label>
@@ -82,6 +83,7 @@ function Navbar() {
           />
           <button type="submit">Buscar</button>
         </form>
+        <NotificationCenter />
         <ThemeToggle />
       </div>
     </header>

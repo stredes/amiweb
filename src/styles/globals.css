@@ -99,7 +99,7 @@ h6 {
   margin: 0 0 0.75em;
   line-height: 1.3;
   font-weight: 700;
-  color: var(--color-primary);
+  color: var(--color-primary-dark);
 }
 
 h1 {
@@ -363,12 +363,13 @@ textarea {
 .badge {
   display: inline-block;
   padding: var(--spacing-xs) var(--spacing-md);
-  background: var(--color-primary);
+  background: linear-gradient(135deg, var(--color-primary-light) 0%, var(--color-primary) 100%);
   color: var(--color-white);
   border-radius: 999px;
   font-size: 0.875rem;
   font-weight: 600;
   letter-spacing: 0.01em;
+  box-shadow: 0 2px 8px rgba(139, 21, 56, 0.25);
 }
 
 .grid {
@@ -381,8 +382,33 @@ textarea {
 }
 
 .grid.three {
-  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: var(--spacing-lg);
   align-items: stretch;
+}
+
+.products-grid-scroll {
+  --product-card-height: 420px;
+  max-height: 70vh;
+  overflow-y: auto;
+  padding-right: 0.25rem;
+}
+
+.products-grid-scroll .grid.three {
+  grid-auto-rows: var(--product-card-height);
+}
+
+@media (min-width: 1100px) {
+  .products-grid-scroll {
+    max-height: calc(var(--product-card-height) * 3 + var(--spacing-lg) * 2);
+  }
+}
+
+@media (min-width: 1100px) {
+  .products-grid-scroll .grid.three {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
 }
 
 .category-grid .grid {
@@ -405,6 +431,21 @@ textarea {
   border-color: var(--color-primary-light);
 }
 
+.category-card {
+  transition: all 0.3s ease;
+}
+
+@keyframes categoryCardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 .card {
   background: var(--color-white);
   padding: var(--spacing-lg);
@@ -419,6 +460,18 @@ textarea {
 
 .card:hover {
   box-shadow: var(--shadow-lg);
+  transform: translateY(-2px);
+}
+
+@keyframes cardFadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .product-card-glare {
@@ -1174,14 +1227,14 @@ textarea {
 
 .admin-header__info h1 {
   margin-bottom: var(--spacing-sm);
-  color: var(--color-white);
+  color: var(--color-primary);
 }
 
 .admin-header__info p {
   display: flex;
   align-items: center;
   gap: var(--spacing-sm);
-  color: var(--color-light-gray);
+  color: var(--color-text-light);
 }
 
 .admin-badge {
