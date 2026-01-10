@@ -33,9 +33,9 @@ function HomePage() {
         <div className="hero__visual">
           <div className="hero-carousel">
             <Carousel
-              baseWidth={320}
+              baseWidth={600}
               autoplay={true}
-              autoplayDelay={3000}
+              autoplayDelay={5000}
               pauseOnHover={true}
               loop={true}
               round={false}
