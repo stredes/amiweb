@@ -10,7 +10,8 @@ function checkBackendPlugin() {
       setTimeout(async () => {
         const backendUrl = process.env.VITE_API_BASE_URL || 'http://localhost:3000';
         try {
-          const response = await fetch(`${backendUrl}/health`, {
+          // Check root API endpoint which always responds
+          const response = await fetch(`${backendUrl}/`, {
             signal: AbortSignal.timeout(5000)
           });
           

@@ -16,7 +16,8 @@ export async function checkBackendConnection() {
 
   try {
     logger.debug('Checking backend connection', { url: API_BASE_URL });
-    const response = await fetch(`${API_BASE_URL}/health`, {
+    // Check root API endpoint which always responds
+    const response = await fetch(`${API_BASE_URL}/`, {
       method: 'GET',
       signal: controller.signal,
     });
