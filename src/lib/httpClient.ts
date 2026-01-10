@@ -1,6 +1,20 @@
-import { API_BASE_URL, API_TIMEOUT_MS } from '../config/env';
+import { API_BASE_URL as RAW_API_BASE_URL, API_TIMEOUT_MS } from '../config/env';
 import { logger } from './logger';
 import { logApiEvent } from './eventLogger';
+
+// Normalizar URL: remover trailing slash si existe
+const API_BASE_URL = RAW_API_BASE_URL?.endsWith('/')
+  ? RAW_API_BASE_URL.slice(0, -1)
+  : RAW_API_BASE_URL;
+
+function buildUrl(endpoint: string) {
+  if (!API_BASE_URL) {
+    return '';
+  }
+
+  const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+  return `${API_BASE_URL}${normalizedEndpoint}`;
+}
 
 type HttpMethod = 'GET' | 'POST' | 'PUT' | 'PATCH' | 'DELETE';
 
@@ -15,9 +29,14 @@ export async function checkBackendConnection() {
   const timeoutId = window.setTimeout(() => controller.abort(), 5000);
 
   try {
+    if (!API_BASE_URL) {
+      logger.warn('API_BASE_URL not configured');
+      return false;
+    }
+
     logger.debug('Checking backend connection', { url: API_BASE_URL });
-    // Check root API endpoint which always responds
-    const response = await fetch(`${API_BASE_URL}/`, {
+    // Check a stable API endpoint to avoid redirects.
+    const response = await fetch(buildUrl('/api/health'), {
       method: 'GET',
       signal: controller.signal,
     });
@@ -66,7 +85,7 @@ export async function httpRequest<T>(
   { method = 'GET', body, headers }: HttpClientOptions = {}
 ): Promise<T> {
   const startTime = performance.now();
-  const url = `${API_BASE_URL}${endpoint}`;
+  const url = buildUrl(endpoint);
   
   logApiEvent.request(endpoint, method);
   
