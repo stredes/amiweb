@@ -1055,9 +1055,9 @@ const mockOrders: Order[] = [
     updatedAt: '2026-01-09T08:30:00Z'
   },
   {
-    id: '5',
+    id: '11',
     userId: 'user3',
-    orderNumber: 'ORD-2026-005',
+    orderNumber: 'ORD-2026-011',
     date: '2026-01-07T14:20:00Z',
     status: 'confirmado',
     paymentStatus: 'pagado',

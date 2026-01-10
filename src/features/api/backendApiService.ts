@@ -103,7 +103,9 @@ class BackendApiService {
   private baseUrl: string;
 
   constructor() {
-    this.baseUrl = API_BASE_URL || 'http://localhost:3000';
+    // Normalizar URL: remover trailing slash si existe
+    const url = API_BASE_URL || 'http://localhost:3000';
+    this.baseUrl = url.endsWith('/') ? url.slice(0, -1) : url;
   }
 
   private async request<T>(

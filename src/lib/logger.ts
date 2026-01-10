@@ -101,6 +101,24 @@ class Logger {
     } catch (e) {
       // Si falla localStorage, continuar sin guardar
     }
+
+    // Enviar a la terminal del servidor de desarrollo
+    this.sendToTerminal(entry);
+  }
+
+  private async sendToTerminal(entry: LogEntry) {
+    // Solo en desarrollo
+    if (this.isProduction) return;
+
+    try {
+      await fetch('/__logs', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(entry)
+      });
+    } catch (e) {
+      // Fallo silencioso - el servidor puede no estar disponible
+    }
   }
 
   private sendToConsole(entry: LogEntry) {

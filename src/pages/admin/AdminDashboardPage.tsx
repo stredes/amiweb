@@ -300,8 +300,8 @@ export function AdminDashboardPage() {
             <OrderManagement orders={orders} onOrderUpdate={loadData} />
           )}
 
-          {activeTab === 'users' && (
-            <UserManagement users={users} />
+          {activeTab === 'users' && user && (
+            <UserManagement users={users} currentUser={user} onUsersChange={loadData} />
           )}
 
           {activeTab === 'inventory' && user.role === 'root' && (

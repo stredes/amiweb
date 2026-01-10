@@ -2,10 +2,12 @@ export interface User {
   id: string;
   email: string;
   name: string;
-  role: 'socio' | 'admin' | 'root' | 'vendedor' | 'bodega';
+  role: 'socio' | 'admin' | 'root' | 'vendedor' | 'bodega' | 'callcenter' | 'soporte';
   company?: string;
   vendorId?: string;
   phone?: string;
+  department?: string;
+  isActive?: boolean;
 }
 
 export interface LoginCredentials {

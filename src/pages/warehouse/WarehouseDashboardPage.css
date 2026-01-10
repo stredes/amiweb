@@ -1,9 +1,16 @@
 .warehouse-dashboard {
-  padding: 2rem;
-  max-width: 1400px;
+  padding: 1.5rem 0.25rem;
+  max-width: 100%;
   margin: 0 auto;
   min-height: 100vh;
   background: var(--color-bg-secondary, #F5F5DC);
+}
+
+@media (min-width: 1920px) {
+  .warehouse-dashboard {
+    padding: 1.5rem 0.5rem;
+    max-width: 1920px;
+  }
 }
 
 .warehouse-dashboard__loading {

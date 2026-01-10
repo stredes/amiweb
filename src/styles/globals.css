@@ -884,9 +884,16 @@ textarea {
 
 /* ========== PORTAL PAGE ========== */
 .portal-page {
-  max-width: 1400px;
+  max-width: 100%;
   margin: 0 auto;
-  padding: var(--spacing-lg);
+  padding: 1.5rem 0.25rem;
+}
+
+@media (min-width: 1920px) {
+  .portal-page {
+    padding: 1.5rem 0.5rem;
+    max-width: 1920px;
+  }
 }
 
 .portal-header {

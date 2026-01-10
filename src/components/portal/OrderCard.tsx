@@ -11,12 +11,18 @@ interface OrderCardProps {
 }
 
 const statusConfig = {
+  'cotizacion': { label: 'Cotización', color: '#9E9E9E', icon: '📝' },
   'pendiente': { label: 'Pendiente', color: '#FFA500', icon: '⏳' },
+  'pendiente_vendedor': { label: 'Pendiente Vendedor', color: '#FF9800', icon: '⏰' },
+  'aprobado_vendedor': { label: 'Aprobado Vendedor', color: '#03A9F4', icon: '👍' },
+  'pendiente_admin': { label: 'Pendiente Admin', color: '#FF9800', icon: '⏰' },
+  'aprobado_admin': { label: 'Aprobado Admin', color: '#00BCD4', icon: '✓✓' },
   'confirmado': { label: 'Confirmado', color: '#00BCD4', icon: '✓' },
   'procesando': { label: 'Procesando', color: '#2196F3', icon: '📦' },
   'enviado': { label: 'Enviado', color: '#9C27B0', icon: '🚚' },
   'entregado': { label: 'Entregado', color: '#4CAF50', icon: '✅' },
-  'cancelado': { label: 'Cancelado', color: '#F44336', icon: '❌' }
+  'cancelado': { label: 'Cancelado', color: '#F44336', icon: '❌' },
+  'rechazado': { label: 'Rechazado', color: '#E91E63', icon: '🚫' }
 };
 
 export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
@@ -25,7 +31,16 @@ export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
   const [cancelReason, setCancelReason] = useState('');
   const [isCancelling, setIsCancelling] = useState(false);
 
-  const status = statusConfig[order.status as keyof typeof statusConfig];
+  // Defensive check for order and status
+  if (!order || !order.status) {
+    return null;
+  }
+
+  const status = statusConfig[order.status as keyof typeof statusConfig] || { 
+    label: order.status || 'Desconocido', 
+    color: '#757575', 
+    icon: '📋' 
+  };
   const total = new Intl.NumberFormat('es-CL', {
     style: 'currency',
     currency: 'CLP'

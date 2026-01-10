@@ -20,7 +20,6 @@ import { useEffect } from 'react';
 import { registerServiceWorker } from './lib/serviceWorker';
 import { checkBackendConnection } from './lib/httpClient';
 import { ErrorBoundary } from './components/debug/ErrorBoundary';
-import { LogViewer } from './components/debug/LogViewer';
 import { usePageTracking } from './hooks/useLogger';
 import { logger } from './lib/logger';
 
@@ -53,7 +52,6 @@ function App() {
                     <TourTrigger />
                     <OfflineIndicator />
                     <PWAInstallPrompt />
-                    {import.meta.env.DEV && <LogViewer />}
                   </TourProvider>
                 </CartProvider>
               </CompareProvider>
