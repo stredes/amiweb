@@ -530,6 +530,8 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: 1rem;
   padding: 0 0.5rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 @media (min-width: 1200px) {
@@ -548,6 +550,15 @@
   .user-grid {
     grid-template-columns: repeat(5, 1fr);
   }
+}
+
+/* Keep user cards inside container bounds on desktop */
+.user-management {
+  width: 100%;
+  max-width: 1320px;
+  margin: 0 auto;
+  padding: 0 1rem;
+  box-sizing: border-box;
 }
 
 .user-card-admin {
