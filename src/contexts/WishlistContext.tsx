@@ -47,7 +47,7 @@ interface WishlistContextType {
 
 const WishlistContext = createContext<WishlistContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'amilab_wishlists';
+const STORAGE_KEY = 'sp_dental_wishlists';
 const DEFAULT_LIST_ID = 'default';
 
 export function WishlistProvider({ children }: { children: ReactNode }) {

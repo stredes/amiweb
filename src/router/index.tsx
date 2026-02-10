@@ -13,6 +13,9 @@ const ProductDetailPage = lazy(() => import('../pages/productos/ProductDetailPag
 const SupportPage = lazy(() => import('../pages/soporte/SupportPage'));
 const ContactPage = lazy(() => import('../pages/contacto/ContactPage'));
 const CrimePreventionModelPage = lazy(() => import('../pages/accesos/CrimePreventionModelPage'));
+const PrivacyPolicyPage = lazy(() => import('../pages/legal/PrivacyPolicyPage'));
+const TermsPage = lazy(() => import('../pages/legal/TermsPage'));
+const CookiesPage = lazy(() => import('../pages/legal/CookiesPage'));
 const LoginPage = lazy(() => import('../pages/auth/LoginPage').then(m => ({ default: m.LoginPage })));
 const PartnerPortalPage = lazy(() => import('../pages/portal/PartnerPortalPage').then(m => ({ default: m.PartnerPortalPage })));
 const OrderDetailPage = lazy(() => import('../pages/portal/OrderDetailPage').then(m => ({ default: m.OrderDetailPage })));
@@ -49,7 +52,13 @@ function AppRouter() {
           <Route path={ROUTES.productDetail} element={<ProductDetailPage />} />
           <Route path={ROUTES.support} element={<SupportPage />} />
           <Route path={ROUTES.contact} element={<ContactPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route path={ROUTES.privacy} element={<PrivacyPolicyPage />} />
+          <Route path="/privacy" element={<PrivacyPolicyPage />} />
+          <Route path={ROUTES.terms} element={<TermsPage />} />
+          <Route path={ROUTES.cookies} element={<CookiesPage />} />
           <Route path={ROUTES.crimePrevention} element={<CrimePreventionModelPage />} />
+          <Route path="/about" element={<AboutPage />} />
           <Route 
             path={ROUTES.partnerPortal} 
             element={

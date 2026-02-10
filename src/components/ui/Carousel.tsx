@@ -9,31 +9,31 @@ const DEFAULT_ITEMS = [
     title: 'Text Animations',
     description: 'Cool text animations for your projects.',
     id: 1,
-    icon: <FiFileText className="carousel-icon" />
+    icon: <FiFileText className="carousel-icon" aria-hidden="true" />
   },
   {
     title: 'Animations',
     description: 'Smooth animations for your projects.',
     id: 2,
-    icon: <FiCircle className="carousel-icon" />
+    icon: <FiCircle className="carousel-icon" aria-hidden="true" />
   },
   {
     title: 'Components',
     description: 'Reusable components for your projects.',
     id: 3,
-    icon: <FiLayers className="carousel-icon" />
+    icon: <FiLayers className="carousel-icon" aria-hidden="true" />
   },
   {
     title: 'Backgrounds',
     description: 'Beautiful backgrounds and patterns for your projects.',
     id: 4,
-    icon: <FiLayout className="carousel-icon" />
+    icon: <FiLayout className="carousel-icon" aria-hidden="true" />
   },
   {
     title: 'Common UI',
     description: 'Common UI components are coming soon!',
     id: 5,
-    icon: <FiCode className="carousel-icon" />
+    icon: <FiCode className="carousel-icon" aria-hidden="true" />
   }
 ];
 

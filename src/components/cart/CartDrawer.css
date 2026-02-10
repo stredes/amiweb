@@ -9,6 +9,9 @@
   background: rgba(0, 0, 0, 0.5);
   z-index: 998;
   animation: fadeIn 0.3s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .cart-drawer {
@@ -23,6 +26,7 @@
   display: flex;
   flex-direction: column;
   transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  overscroll-behavior: contain;
 }
 
 .cart-drawer--open {
@@ -72,7 +76,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .cart-drawer__close:hover {
@@ -119,7 +123,7 @@
   border-radius: var(--radius-lg);
   padding: 1.25rem;
   position: relative;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .cart-item:hover {
@@ -164,7 +168,7 @@
   border-radius: var(--radius-sm);
   font-size: 1.25rem;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -196,8 +200,7 @@
   font-family: inherit;
 }
 
-.cart-item__notes:focus {
-  outline: none;
+.cart-item__notes:focus-visible {
   border-color: var(--color-primary);
 }
 
@@ -215,7 +218,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.2s ease;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .cart-item__remove:hover {
@@ -269,7 +272,7 @@
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .cart-drawer__action-btn:hover {
@@ -298,7 +301,7 @@
   font-size: 1rem;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .cart-drawer__send-btn--primary {

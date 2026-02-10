@@ -61,11 +61,11 @@ export function Rating({
         aria-label={`${starValue} stars`}
       >
         {filled ? (
-          <FaStar className="rating__star-icon rating__star-icon--filled" />
+          <FaStar className="rating__star-icon rating__star-icon--filled" aria-hidden="true" />
         ) : halfFilled ? (
-          <FaStarHalfAlt className="rating__star-icon rating__star-icon--half" />
+          <FaStarHalfAlt className="rating__star-icon rating__star-icon--half" aria-hidden="true" />
         ) : (
-          <FiStar className="rating__star-icon" />
+          <FiStar className="rating__star-icon" aria-hidden="true" />
         )}
       </button>
     );
@@ -99,7 +99,7 @@ export function Review({ author, rating, comment, date, avatar }: ReviewProps) {
       <div className="review__header">
         <div className="review__author">
           {avatar ? (
-            <img src={avatar} alt={author} className="review__avatar" />
+            <img src={avatar} alt={author} className="review__avatar" width={48} height={48} loading="lazy" />
           ) : (
             <div className="review__avatar review__avatar--placeholder">
               {author.charAt(0).toUpperCase()}

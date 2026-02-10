@@ -41,11 +41,21 @@ export function ProgressStepper({
               clickable ? 'progress-stepper__step--clickable' : ''
             }`}
             onClick={() => clickable && onStepClick(index)}
+            onKeyDown={(e) => {
+              if (!clickable) return;
+              if (e.key === 'Enter' || e.key === ' ') {
+                e.preventDefault();
+                onStepClick(index);
+              }
+            }}
+            role={clickable ? 'button' : undefined}
+            tabIndex={clickable ? 0 : undefined}
+            aria-current={active ? 'step' : undefined}
           >
             <div className="progress-stepper__step-marker">
               <div className="progress-stepper__step-circle">
                 {completed ? (
-                  <FiCheck className="progress-stepper__step-check" />
+                  <FiCheck className="progress-stepper__step-check" aria-hidden="true" />
                 ) : step.icon ? (
                   <span className="progress-stepper__step-icon">{step.icon}</span>
                 ) : (

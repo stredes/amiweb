@@ -69,22 +69,29 @@ export function WishlistManager() {
         data-tour="wishlist-button"
         onClick={() => setIsOpen(!isOpen)}
         title="Mis listas de deseos"
+        aria-label="Abrir listas de deseos"
+        aria-expanded={isOpen}
       >
-        <FiHeart size={24} />
+        <FiHeart size={24} aria-hidden="true" />
         {totalItems > 0 && <span className="wishlist-float-button__badge">{totalItems}</span>}
       </button>
 
       {/* Panel principal */}
       {isOpen && (
         <>
-          <div className="wishlist-overlay" onClick={() => setIsOpen(false)} />
-          <div className="wishlist-panel">
+          <button
+            type="button"
+            className="wishlist-overlay"
+            onClick={() => setIsOpen(false)}
+            aria-label="Cerrar listas de deseos"
+          />
+          <div className="wishlist-panel" role="dialog" aria-modal="true" aria-labelledby="wishlist-panel-title">
             <div className="wishlist-panel__header">
               <h3>
-                <FiHeart size={20} /> Mis Listas de Deseos
+                <FiHeart size={20} aria-hidden="true" /> <span id="wishlist-panel-title">Mis Listas de Deseos</span>
               </h3>
-              <button onClick={() => setIsOpen(false)} className="close-btn">
-                <FiX size={24} />
+              <button onClick={() => setIsOpen(false)} className="close-btn" aria-label="Cerrar listas de deseos">
+                <FiX size={24} aria-hidden="true" />
               </button>
             </div>
 
@@ -96,13 +103,14 @@ export function WishlistManager() {
                     key={list.id}
                     className={`list-tab ${list.id === currentListId ? 'active' : ''}`}
                     onClick={() => setCurrentList(list.id)}
+                    aria-pressed={list.id === currentListId}
                   >
                     {list.name}
                     <span className="list-tab__count">{list.items.length}</span>
                   </button>
                 ))}
                 <button className="list-tab list-tab--add" onClick={() => setShowCreateModal(true)}>
-                  <FiPlus size={16} /> Nueva lista
+                  <FiPlus size={16} aria-hidden="true" /> Nueva lista
                 </button>
               </div>
 
@@ -117,14 +125,15 @@ export function WishlistManager() {
                     }}
                     className="action-btn"
                     title="Renombrar lista"
+                    aria-label="Renombrar lista"
                   >
-                    <FiEdit2 size={16} />
+                    <FiEdit2 size={16} aria-hidden="true" />
                   </button>
-                  <button onClick={handleShare} className="action-btn" title="Compartir lista">
-                    <FiShare2 size={16} />
+                  <button onClick={handleShare} className="action-btn" title="Compartir lista" aria-label="Compartir lista">
+                    <FiShare2 size={16} aria-hidden="true" />
                   </button>
-                  <button onClick={() => exportList()} className="action-btn" title="Exportar CSV">
-                    <FiDownload size={16} />
+                  <button onClick={() => exportList()} className="action-btn" title="Exportar CSV" aria-label="Exportar lista en CSV">
+                    <FiDownload size={16} aria-hidden="true" />
                   </button>
                   {!currentList.isDefault && (
                     <button
@@ -135,8 +144,9 @@ export function WishlistManager() {
                       }}
                       className="action-btn action-btn--danger"
                       title="Eliminar lista"
+                      aria-label="Eliminar lista"
                     >
-                      <FiTrash2 size={16} />
+                      <FiTrash2 size={16} aria-hidden="true" />
                     </button>
                   )}
                 </div>
@@ -147,7 +157,7 @@ export function WishlistManager() {
             <div className="wishlist-panel__items">
               {currentList && currentList.items.length === 0 ? (
                 <div className="wishlist-empty">
-                  <FiHeart size={48} />
+                  <FiHeart size={48} aria-hidden="true" />
                   <p>No hay productos en esta lista</p>
                   <span>Explora nuestro catálogo y agrega tus favoritos</span>
                 </div>
@@ -158,6 +168,9 @@ export function WishlistManager() {
                       src={item.image || 'https://via.placeholder.com/80'}
                       alt={item.name}
                       className="wishlist-item__image"
+                      width={80}
+                      height={80}
+                      loading="lazy"
                     />
                     <div className="wishlist-item__info">
                       <h4>{item.name}</h4>
@@ -175,16 +188,18 @@ export function WishlistManager() {
                           }}
                           className="wishlist-item-btn"
                           title="Mover a otra lista"
+                          aria-label={`Mover ${item.name} a otra lista`}
                         >
-                          <FiMove size={16} />
+                          <FiMove size={16} aria-hidden="true" />
                         </button>
                       )}
                       <button
                         onClick={() => removeItem(item.id)}
                         className="wishlist-item-btn wishlist-item-btn--danger"
                         title="Eliminar"
+                        aria-label={`Eliminar ${item.name} de la lista`}
                       >
-                        <FiTrash2 size={16} />
+                        <FiTrash2 size={16} aria-hidden="true" />
                       </button>
                     </div>
                   </div>
@@ -203,7 +218,7 @@ export function WishlistManager() {
                   }}
                   className="wishlist-clear-btn"
                 >
-                  <FiTrash2 size={16} /> Vaciar lista
+                  <FiTrash2 size={16} aria-hidden="true" /> Vaciar lista
                 </button>
               </div>
             )}
@@ -213,23 +228,40 @@ export function WishlistManager() {
 
       {/* Modal: Crear lista */}
       {showCreateModal && (
-        <div className="modal-overlay" onClick={() => setShowCreateModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Nueva Lista de Deseos</h3>
+        <>
+          <button
+            type="button"
+            className="modal-overlay"
+            onClick={() => setShowCreateModal(false)}
+            aria-label="Cerrar modal de nueva lista"
+          />
+          <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="wishlist-create-title">
+            <h3 id="wishlist-create-title">Nueva Lista de Deseos</h3>
+            <label className="sr-only" htmlFor="wishlist-name">
+              Nombre de la lista
+            </label>
             <input
+              id="wishlist-name"
               type="text"
-              placeholder="Nombre de la lista"
+              placeholder="Nombre de la lista…"
               value={newListName}
               onChange={(e) => setNewListName(e.target.value)}
               className="modal-input"
-              autoFocus
+              name="wishlistName"
+              autoComplete="off"
             />
+            <label className="sr-only" htmlFor="wishlist-description">
+              Descripción de la lista
+            </label>
             <textarea
-              placeholder="Descripción (opcional)"
+              id="wishlist-description"
+              placeholder="Descripción (opcional)…"
               value={newListDescription}
               onChange={(e) => setNewListDescription(e.target.value)}
               className="modal-textarea"
               rows={3}
+              name="wishlistDescription"
+              autoComplete="off"
             />
             <div className="modal-actions">
               <button onClick={() => setShowCreateModal(false)} className="modal-btn modal-btn--secondary">
@@ -240,21 +272,32 @@ export function WishlistManager() {
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Modal: Renombrar lista */}
       {showRenameModal && (
-        <div className="modal-overlay" onClick={() => setShowRenameModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Renombrar Lista</h3>
+        <>
+          <button
+            type="button"
+            className="modal-overlay"
+            onClick={() => setShowRenameModal(false)}
+            aria-label="Cerrar modal de renombrar lista"
+          />
+          <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="wishlist-rename-title">
+            <h3 id="wishlist-rename-title">Renombrar Lista</h3>
+            <label className="sr-only" htmlFor="wishlist-rename">
+              Nuevo nombre
+            </label>
             <input
+              id="wishlist-rename"
               type="text"
-              placeholder="Nuevo nombre"
+              placeholder="Nuevo nombre…"
               value={newListName}
               onChange={(e) => setNewListName(e.target.value)}
               className="modal-input"
-              autoFocus
+              name="wishlistRename"
+              autoComplete="off"
             />
             <div className="modal-actions">
               <button onClick={() => setShowRenameModal(false)} className="modal-btn modal-btn--secondary">
@@ -265,14 +308,20 @@ export function WishlistManager() {
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
 
       {/* Modal: Mover item */}
       {showMoveModal && (
-        <div className="modal-overlay" onClick={() => setShowMoveModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
-            <h3>Mover a otra lista</h3>
+        <>
+          <button
+            type="button"
+            className="modal-overlay"
+            onClick={() => setShowMoveModal(false)}
+            aria-label="Cerrar modal de mover producto"
+          />
+          <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="wishlist-move-title">
+            <h3 id="wishlist-move-title">Mover a otra lista</h3>
             <div className="modal-list">
               {lists
                 .filter((list) => list.id !== currentListId)
@@ -281,6 +330,7 @@ export function WishlistManager() {
                     key={list.id}
                     onClick={() => handleMoveItem(list.id)}
                     className="modal-list-item"
+                    aria-label={`Mover a ${list.name}`}
                   >
                     {list.name}
                     <span className="modal-list-item__count">{list.items.length} items</span>
@@ -293,7 +343,7 @@ export function WishlistManager() {
               </button>
             </div>
           </div>
-        </div>
+        </>
       )}
     </>
   );

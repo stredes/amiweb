@@ -75,17 +75,27 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
 
   return (
     <>
-      <div className="cart-drawer-overlay" onClick={onClose} />
-      <div className={`cart-drawer ${isOpen ? 'cart-drawer--open' : ''}`}>
+      <button
+        type="button"
+        className="cart-drawer-overlay"
+        onClick={onClose}
+        aria-label="Cerrar carrito"
+      />
+      <div
+        className={`cart-drawer ${isOpen ? 'cart-drawer--open' : ''}`}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="cart-drawer-title"
+      >
         {/* Header */}
         <div className="cart-drawer__header">
           <div className="cart-drawer__title">
-            <FiShoppingCart size={24} />
-            <h2>Carrito de Cotización</h2>
-            <span className="cart-drawer__count">{items.length}</span>
+            <FiShoppingCart size={24} aria-hidden="true" />
+            <h2 id="cart-drawer-title">Carrito de Cotización</h2>
+            <span className="cart-drawer__count" aria-live="polite">{items.length}</span>
           </div>
-          <button className="cart-drawer__close" onClick={onClose}>
-            <FiX size={24} />
+          <button className="cart-drawer__close" onClick={onClose} aria-label="Cerrar carrito">
+            <FiX size={24} aria-hidden="true" />
           </button>
         </div>
 
@@ -93,7 +103,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
         <div className="cart-drawer__content">
           {items.length === 0 ? (
             <div className="cart-drawer__empty">
-              <FiShoppingCart size={64} />
+              <FiShoppingCart size={64} aria-hidden="true" />
               <p>Tu carrito está vacío</p>
               <p className="muted">Agrega productos para solicitar una cotización</p>
             </div>
@@ -113,6 +123,7 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity - 1)}
                       className="cart-item__qty-btn"
+                      aria-label={`Disminuir cantidad de ${item.name}`}
                     >
                       -
                     </button>
@@ -122,29 +133,38 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                       value={item.quantity}
                       onChange={(e) => updateQuantity(item.id, parseInt(e.target.value) || 1)}
                       className="cart-item__qty-input"
+                      aria-label={`Cantidad de ${item.name}`}
+                      name={`quantity-${item.id}`}
+                      inputMode="numeric"
+                      autoComplete="off"
                     />
                     <button
                       onClick={() => updateQuantity(item.id, item.quantity + 1)}
                       className="cart-item__qty-btn"
+                      aria-label={`Aumentar cantidad de ${item.name}`}
                     >
                       +
                     </button>
                   </div>
 
                   <textarea
-                    placeholder="Notas adicionales..."
+                    placeholder="Notas adicionales…"
                     value={item.notes || ''}
                     onChange={(e) => updateNotes(item.id, e.target.value)}
                     className="cart-item__notes"
                     rows={2}
+                    aria-label={`Notas para ${item.name}`}
+                    name={`notes-${item.id}`}
+                    autoComplete="off"
                   />
 
                   <button
                     onClick={() => removeItem(item.id)}
                     className="cart-item__remove"
                     title="Eliminar"
+                    aria-label={`Eliminar ${item.name} del carrito`}
                   >
-                    <FiTrash2 size={18} />
+                    <FiTrash2 size={18} aria-hidden="true" />
                   </button>
                 </div>
               ))}
@@ -160,14 +180,14 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 className="cart-drawer__action-btn"
                 onClick={handleExport}
               >
-                <FiDownload size={18} />
+                <FiDownload size={18} aria-hidden="true" />
                 Exportar
               </button>
               <button
                 className="cart-drawer__action-btn cart-drawer__action-btn--danger"
                 onClick={clearCart}
               >
-                <FiTrash2 size={18} />
+                <FiTrash2 size={18} aria-hidden="true" />
                 Vaciar
               </button>
             </div>
@@ -177,14 +197,14 @@ export function CartDrawer({ isOpen, onClose }: CartDrawerProps) {
                 onClick={handleSendQuote}
                 disabled={isSending}
               >
-                <FiSend size={18} />
-                {isSending ? 'Enviando...' : 'Solicitar Cotización'}
+                <FiSend size={18} aria-hidden="true" />
+                {isSending ? 'Enviando…' : 'Solicitar Cotización'}
               </button>
               <button
                 className="cart-drawer__send-btn cart-drawer__send-btn--primary"
                 onClick={() => setShowCheckout(true)}
               >
-                <FiCreditCard size={18} />
+                <FiCreditCard size={18} aria-hidden="true" />
                 Realizar Pedido
               </button>
             </div>

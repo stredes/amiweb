@@ -309,7 +309,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           duplicateSummary.push(`   • "${name}" en filas: ${rows.join(', ')} → se mantuvo solo la primera`);
         });
         if (realDupes.length > 3) {
-          duplicateSummary.push(`   ... y ${realDupes.length - 3} grupos más`);
+          duplicateSummary.push(`   … y ${realDupes.length - 3} grupos más`);
         }
       } else {
         duplicateSummary.push(`ℹ️  Se encontraron ${realDupes.length} productos duplicados (mismo nombre + SKU)`);
@@ -319,7 +319,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           duplicateSummary.push(`   • "${name}" en filas: ${rows.join(', ')}`);
         });
         if (realDupes.length > 3) {
-          duplicateSummary.push(`   ... y ${realDupes.length - 3} más`);
+          duplicateSummary.push(`   … y ${realDupes.length - 3} más`);
         }
       }
       duplicateSummary.push('');
@@ -335,7 +335,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       });
       
       if (duplicateGroups.size > 5) {
-        duplicateSummary.push(`   ... y ${duplicateGroups.size - 5} grupos más`);
+        duplicateSummary.push(`   … y ${duplicateGroups.size - 5} grupos más`);
       }
       
       duplicateSummary.push(`\n💡 Los slugs duplicados se ajustaron automáticamente con sufijo "-dup-N"`);
@@ -417,7 +417,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     setValidationErrors([]);
     setValidationWarnings([]);
     setUploadResult(null);
-    setProgressLabel('Leyendo archivo...');
+    setProgressLabel('Leyendo archivo…');
 
     try {
       setProgress(10);
@@ -444,7 +444,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       }
 
       const token = await user.getIdToken();
-      setProgressLabel('Subiendo productos al backend...');
+      setProgressLabel('Subiendo productos al backend…');
       setProgress(40);
 
       const batchSize = 200;
@@ -456,7 +456,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
 
       for (let i = 0; i < batches.length; i += 1) {
         const batch = batches[i];
-        setProgressLabel(`Subiendo lote ${i + 1} de ${batches.length}...`);
+        setProgressLabel(`Subiendo lote ${i + 1} de ${batches.length}…`);
         let batchResult: InventoryUploadResult;
 
         try {
@@ -465,7 +465,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
             overwriteExisting,
           });
         } catch (uploadError) {
-          setProgressLabel(`Reintentando lote ${i + 1}...`);
+          setProgressLabel(`Reintentando lote ${i + 1}…`);
           await sleep(retryDelays[0]);
           batchResult = await uploadInventory(batch, {
             token,
@@ -483,7 +483,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           .filter((item): item is InventoryUploadProduct => Boolean(item));
 
         for (let attempt = 0; attempt < retryDelays.length && retryProducts.length > 0; attempt += 1) {
-          setProgressLabel(`Reintentando ${retryProducts.length} productos...`);
+          setProgressLabel(`Reintentando ${retryProducts.length} productos…`);
           await sleep(retryDelays[attempt]);
           const retryResult = await uploadInventory(retryProducts, {
             token,
@@ -650,21 +650,21 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
 
       {isProcessing && (
         <div className="upload-progress">
-          <div className="progress-bar">
+          <div className="progress-bar" role="progressbar" aria-valuenow={progress} aria-valuemin={0} aria-valuemax={100}>
             <div 
               className="progress-bar-fill" 
               style={{ width: `${progress}%` }}
             />
           </div>
-          <p className="progress-text">
-            {progressLabel ?? 'Procesando archivo...'} {progress}%
+          <p className="progress-text" role="status" aria-live="polite">
+            {progressLabel ?? 'Procesando archivo…'} {progress}%
           </p>
         </div>
       )}
 
       <div className="stock-uploader__actions">
         <label className="btn btn-primary" style={{ cursor: 'pointer' }}>
-          {isProcessing ? '⏳ Procesando...' : '📁 Seleccionar Archivo'}
+          {isProcessing ? '⏳ Procesando…' : '📁 Seleccionar Archivo'}
           <input
             ref={fileInputRef}
             type="file"

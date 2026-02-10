@@ -36,7 +36,7 @@ function QuoteRequestModal({ product, onClose }: QuoteRequestModalProps) {
   const validate = (): boolean => {
     const nextErrors: QuoteFormErrors = {};
     if (!form.name.trim()) nextErrors.name = 'Ingresa tu nombre';
-    if (!form.organization.trim()) nextErrors.organization = 'Ingresa tu laboratorio o institución';
+    if (!form.organization.trim()) nextErrors.organization = 'Ingresa tu clínica o institución';
     if (!form.email.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email))
       nextErrors.email = 'Email inválido';
     if (!form.comment.trim()) nextErrors.comment = 'Describe tu necesidad';
@@ -57,12 +57,12 @@ function QuoteRequestModal({ product, onClose }: QuoteRequestModalProps) {
   };
 
   return (
-    <div className="modal-backdrop" role="dialog" aria-modal="true">
-      <div className="modal">
+    <div className="modal-backdrop" role="dialog" aria-modal="true" aria-labelledby="quote-modal-title">
+      <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal__header">
           <div>
             <p className="badge">Cotización</p>
-            <h3>{product.name}</h3>
+            <h3 id="quote-modal-title">{product.name}</h3>
             <p className="muted">{product.brand}</p>
           </div>
           <button className="modal__close" onClick={onClose} aria-label="Cerrar">
@@ -77,14 +77,18 @@ function QuoteRequestModal({ product, onClose }: QuoteRequestModalProps) {
             value={form.name}
             onChange={(e) => setForm({ ...form, name: e.target.value })}
             error={errors.name}
+            autoComplete="name"
+            name="name"
           />
           <TextInput
             id="quote-organization"
-            label="Laboratorio/Institución"
+            label="Clínica/Institución"
             required
             value={form.organization}
             onChange={(e) => setForm({ ...form, organization: e.target.value })}
             error={errors.organization}
+            autoComplete="organization"
+            name="organization"
           />
           <TextInput
             id="quote-email"
@@ -94,12 +98,19 @@ function QuoteRequestModal({ product, onClose }: QuoteRequestModalProps) {
             value={form.email}
             onChange={(e) => setForm({ ...form, email: e.target.value })}
             error={errors.email}
+            autoComplete="email"
+            name="email"
+            inputMode="email"
+            spellCheck={false}
           />
           <TextInput
             id="quote-phone"
             label="Teléfono (opcional)"
             value={form.phone}
             onChange={(e) => setForm({ ...form, phone: e.target.value })}
+            autoComplete="tel"
+            name="phone"
+            inputMode="tel"
           />
           <div className="form-control">
             <label htmlFor="quote-comment">Comentario</label>
@@ -108,20 +119,26 @@ function QuoteRequestModal({ product, onClose }: QuoteRequestModalProps) {
               required
               value={form.comment}
               onChange={(e) => setForm({ ...form, comment: e.target.value })}
+              aria-describedby={errors.comment ? 'quote-comment-error' : undefined}
+              name="comment"
             />
-            {errors.comment && <p className="form-error">{errors.comment}</p>}
+            {errors.comment && (
+              <p id="quote-comment-error" className="form-error" role="alert">
+                {errors.comment}
+              </p>
+            )}
           </div>
           <div className="card__actions">
             <Button type="submit" disabled={submitting}>
-              {submitting ? 'Enviando...' : 'Enviar cotización'}
+              {submitting ? 'Enviando…' : 'Enviar cotización'}
             </Button>
             <Button type="button" variant="secondary" onClick={onClose}>
               Cancelar
             </Button>
           </div>
           {success && (
-            <p className="success">
-              Solicitud enviada (mock). Un ejecutivo de AMILAB te contactará.
+            <p className="success" role="status">
+              Solicitud enviada (mock). Un ejecutivo de SP Dental te contactará.
             </p>
           )}
         </form>

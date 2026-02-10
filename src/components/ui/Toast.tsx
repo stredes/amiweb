@@ -203,6 +203,10 @@ export function ToastContainer() {
       gutter={8}
       toastOptions={{
         duration: 4000,
+        ariaProps: {
+          role: 'status',
+          'aria-live': 'polite',
+        },
         style: {
           background: '#363636',
           color: '#fff',

@@ -50,21 +50,21 @@ export function PWAInstallPrompt() {
   if (!showPrompt || !deferredPrompt) return null;
 
   return (
-    <div className="pwa-prompt">
+    <div className="pwa-prompt" role="dialog" aria-modal="true" aria-labelledby="pwa-install-title" aria-describedby="pwa-install-desc">
       <div className="pwa-prompt__content">
         <div className="pwa-prompt__icon">
-          <FiDownload />
+          <FiDownload aria-hidden="true" />
         </div>
         <div className="pwa-prompt__text">
-          <h3>Instalar AMIWEB</h3>
-          <p>Accede más rápido desde tu dispositivo</p>
+          <h3 id="pwa-install-title">Instalar SP Dental</h3>
+          <p id="pwa-install-desc">Accede más rápido desde tu dispositivo</p>
         </div>
         <div className="pwa-prompt__actions">
           <button onClick={handleInstall} className="pwa-prompt__install">
             Instalar
           </button>
-          <button onClick={handleDismiss} className="pwa-prompt__dismiss">
-            <FiX />
+          <button onClick={handleDismiss} className="pwa-prompt__dismiss" aria-label="Cerrar instalación">
+            <FiX aria-hidden="true" />
           </button>
         </div>
       </div>

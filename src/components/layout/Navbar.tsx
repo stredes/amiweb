@@ -24,8 +24,8 @@ function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar__brand" role="banner">
-        <div className="navbar__logo" aria-label="AMILAB logo placeholder">
-          AMILAB
+        <div className="navbar__logo" aria-label="SP Dental logo">
+          <img src="/logo.png" alt="SP Dental" width={140} height={60} loading="eager" />
         </div>
       </div>
       <nav className="navbar__nav" aria-label="Menú principal">
@@ -82,8 +82,11 @@ function Navbar() {
             id="navbar-search"
             type="search"
             value={term}
-            placeholder="Buscar productos..."
+            placeholder="Buscar productos…"
             onChange={(e) => setTerm(e.target.value)}
+            inputMode="search"
+            autoComplete="off"
+            name="navbarSearch"
           />
           <button type="submit">Buscar</button>
         </form>

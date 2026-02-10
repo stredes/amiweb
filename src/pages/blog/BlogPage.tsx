@@ -28,7 +28,7 @@ export function BlogPage() {
             <h1>Blog & Noticias</h1>
             <p>
               Mantente informado sobre las últimas tendencias, noticias y mejores prácticas
-              en tecnología industrial y automatización
+              en odontología, tecnología clínica y gestión de clínicas dentales
             </p>
           </FadeIn>
         </div>
@@ -39,20 +39,28 @@ export function BlogPage() {
         <FadeIn direction="up" delay={0.1}>
           <div className="blog-filters">
             <div className="blog-filters__search">
-              <FiSearch />
+              <FiSearch aria-hidden="true" />
+              <label className="sr-only" htmlFor="blog-search">
+                Buscar artículos
+              </label>
               <input
-                type="text"
-                placeholder="Buscar artículos..."
+                id="blog-search"
+                type="search"
+                placeholder="Buscar artículos…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
+                name="blogSearch"
+                inputMode="search"
+                autoComplete="off"
               />
             </div>
 
             <div className="blog-filters__categories">
-              <FiFilter />
+              <FiFilter aria-hidden="true" />
               <button
                 className={selectedCategory === 'all' ? 'active' : ''}
                 onClick={() => setSelectedCategory('all')}
+                aria-pressed={selectedCategory === 'all'}
               >
                 Todos
               </button>
@@ -61,6 +69,7 @@ export function BlogPage() {
                   key={category.id}
                   className={selectedCategory === category.slug ? 'active' : ''}
                   onClick={() => setSelectedCategory(category.slug)}
+                  aria-pressed={selectedCategory === category.slug}
                 >
                   <span>{category.icon}</span>
                   {category.name}

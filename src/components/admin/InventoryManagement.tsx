@@ -157,18 +157,29 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
       </div>
 
       <div className="inventory-filters">
+        <label className="sr-only" htmlFor="inventory-search">
+          Buscar productos en inventario
+        </label>
         <input
+          id="inventory-search"
           type="text"
-          placeholder="Buscar por producto, código o familia..."
+          placeholder="Buscar por producto, código o familia…"
           value={searchTerm}
           onChange={(e) => handleSearchChange(e.target.value)}
           className="inventory-search"
+          name="inventorySearch"
+          autoComplete="off"
         />
         
+        <label className="sr-only" htmlFor="inventory-family">
+          Filtrar por familia
+        </label>
         <select 
+          id="inventory-family"
           value={filterFamily} 
           onChange={(e) => handleFamilyChange(e.target.value)}
           className="inventory-filter"
+          name="family"
         >
           <option value="all">Todas las familias ({items.length})</option>
           {families.filter(f => f !== 'all').map(family => {
@@ -181,10 +192,15 @@ export function InventoryManagement({ items }: InventoryManagementProps) {
           })}
         </select>
 
+        <label className="sr-only" htmlFor="inventory-sort">
+          Ordenar inventario
+        </label>
         <select 
+          id="inventory-sort"
           value={sortBy} 
           onChange={(e) => handleSortChange(e.target.value)}
           className="inventory-filter"
+          name="sortBy"
         >
           <option value="producto">Ordenar por Producto</option>
           <option value="codigo">Ordenar por Código</option>

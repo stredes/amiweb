@@ -103,7 +103,19 @@ export function ShippingManagement({ orders, onOrderUpdate }: ShippingManagement
 
               return (
                 <div key={order.id} className={`shipping-card ${isExpanded ? 'shipping-card--expanded' : ''}`}>
-                  <div className="shipping-card__header" onClick={() => toggleOrderExpand(order.id)}>
+                  <div
+                    className="shipping-card__header"
+                    onClick={() => toggleOrderExpand(order.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleOrderExpand(order.id);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={expandedOrder === order.id}
+                  >
                     <div className="shipping-card__info">
                       <div className="shipping-card__number">
                         <strong>#{order.orderNumber}</strong>
@@ -176,13 +188,19 @@ export function ShippingManagement({ orders, onOrderUpdate }: ShippingManagement
                       <div className="detail-section">
                         <h4>🔢 Número de Seguimiento</h4>
                         <div className="tracking-input-group">
+                          <label className="sr-only" htmlFor={`tracking-${order.id}`}>
+                            Número de seguimiento
+                          </label>
                           <input
+                            id={`tracking-${order.id}`}
                             type="text"
                             className="tracking-input"
-                            placeholder="Ingresa el número de seguimiento"
+                            placeholder="Ingresa el número de seguimiento…"
                             value={currentTracking}
                             onChange={(e) => handleTrackingChange(order.id, e.target.value)}
                             disabled={isUpdating}
+                            name="trackingNumber"
+                            autoComplete="off"
                           />
                         </div>
                       </div>
@@ -194,7 +212,7 @@ export function ShippingManagement({ orders, onOrderUpdate }: ShippingManagement
                           onClick={() => handleShipOrder(order)}
                           disabled={isUpdating || !currentTracking}
                         >
-                          {isUpdating ? 'Procesando...' : '🚚 Marcar como Enviado'}
+                          {isUpdating ? 'Procesando…' : '🚚 Marcar como Enviado'}
                         </button>
                       </div>
                     </div>
@@ -220,7 +238,19 @@ export function ShippingManagement({ orders, onOrderUpdate }: ShippingManagement
 
               return (
                 <div key={order.id} className={`shipping-card shipping-card--shipped ${isExpanded ? 'shipping-card--expanded' : ''}`}>
-                  <div className="shipping-card__header" onClick={() => toggleOrderExpand(order.id)}>
+                  <div
+                    className="shipping-card__header"
+                    onClick={() => toggleOrderExpand(order.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        toggleOrderExpand(order.id);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
+                    aria-expanded={expandedOrder === order.id}
+                  >
                     <div className="shipping-card__info">
                       <div className="shipping-card__number">
                         <strong>#{order.orderNumber}</strong>

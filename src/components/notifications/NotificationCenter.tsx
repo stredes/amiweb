@@ -6,17 +6,18 @@ import './NotificationCenter.css';
 export function NotificationCenter() {
   const { notifications, unreadCount, markAsRead, markAllAsRead, removeNotification, clearAll } = useNotifications();
   const [isOpen, setIsOpen] = useState(false);
+  const panelId = 'notification-panel';
 
   const getIcon = (type: NotificationType) => {
     switch (type) {
       case 'success':
-        return <FiCheckCircle size={20} />;
+        return <FiCheckCircle size={20} aria-hidden="true" />;
       case 'warning':
-        return <FiAlertTriangle size={20} />;
+        return <FiAlertTriangle size={20} aria-hidden="true" />;
       case 'error':
-        return <FiAlertCircle size={20} />;
+        return <FiAlertCircle size={20} aria-hidden="true" />;
       default:
-        return <FiInfo size={20} />;
+        return <FiInfo size={20} aria-hidden="true" />;
     }
   };
 
@@ -44,15 +45,23 @@ export function NotificationCenter() {
         data-tour="notifications-button"
         onClick={() => setIsOpen(!isOpen)} 
         title="Notificaciones"
+        aria-label={isOpen ? 'Cerrar notificaciones' : 'Abrir notificaciones'}
+        aria-expanded={isOpen}
+        aria-controls={panelId}
       >
-        <FiBell size={24} />
+        <FiBell size={24} aria-hidden="true" />
         {unreadCount > 0 && <span className="notification-button__badge">{unreadCount > 9 ? '9+' : unreadCount}</span>}
       </button>
 
       {isOpen && (
         <>
-          <div className="notification-overlay" onClick={() => setIsOpen(false)} />
-          <div className="notification-panel">
+          <button
+            type="button"
+            className="notification-overlay"
+            onClick={() => setIsOpen(false)}
+            aria-label="Cerrar notificaciones"
+          />
+          <div className="notification-panel" role="dialog" aria-modal="true" id={panelId} aria-label="Notificaciones">
             <div className="notification-panel__header">
               <h3>
                 Notificaciones
@@ -61,24 +70,24 @@ export function NotificationCenter() {
               <div className="notification-panel__actions">
                 {notifications.length > 0 && (
                   <>
-                    <button onClick={markAllAsRead} title="Marcar todas como leídas" className="action-btn">
-                      <FiCheck size={18} />
+                    <button onClick={markAllAsRead} title="Marcar todas como leídas" className="action-btn" aria-label="Marcar todas como leídas">
+                      <FiCheck size={18} aria-hidden="true" />
                     </button>
-                    <button onClick={clearAll} title="Limpiar todas" className="action-btn">
-                      <FiTrash2 size={18} />
+                    <button onClick={clearAll} title="Limpiar todas" className="action-btn" aria-label="Limpiar todas">
+                      <FiTrash2 size={18} aria-hidden="true" />
                     </button>
                   </>
                 )}
-                <button onClick={() => setIsOpen(false)} title="Cerrar" className="action-btn">
-                  <FiX size={20} />
+                <button onClick={() => setIsOpen(false)} title="Cerrar" className="action-btn" aria-label="Cerrar notificaciones">
+                  <FiX size={20} aria-hidden="true" />
                 </button>
               </div>
             </div>
 
-            <div className="notification-panel__list">
+            <div className="notification-panel__list" aria-live="polite">
               {notifications.length === 0 ? (
                 <div className="notification-empty">
-                  <FiBell size={48} />
+                  <FiBell size={48} aria-hidden="true" />
                   <p>No tienes notificaciones</p>
                 </div>
               ) : (
@@ -87,6 +96,14 @@ export function NotificationCenter() {
                     key={notification.id}
                     className={`notification-item ${notification.type} ${notification.read ? 'read' : 'unread'}`}
                     onClick={() => handleNotificationClick(notification.id)}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        handleNotificationClick(notification.id);
+                      }
+                    }}
+                    role="button"
+                    tabIndex={0}
                   >
                     <div className="notification-item__icon">{getIcon(notification.type)}</div>
                     <div className="notification-item__content">
@@ -106,8 +123,9 @@ export function NotificationCenter() {
                         removeNotification(notification.id);
                       }}
                       title="Eliminar"
+                      aria-label="Eliminar notificación"
                     >
-                      <FiX size={16} />
+                      <FiX size={16} aria-hidden="true" />
                     </button>
                   </div>
                 ))

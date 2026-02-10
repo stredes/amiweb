@@ -12,7 +12,7 @@ export function TourTrigger() {
       title={hasCompletedTour ? 'Ver tour nuevamente' : 'Iniciar tour guiado'}
       aria-label="Iniciar tour guiado"
     >
-      <FiHelpCircle />
+      <FiHelpCircle aria-hidden="true" />
       {!hasCompletedTour && <span className="tour-trigger__badge" />}
     </button>
   );

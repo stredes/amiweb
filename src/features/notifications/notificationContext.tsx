@@ -25,7 +25,7 @@ type NotificationContextValue = {
 
 const NotificationContext = createContext<NotificationContextValue | undefined>(undefined);
 
-const STORAGE_KEY = 'amilab_notifications';
+const STORAGE_KEY = 'sp_dental_notifications';
 const MAX_NOTIFICATIONS = 50;
 
 export function NotificationProvider({ children }: { children: ReactNode }) {

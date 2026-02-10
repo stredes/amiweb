@@ -186,10 +186,12 @@ export function OrderPreparation({ orders, onOrderUpdate }: OrderPreparationProp
 
       <form className="order-preparation__filters" onSubmit={handleApplyFilters}>
         <div className="filter-group">
-          <label>Estado</label>
+          <label htmlFor="order-filter-status">Estado</label>
           <select
+            id="order-filter-status"
             value={draftFilters.status}
             onChange={(event) => setDraftFilters(prev => ({ ...prev, status: event.target.value }))}
+            name="status"
           >
             <option value="all">Todos</option>
             <option value="confirmado">Confirmado</option>
@@ -197,19 +199,23 @@ export function OrderPreparation({ orders, onOrderUpdate }: OrderPreparationProp
           </select>
         </div>
         <div className="filter-group">
-          <label>Desde</label>
+          <label htmlFor="order-filter-from">Desde</label>
           <input
+            id="order-filter-from"
             type="date"
             value={draftFilters.from}
             onChange={(event) => setDraftFilters(prev => ({ ...prev, from: event.target.value }))}
+            name="from"
           />
         </div>
         <div className="filter-group">
-          <label>Hasta</label>
+          <label htmlFor="order-filter-to">Hasta</label>
           <input
+            id="order-filter-to"
             type="date"
             value={draftFilters.to}
             onChange={(event) => setDraftFilters(prev => ({ ...prev, to: event.target.value }))}
+            name="to"
           />
         </div>
         <button className="btn btn--primary" type="submit">
@@ -218,11 +224,18 @@ export function OrderPreparation({ orders, onOrderUpdate }: OrderPreparationProp
       </form>
 
       <div className="order-preparation__search">
+        <label className="sr-only" htmlFor="order-search">
+          Buscar pedidos
+        </label>
         <input
+          id="order-search"
           type="search"
-          placeholder="Buscar por pedido, cliente u organización"
+          placeholder="Buscar por pedido, cliente u organización…"
           value={searchTerm}
           onChange={(event) => setSearchTerm(event.target.value)}
+          name="orderSearch"
+          inputMode="search"
+          autoComplete="off"
         />
       </div>
 
@@ -237,7 +250,7 @@ export function OrderPreparation({ orders, onOrderUpdate }: OrderPreparationProp
         </div>
 
         {filteredOrders.length === 0 && (
-          <div className="order-preparation__empty-state">
+          <div className="order-preparation__empty-state" role="status">
             No hay pedidos con los filtros actuales.
           </div>
         )}
@@ -293,7 +306,7 @@ export function OrderPreparation({ orders, onOrderUpdate }: OrderPreparationProp
                       disabled={isUpdating}
                       type="button"
                     >
-                      {isUpdating ? 'Procesando...' : 'Iniciar'}
+                      {isUpdating ? 'Procesando…' : 'Iniciar'}
                     </button>
                   ) : (
                     <button
@@ -302,7 +315,7 @@ export function OrderPreparation({ orders, onOrderUpdate }: OrderPreparationProp
                       disabled={isUpdating || checkedCount < totalItems}
                       type="button"
                     >
-                      {isUpdating ? 'Procesando...' : 'Completar'}
+                      {isUpdating ? 'Procesando…' : 'Completar'}
                     </button>
                   )}
                 </div>
@@ -413,7 +426,7 @@ export function OrderPreparation({ orders, onOrderUpdate }: OrderPreparationProp
                         disabled={isUpdating}
                         type="button"
                       >
-                        {isUpdating ? 'Procesando...' : '▶️ Iniciar Preparación'}
+                        {isUpdating ? 'Procesando…' : '▶️ Iniciar Preparación'}
                       </button>
                     ) : (
                       <button
@@ -422,7 +435,7 @@ export function OrderPreparation({ orders, onOrderUpdate }: OrderPreparationProp
                         disabled={isUpdating || checkedCount < totalItems}
                         type="button"
                       >
-                        {isUpdating ? 'Procesando...' : '✅ Completar Preparación'}
+                        {isUpdating ? 'Procesando…' : '✅ Completar Preparación'}
                       </button>
                     )}
                   </div>

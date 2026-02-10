@@ -69,6 +69,8 @@ export function ImageGallery({
               src={currentImage}
               alt={`${alt} ${currentIndex + 1}`}
               className="image-gallery__main-image"
+              width={800}
+              height={800}
               style={
                 isZooming
                   ? {
@@ -85,7 +87,7 @@ export function ImageGallery({
                 onClick={() => setIsFullscreen(true)}
                 aria-label="View fullscreen"
               >
-                <FiZoomIn />
+                <FiZoomIn aria-hidden="true" />
               </button>
             )}
           </div>
@@ -97,14 +99,14 @@ export function ImageGallery({
                 onClick={handlePrevious}
                 aria-label="Previous image"
               >
-                <FiChevronLeft />
+                <FiChevronLeft aria-hidden="true" />
               </button>
               <button
                 className="image-gallery__nav image-gallery__nav--next"
                 onClick={handleNext}
                 aria-label="Next image"
               >
-                <FiChevronRight />
+                <FiChevronRight aria-hidden="true" />
               </button>
             </>
           )}
@@ -121,7 +123,7 @@ export function ImageGallery({
                 onClick={() => handleThumbnailClick(index)}
                 aria-label={`View image ${index + 1}`}
               >
-                <img src={image} alt={`${alt} thumbnail ${index + 1}`} />
+                <img src={image} alt={`${alt} thumbnail ${index + 1}`} width={80} height={80} loading="lazy" />
               </button>
             ))}
           </div>
@@ -136,13 +138,14 @@ export function ImageGallery({
           tabIndex={0}
           role="dialog"
           aria-modal="true"
+          aria-label="Vista en pantalla completa"
         >
           <button
             className="image-gallery-fullscreen__close"
             onClick={() => setIsFullscreen(false)}
             aria-label="Close fullscreen"
           >
-            <FiX />
+            <FiX aria-hidden="true" />
           </button>
 
           <div className="image-gallery-fullscreen__content" onClick={(e) => e.stopPropagation()}>
@@ -150,6 +153,8 @@ export function ImageGallery({
               src={currentImage}
               alt={`${alt} ${currentIndex + 1}`}
               className="image-gallery-fullscreen__image"
+              width={1200}
+              height={1200}
             />
 
             {images.length > 1 && (
@@ -159,14 +164,14 @@ export function ImageGallery({
                   onClick={handlePrevious}
                   aria-label="Previous image"
                 >
-                  <FiChevronLeft />
+                  <FiChevronLeft aria-hidden="true" />
                 </button>
                 <button
                   className="image-gallery-fullscreen__nav image-gallery-fullscreen__nav--next"
                   onClick={handleNext}
                   aria-label="Next image"
                 >
-                  <FiChevronRight />
+                  <FiChevronRight aria-hidden="true" />
                 </button>
 
                 <div className="image-gallery-fullscreen__counter">

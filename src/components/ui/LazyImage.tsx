@@ -4,6 +4,8 @@ import './LazyImage.css';
 interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
   src: string;
   alt: string;
+  width: number;
+  height: number;
   placeholder?: string;
   blur?: boolean;
   threshold?: number;
@@ -14,6 +16,8 @@ interface LazyImageProps extends React.ImgHTMLAttributes<HTMLImageElement> {
 export function LazyImage({
   src,
   alt,
+  width,
+  height,
   placeholder,
   blur = true,
   threshold = 0.1,
@@ -55,6 +59,8 @@ export function LazyImage({
           alt={alt}
           className={`lazy-image__placeholder ${blur ? 'lazy-image__placeholder--blur' : ''}`}
           aria-hidden="true"
+          width={width}
+          height={height}
         />
       )}
       {isInView && (
@@ -64,6 +70,8 @@ export function LazyImage({
           alt={alt}
           onLoad={handleLoad}
           className={`lazy-image__img ${isLoaded ? 'lazy-image__img--loaded' : ''}`}
+          width={width}
+          height={height}
         />
       )}
     </div>

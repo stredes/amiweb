@@ -111,10 +111,15 @@ export function LogViewer() {
         </div>
 
         <div className="log-viewer-filters">
+          <label className="sr-only" htmlFor="log-filter">
+            Filtrar por nivel de log
+          </label>
           <select 
+            id="log-filter"
             value={filter} 
             onChange={(e) => setFilter(e.target.value as LogLevel | 'all')}
             className="log-filter-select"
+            name="logLevel"
           >
             <option value="all">Todos los niveles</option>
             <option value={LogLevel.DEBUG}>Debug</option>
@@ -124,12 +129,18 @@ export function LogViewer() {
             <option value={LogLevel.CRITICAL}>Critical</option>
           </select>
 
+          <label className="sr-only" htmlFor="log-search">
+            Buscar en logs
+          </label>
           <input
+            id="log-search"
             type="text"
-            placeholder="Buscar en logs..."
+            placeholder="Buscar en logs…"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className="log-search-input"
+            name="logSearch"
+            autoComplete="off"
           />
         </div>
 
@@ -180,7 +191,20 @@ function LogEntryComponent({ log }: { log: LogEntry }) {
       className={`log-entry log-entry-${log.level}`}
       style={{ borderLeftColor: getLevelColor(log.level) }}
     >
-      <div className="log-entry-header" onClick={() => hasDetails && setIsExpanded(!isExpanded)}>
+      <div
+        className="log-entry-header"
+        onClick={() => hasDetails && setIsExpanded(!isExpanded)}
+        onKeyDown={(e) => {
+          if (!hasDetails) return;
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            setIsExpanded(!isExpanded);
+          }
+        }}
+        role={hasDetails ? 'button' : undefined}
+        tabIndex={hasDetails ? 0 : undefined}
+        aria-expanded={hasDetails ? isExpanded : undefined}
+      >
         <span className="log-entry-time">{time}</span>
         <span 
           className="log-entry-level"

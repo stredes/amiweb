@@ -1,4 +1,4 @@
-import { useParams, Link, useNavigate } from 'react-router-dom';
+import { useParams, Link } from 'react-router-dom';
 import { mockBlogPosts } from '../../features/blog/mockData';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { FiClock, FiEye, FiArrowLeft, FiShare2 } from 'react-icons/fi';
@@ -7,7 +7,6 @@ import './BlogPostPage.css';
 
 export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
-  const navigate = useNavigate();
   
   const post = mockBlogPosts.find((p) => p.slug === slug);
 
@@ -53,9 +52,9 @@ export function BlogPostPage() {
       {/* Header */}
       <div className="blog-post-header">
         <div className="blog-post-header__container">
-          <button onClick={() => navigate('/blog')} className="blog-post-back">
-            <FiArrowLeft /> Volver al blog
-          </button>
+          <Link to="/blog" className="blog-post-back">
+            <FiArrowLeft aria-hidden="true" /> Volver al blog
+          </Link>
 
           <FadeIn direction="up">
             <div className="blog-post-meta">
@@ -67,17 +66,17 @@ export function BlogPostPage() {
 
             <div className="blog-post-stats">
               <span>
-                <FiClock /> {post.readingTime} min de lectura
+                <FiClock aria-hidden="true" /> {post.readingTime} min de lectura
               </span>
               {post.views && (
                 <span>
-                  <FiEye /> {post.views} vistas
+                  <FiEye aria-hidden="true" /> {post.views} vistas
                 </span>
               )}
             </div>
 
-            <div className="blog-post-author">
-              <img src={post.author.avatar} alt={post.author.name} />
+          <div className="blog-post-author">
+            <img src={post.author.avatar} alt={post.author.name} width={60} height={60} loading="lazy" />
               <div>
                 <span className="blog-post-author__name">{post.author.name}</span>
                 <span className="blog-post-author__role">{post.author.role}</span>
@@ -90,7 +89,7 @@ export function BlogPostPage() {
       {/* Cover Image */}
       <FadeIn direction="up" delay={0.2}>
         <div className="blog-post-cover">
-          <img src={post.coverImage} alt={post.title} />
+          <img src={post.coverImage} alt={post.title} width={1200} height={600} loading="eager" fetchpriority="high" />
         </div>
       </FadeIn>
 
@@ -114,7 +113,7 @@ export function BlogPostPage() {
           {/* Share */}
           <div className="blog-post-actions">
             <button onClick={handleShare} className="blog-post-share">
-              <FiShare2 /> Compartir artículo
+              <FiShare2 aria-hidden="true" /> Compartir artículo
             </button>
           </div>
         </article>
@@ -124,7 +123,7 @@ export function BlogPostPage() {
           {/* Author Card */}
           <FadeIn direction="left" delay={0.4}>
             <div className="author-card">
-              <img src={post.author.avatar} alt={post.author.name} />
+              <img src={post.author.avatar} alt={post.author.name} width={100} height={100} loading="lazy" />
               <h3>{post.author.name}</h3>
               <p>{post.author.role}</p>
             </div>
@@ -141,7 +140,7 @@ export function BlogPostPage() {
                     to={`/blog/${relatedPost.slug}`}
                     className="related-post"
                   >
-                    <img src={relatedPost.coverImage} alt={relatedPost.title} />
+                    <img src={relatedPost.coverImage} alt={relatedPost.title} width={80} height={80} loading="lazy" />
                     <div>
                       <h4>{relatedPost.title}</h4>
                       <span>{relatedPost.readingTime} min de lectura</span>

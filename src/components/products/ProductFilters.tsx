@@ -27,7 +27,8 @@ function ProductFilters({
           value: category.id,
           label: category.name
         }))}
-        placeholder="Todas las categorías"
+        placeholder="Todas las categorías…"
+        name="category"
       />
       <div className="form-control">
         <label htmlFor="search-term">Buscar</label>
@@ -35,8 +36,11 @@ function ProductFilters({
           id="search-term"
           type="search"
           value={searchTerm}
-          placeholder="Buscar por nombre o marca"
+          placeholder="Buscar por nombre o marca…"
           onChange={(e) => onSearchChange(e.target.value)}
+          name="searchTerm"
+          inputMode="search"
+          autoComplete="off"
         />
       </div>
       <p className="muted">

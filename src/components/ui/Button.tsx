@@ -6,10 +6,10 @@ type ButtonProps = {
   fullWidth?: boolean;
 } & ButtonHTMLAttributes<HTMLButtonElement>;
 
-function Button({ children, variant = 'primary', fullWidth = false, className = '', ...props }: ButtonProps) {
+function Button({ children, variant = 'primary', fullWidth = false, className = '', type = 'button', ...props }: ButtonProps) {
   const widthClass = fullWidth ? 'btn-full-width' : '';
   return (
-    <button className={`btn btn-${variant} ${widthClass} ${className}`.trim()} {...props}>
+    <button type={type} className={`btn btn-${variant} ${widthClass} ${className}`.trim()} {...props}>
       {children}
     </button>
   );

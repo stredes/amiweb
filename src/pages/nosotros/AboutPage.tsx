@@ -21,59 +21,64 @@ function AboutPage() {
 
   const teamMembers: TeamMember[] = [
     {
-      name: "Atención al Cliente",
-      role: "Soporte 24/7",
-      description: "Equipo especializado en resolver consultas y necesidades de nuestros clientes",
+      name: "Atención Clínica",
+      role: "Venta consultiva",
+      description: "Odontólogos y especialistas que orientan la elección de cada solución",
       icon: "👥"
     },
     {
       name: "Servicio Técnico",
-      role: "Mantenimiento",
-      description: "Técnicos certificados para instalación, calibración y reparación de equipos",
+      role: "Instalación y mantenimiento",
+      description: "Técnicos certificados para instalación, calibración y reparación",
       icon: "🔧"
     },
     {
       name: "Logística",
       role: "Distribución",
-      description: "Red nacional para entrega ágil de productos y repuestos",
+      description: "Despachos rápidos a todo Chile con control de stock",
       icon: "🚛"
     },
     {
-      name: "Capacitación",
-      role: "Formación",
-      description: "Programas de entrenamiento continuo para usuarios y personal técnico",
+      name: "Formación",
+      role: "Actualización continua",
+      description: "Talleres clínicos, lanzamientos y soporte en nuevas tecnologías",
       icon: "📚"
     }
   ];
 
   const brands: Brand[] = [
     {
-      name: "Becton Dickinson",
-      category: "Diagnóstico y dispositivos médicos",
-      description: "Líder mundial en tecnología médica"
+      name: "FGM Dental Group",
+      category: "Estética y blanqueamiento",
+      description: "Referente internacional en estética dental"
     },
     {
-      name: "Olympus / Beckman",
-      category: "Química clínica",
-      description: "Sistemas avanzados de análisis bioquímico"
+      name: "Wisedent",
+      category: "Odontología restauradora",
+      description: "Materiales clínicos de alta precisión"
     },
     {
-      name: "Mindray",
-      category: "Hematología y equipamiento",
-      description: "Tecnología de vanguardia para laboratorios"
+      name: "Dimed",
+      category: "Insumos de alta rotación",
+      description: "Portafolio completo para la práctica diaria"
     },
     {
-      name: "Britania",
-      category: "Microbiología",
-      description: "Medios de cultivo y soluciones microbiológicas"
+      name: "SMI",
+      category: "Cirugía y suturas",
+      description: "Soluciones quirúrgicas confiables"
+    },
+    {
+      name: "Acteon",
+      category: "Equipos e imagenología",
+      description: "Tecnología avanzada para diagnóstico y tratamiento"
     }
   ];
 
   const achievements = [
-    { number: "25+", label: "Años de experiencia", icon: "📅" },
-    { number: "500+", label: "Laboratorios atendidos", icon: "🏥" },
-    { number: "98%", label: "Satisfacción del cliente", icon: "⭐" },
-    { number: "24/7", label: "Soporte técnico", icon: "🔧" }
+    { number: "Consultivo", label: "Equipo clínico especializado", icon: "📅" },
+    { number: "Nacional", label: "Cobertura y logística", icon: "🏥" },
+    { number: "Academia", label: "Formación continua", icon: "⭐" },
+    { number: "Soporte", label: "Servicio técnico", icon: "🔧" }
   ];
 
   return (
@@ -82,14 +87,13 @@ function AboutPage() {
       <section className="about-hero">
         <FadeIn direction="up">
           <div className="about-hero-content">
-            <h1 className="about-title">AMILAB</h1>
-            <p className="about-subtitle">Soluciones integrales para laboratorios clínicos</p>
+            <h1 className="about-title">SP Dental</h1>
+            <p className="about-subtitle">Soluciones integrales para clínicas dentales</p>
             <div className="about-hero-description">
               <p>
-                Somos un equipo especializado en proveer equipamiento, reactivos e insumos 
-                de alta calidad para laboratorios clínicos. Nos enfocamos en construir 
-                relaciones de largo plazo con nuestros clientes, acompañándolos en su 
-                operación diaria con soporte técnico especializado.
+                Somos una empresa chilena especializada en insumos, equipamiento y soluciones
+                tecnológicas para odontología. Nos enfocamos en la venta consultiva, el soporte
+                técnico certificado y la capacitación continua para clínicas y profesionales.
               </p>
             </div>
           </div>
@@ -140,10 +144,9 @@ function AboutPage() {
               <div className="mvv-panel">
                 <h3>Nuestra Misión</h3>
                 <p>
-                  Proveer soluciones integrales para laboratorios clínicos, garantizando 
-                  la disponibilidad de equipamiento, reactivos e insumos de calidad, 
-                  respaldados por un servicio técnico especializado que asegure la 
-                  continuidad operacional de nuestros clientes.
+                  Proveer soluciones integrales para clínicas dentales, garantizando
+                  disponibilidad de insumos y equipamiento de calidad, respaldados por
+                  soporte técnico especializado y acompañamiento clínico.
                 </p>
               </div>
             )}
@@ -152,9 +155,9 @@ function AboutPage() {
               <div className="mvv-panel">
                 <h3>Nuestra Visión</h3>
                 <p>
-                  Ser reconocidos como el socio estratégico de referencia para laboratorios 
-                  clínicos en Chile, destacando por nuestra excelencia en servicio, 
-                  innovación tecnológica y compromiso con la calidad diagnóstica.
+                  Ser reconocidos como el socio estratégico de referencia para clínicas
+                  dentales en Chile, destacando por excelencia en servicio, innovación
+                  tecnológica y compromiso con la calidad clínica.
                 </p>
               </div>
             )}
@@ -163,9 +166,9 @@ function AboutPage() {
               <div className="mvv-panel">
                 <h3>Nuestros Valores</h3>
                 <ul className="values-list">
-                  <li><strong>Excelencia:</strong> Compromiso con la calidad en cada servicio y producto</li>
+                  <li><strong>Excelencia:</strong> Compromiso con la calidad clínica en cada solución</li>
                   <li><strong>Confiabilidad:</strong> Cumplimiento consistente de nuestras promesas</li>
-                  <li><strong>Innovación:</strong> Búsqueda constante de mejores soluciones</li>
+                  <li><strong>Innovación:</strong> Búsqueda constante de tecnología aplicada</li>
                   <li><strong>Cercanía:</strong> Relaciones de largo plazo con nuestros clientes</li>
                   <li><strong>Profesionalismo:</strong> Conocimiento técnico y actualización continua</li>
                 </ul>
@@ -190,20 +193,20 @@ function AboutPage() {
           
           <div className="services-grid">
             <div className="service-card">
-              <div className="service-icon">🔬</div>
-              <h3>Equipamiento</h3>
+              <div className="service-icon">🦷</div>
+              <h3>Equipamiento e imagenología</h3>
               <p>
-                Provisión e instalación de equipos de última generación para 
-                hematología, química clínica, microbiología y más.
+                Provisión e instalación de equipos de última generación para diagnóstico,
+                ultrasonido, profilaxis y flujo digital.
               </p>
             </div>
             
             <div className="service-card">
-              <div className="service-icon">💉</div>
-              <h3>Reactivos e Insumos</h3>
+              <div className="service-icon">🧪</div>
+              <h3>Insumos y materiales</h3>
               <p>
-                Suministro continuo de reactivos, controles de calidad y material 
-                fungible para la operación diaria del laboratorio.
+                Suministro continuo de materiales para estética, restauradora, cirugía,
+                endodoncia y prevención.
               </p>
             </div>
             
@@ -211,17 +214,17 @@ function AboutPage() {
               <div className="service-icon">🔧</div>
               <h3>Servicio Técnico</h3>
               <p>
-                Mantenimiento preventivo y correctivo, calibraciones, y disponibilidad 
-                de repuestos originales con técnicos certificados.
+                Mantenimiento preventivo y correctivo, calibraciones y repuestos originales
+                con técnicos certificados.
               </p>
             </div>
             
             <div className="service-card">
-              <div className="service-icon">📊</div>
-              <h3>Asesoría Especializada</h3>
+              <div className="service-icon">🎓</div>
+              <h3>Asesoría y formación</h3>
               <p>
-                Consultoría en implementación de soluciones, optimización de procesos 
-                y cumplimiento de estándares de calidad.
+                Consultoría en implementación clínica, flujos de trabajo digitales y
+                formación continua para equipos odontológicos.
               </p>
             </div>
           </div>
@@ -301,7 +304,7 @@ function AboutPage() {
               <div className="advantage-icon">✓</div>
               <div className="advantage-content">
                 <h3>Experiencia Comprobada</h3>
-                <p>Más de 25 años trabajando con laboratorios clínicos en todo Chile</p>
+                <p>Trayectoria atendiendo clínicas y especialistas en todo Chile</p>
               </div>
             </div>
             
@@ -325,7 +328,7 @@ function AboutPage() {
               <div className="advantage-icon">✓</div>
               <div className="advantage-content">
                 <h3>Capacitación Continua</h3>
-                <p>Programas de formación para usuarios y personal técnico</p>
+                <p>Programas de formación clínica y actualización tecnológica</p>
               </div>
             </div>
             
@@ -341,7 +344,7 @@ function AboutPage() {
               <div className="advantage-icon">✓</div>
               <div className="advantage-content">
                 <h3>Atención Personalizada</h3>
-                <p>Soluciones adaptadas a las necesidades específicas de cada laboratorio</p>
+                <p>Soluciones adaptadas a las necesidades específicas de cada clínica</p>
               </div>
             </div>
           </div>
@@ -352,8 +355,8 @@ function AboutPage() {
       <FadeIn direction="up" delay={0.7}>
         <section className="about-cta">
           <div className="cta-content">
-            <h2>¿Listo para mejorar tu laboratorio?</h2>
-            <p>Contáctanos y descubre cómo podemos ayudarte a optimizar tus procesos</p>
+            <h2>¿Listo para modernizar tu clínica dental?</h2>
+            <p>Contáctanos y descubre cómo podemos ayudarte a optimizar tu práctica</p>
             <div className="cta-buttons">
               <a href="/contacto" className="btn btn-primary">Contáctanos</a>
               <a href="/productos" className="btn btn-secondary">Ver Productos</a>

@@ -30,6 +30,7 @@ export function CompareTable() {
           data-tour="compare-button"
           onClick={() => setIsOpen(true)} 
           title="Ver comparación"
+          aria-label="Abrir comparación de productos"
         >
           <span className="compare-float-button__icon">⚖️</span>
           <span className="compare-float-button__badge">{products.length}</span>
@@ -39,26 +40,36 @@ export function CompareTable() {
 
       {/* Modal de comparación */}
       {isOpen && (
-        <div className="compare-modal-overlay" onClick={() => setIsOpen(false)}>
+        <>
+          <button
+            type="button"
+            className="compare-modal-overlay"
+            onClick={() => setIsOpen(false)}
+            aria-label="Cerrar comparación"
+          />
           <div
             className={`compare-modal ${isMinimized ? 'minimized' : ''}`}
             onClick={(e) => e.stopPropagation()}
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="compare-modal-title"
           >
             <div className="compare-modal__header">
-              <h3>Comparar Productos ({products.length})</h3>
+              <h3 id="compare-modal-title">Comparar Productos ({products.length})</h3>
               <div className="compare-modal__actions">
                 <button
                   onClick={() => setIsMinimized(!isMinimized)}
                   title={isMinimized ? 'Expandir' : 'Minimizar'}
                   className="action-btn"
+                  aria-label={isMinimized ? 'Expandir comparación' : 'Minimizar comparación'}
                 >
-                  {isMinimized ? <FiMaximize2 size={18} /> : <FiMinimize2 size={18} />}
+                  {isMinimized ? <FiMaximize2 size={18} aria-hidden="true" /> : <FiMinimize2 size={18} aria-hidden="true" />}
                 </button>
-                <button onClick={clearCompare} title="Limpiar comparación" className="action-btn">
-                  <FiX size={18} /> Limpiar
+                <button onClick={clearCompare} title="Limpiar comparación" className="action-btn" aria-label="Limpiar comparación">
+                  <FiX size={18} aria-hidden="true" /> Limpiar
                 </button>
-                <button onClick={() => setIsOpen(false)} title="Cerrar" className="action-btn">
-                  <FiX size={20} />
+                <button onClick={() => setIsOpen(false)} title="Cerrar" className="action-btn" aria-label="Cerrar comparación">
+                  <FiX size={20} aria-hidden="true" />
                 </button>
               </div>
             </div>
@@ -69,9 +80,9 @@ export function CompareTable() {
                   <table className="compare-table">
                     <thead>
                       <tr>
-                        <th className="compare-table__spec-header">Especificación</th>
+                        <th className="compare-table__spec-header" scope="col">Especificación</th>
                         {products.map((product: any) => (
-                          <th key={product.id} className="compare-table__product-header">
+                          <th key={product.id} className="compare-table__product-header" scope="col">
                             <div className="product-header-content">
                               <img
                                 src={
@@ -80,13 +91,17 @@ export function CompareTable() {
                                 }
                                 alt={product.name}
                                 className="product-header-image"
+                                width={120}
+                                height={120}
+                                loading="lazy"
                               />
                               <button
                                 onClick={() => removeProduct(product.id)}
                                 className="product-header-remove"
                                 title="Eliminar de comparación"
+                                aria-label={`Eliminar ${product.name} de la comparación`}
                               >
-                                <FiX size={16} />
+                                <FiX size={16} aria-hidden="true" />
                               </button>
                             </div>
                           </th>
@@ -96,9 +111,9 @@ export function CompareTable() {
                     <tbody>
                       {specs.map((spec) => (
                         <tr key={spec.key}>
-                          <td className="compare-table__spec-cell">
+                          <th className="compare-table__spec-cell" scope="row">
                             <strong>{spec.label}</strong>
-                          </td>
+                          </th>
                           {products.map((product: any) => (
                             <td key={product.id} className="compare-table__value-cell">
                               {spec.key === 'precio' && product[spec.key]
@@ -124,7 +139,7 @@ export function CompareTable() {
               </div>
             )}
           </div>
-        </div>
+        </>
       )}
     </>
   );

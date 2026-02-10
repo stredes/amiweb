@@ -5,11 +5,11 @@ function Footer() {
   return (
     <footer className="footer">
       <div>
-        <h4>AMILAB</h4>
-        <p>Canadá 9450, La Florida, Santiago, Chile</p>
-        <p>Teléfono: +562 22878707</p>
+        <h4>SP Dental</h4>
+        <p>Santiago, Chile</p>
+        <p>Teléfono: +56 2 2345 6789</p>
         <p>
-          Correo: <a href="mailto:amilab@amilab.cl">amilab@amilab.cl</a>
+          Correo: <a href="mailto:contacto@spdental.cl">contacto@spdental.cl</a>
         </p>
       </div>
       <div className="footer__links">
@@ -20,7 +20,7 @@ function Footer() {
         <Link to={ROUTES.crimePrevention}>Modelo de Prevención de Delitos</Link>
       </div>
       <div className="footer__meta">
-        <p>© {new Date().getFullYear()} AMILAB. Catálogo de insumos médicos.</p>
+        <p>© {new Date().getFullYear()} SP Dental. Soluciones odontológicas.</p>
       </div>
     </footer>
   );

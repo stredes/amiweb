@@ -3,7 +3,7 @@ function MaintenancePlans() {
     <section>
       <h2>Planes de mantenimiento</h2>
       <p className="muted">
-        Selecciona el plan que mejor se adapte a tu laboratorio. Ajustamos la cobertura según criticidad y volumen.
+        Selecciona el plan que mejor se adapte a tu clínica. Ajustamos la cobertura según criticidad y volumen.
       </p>
       <div className="support-plans-grid">
         <div className="card support-plan-card">
@@ -27,7 +27,7 @@ function MaintenancePlans() {
           <ul>
             <li>Soporte integral multiárea.</li>
             <li>Monitoreo y recomendaciones proactivas.</li>
-            <li>Capacitación a equipos de laboratorio.</li>
+            <li>Capacitación a equipos clínicos.</li>
           </ul>
         </div>
       </div>

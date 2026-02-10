@@ -24,8 +24,11 @@ function ProductSearchBar({ onSearch }: ProductSearchBarProps) {
         id="product-search"
         type="search"
         value={term}
-        placeholder="Buscar por nombre, código o marca"
+        placeholder="Buscar por nombre, código o marca…"
         onChange={(e) => setTerm(e.target.value)}
+        name="productSearch"
+        inputMode="search"
+        autoComplete="off"
       />
       <button type="submit">Buscar</button>
     </form>

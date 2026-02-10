@@ -7,7 +7,7 @@ function CrimePreventionModelPage() {
         <h1>Modelo de Prevención de Delitos</h1>
       <p>
         Conoce nuestro modelo de prevención de delitos y cumplimiento. Este documento incluye las
-        políticas y procedimientos adoptados por AMILAB.
+        políticas y procedimientos adoptados por SP Dental.
       </p>
       </FadeIn>
       <FadeIn direction="up" delay={0.2}>

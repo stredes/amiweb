@@ -1,4 +1,4 @@
-import { useState, useRef, useEffect } from 'react';
+import { useId, useState, useRef, useEffect } from 'react';
 import { FiSearch, FiX } from 'react-icons/fi';
 import './SearchBar.css';
 
@@ -22,7 +22,7 @@ interface SearchBarProps {
 }
 
 export function SearchBar({
-  placeholder = 'Buscar...',
+  placeholder = 'Buscar…',
   suggestions = [],
   onSearch,
   onSuggestionClick,
@@ -32,6 +32,7 @@ export function SearchBar({
   autoFocus = false,
   className = '',
 }: SearchBarProps) {
+  const listboxId = useId();
   const [query, setQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
   const [selectedIndex, setSelectedIndex] = useState(-1);
@@ -130,17 +131,25 @@ export function SearchBar({
   return (
     <div ref={wrapperRef} className={`search-bar ${className}`}>
       <form onSubmit={handleSubmit} className="search-bar__form">
-        <FiSearch className="search-bar__icon" />
+        <FiSearch className="search-bar__icon" aria-hidden="true" />
         <input
           ref={inputRef}
-          type="text"
+          type="search"
+          name="search"
           value={query}
           onChange={(e) => handleInputChange(e.target.value)}
           onKeyDown={handleKeyDown}
           onFocus={() => query.length >= minChars && setShowSuggestions(true)}
           placeholder={placeholder}
           className="search-bar__input"
+          aria-label={placeholder}
+          aria-controls={listboxId}
+          aria-expanded={showSuggestions}
+          aria-activedescendant={selectedIndex >= 0 ? `${listboxId}-option-${selectedIndex}` : undefined}
+          role="combobox"
+          aria-autocomplete="list"
           autoFocus={autoFocus}
+          autoComplete="off"
         />
         {showClearButton && query && (
           <button
@@ -149,13 +158,13 @@ export function SearchBar({
             className="search-bar__clear"
             aria-label="Clear search"
           >
-            <FiX />
+            <FiX aria-hidden="true" />
           </button>
         )}
       </form>
 
       {showSuggestions && suggestions.length > 0 && (
-        <div className="search-bar__suggestions">
+        <div id={listboxId} className="search-bar__suggestions" role="listbox">
           {suggestions.map((suggestion, index) => (
             <button
               key={suggestion.id}
@@ -163,6 +172,9 @@ export function SearchBar({
               className={`search-bar__suggestion ${
                 index === selectedIndex ? 'search-bar__suggestion--selected' : ''
               }`}
+              id={`${listboxId}-option-${index}`}
+              role="option"
+              aria-selected={index === selectedIndex}
               onClick={() => handleSuggestionClick(suggestion)}
               onMouseEnter={() => setSelectedIndex(index)}
             >

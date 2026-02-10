@@ -24,13 +24,13 @@ interface TourContextType {
 
 const TourContext = createContext<TourContextType | undefined>(undefined);
 
-const STORAGE_KEY = 'amilab_tour_completed';
+const STORAGE_KEY = 'sp_dental_tour_completed';
 
 const tourSteps: TourStep[] = [
   {
     id: 'welcome',
     target: 'body',
-    title: '¡Bienvenido a AMILAB!',
+    title: '¡Bienvenido a SP Dental!',
     content: 'Te mostraremos las características principales de nuestra plataforma B2B. Este tour tomará solo 2 minutos.',
     placement: 'bottom',
   },
@@ -45,7 +45,7 @@ const tourSteps: TourStep[] = [
     id: 'search',
     target: '[data-tour="search-bar"]',
     title: 'Búsqueda de Productos',
-    content: 'Busca entre nuestros 846 productos de laboratorio por nombre, código o categoría.',
+    content: 'Busca entre nuestros productos odontológicos por nombre, código o categoría.',
     placement: 'bottom',
   },
   {
@@ -94,7 +94,7 @@ const tourSteps: TourStep[] = [
     id: 'complete',
     target: 'body',
     title: '¡Tour Completado!',
-    content: 'Ya conoces las características principales. ¡Comienza a explorar nuestro catálogo de productos de laboratorio!',
+    content: 'Ya conoces las características principales. ¡Comienza a explorar nuestro catálogo de productos odontológicos!',
     placement: 'bottom',
   },
 ];

@@ -31,16 +31,16 @@ export function OfflineIndicator() {
   if (!showIndicator) return null;
 
   return (
-    <div className={`offline-indicator ${isOnline ? 'online' : 'offline'}`}>
+    <div className={`offline-indicator ${isOnline ? 'online' : 'offline'}`} role="status" aria-live="polite">
       <div className="offline-indicator__content">
         {isOnline ? (
           <>
-            <FiWifi size={20} />
+            <FiWifi size={20} aria-hidden="true" />
             <span>Conexión restaurada</span>
           </>
         ) : (
           <>
-            <FiWifiOff size={20} />
+            <FiWifiOff size={20} aria-hidden="true" />
             <span>Sin conexión a internet</span>
           </>
         )}

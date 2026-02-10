@@ -1,4 +1,4 @@
-import { FormEvent, useState } from 'react';
+import { FormEvent, useEffect, useRef, useState } from 'react';
 import TextInput from '../ui/TextInput';
 import Button from '../ui/Button';
 import { sendContactMessage } from '../../features/contact/contactApi';
@@ -21,6 +21,13 @@ function ContactForm() {
   const [errors, setErrors] = useState<Partial<Record<keyof ContactFormData, string>>>({});
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
+  const formRef = useRef<HTMLFormElement>(null);
+
+  useEffect(() => {
+    if (Object.keys(errors).length === 0) return;
+    const firstInvalid = formRef.current?.querySelector<HTMLElement>('[aria-invalid=\"true\"]');
+    firstInvalid?.focus();
+  }, [errors]);
 
   const validate = () => {
     const next: Partial<Record<keyof ContactFormData, string>> = {};
@@ -51,7 +58,7 @@ function ContactForm() {
   };
 
   return (
-    <form className="form" onSubmit={handleSubmit}>
+    <form className="form" onSubmit={handleSubmit} ref={formRef} noValidate>
       <TextInput
         id="contact-name"
         label="Nombre"
@@ -59,6 +66,8 @@ function ContactForm() {
         value={formData.name}
         onChange={(e) => setFormData({ ...formData, name: e.target.value })}
         error={errors.name}
+        autoComplete="name"
+        name="name"
       />
       <TextInput
         id="contact-email"
@@ -68,6 +77,10 @@ function ContactForm() {
         value={formData.email}
         onChange={(e) => setFormData({ ...formData, email: e.target.value })}
         error={errors.email}
+        autoComplete="email"
+        name="email"
+        inputMode="email"
+        spellCheck={false}
       />
       <TextInput
         id="contact-confirm-email"
@@ -77,6 +90,10 @@ function ContactForm() {
         value={formData.confirmEmail}
         onChange={(e) => setFormData({ ...formData, confirmEmail: e.target.value })}
         error={errors.confirmEmail}
+        autoComplete="email"
+        name="confirmEmail"
+        inputMode="email"
+        spellCheck={false}
       />
       <div className="form-control">
         <label htmlFor="contact-message">Mensaje</label>
@@ -85,13 +102,23 @@ function ContactForm() {
           required
           value={formData.message}
           onChange={(e) => setFormData({ ...formData, message: e.target.value })}
+          aria-describedby={errors.message ? 'contact-message-error' : undefined}
+          name="message"
         />
-        {errors.message && <p className="form-error">{errors.message}</p>}
+        {errors.message && (
+          <p id="contact-message-error" className="form-error" role="alert">
+            {errors.message}
+          </p>
+        )}
       </div>
       <Button type="submit" disabled={submitting}>
-        {submitting ? 'Enviando...' : 'Enviar mensaje'}
+        {submitting ? 'Enviando…' : 'Enviar mensaje'}
       </Button>
-      {success && <p className="success">Mensaje enviado (mock). Gracias por contactarnos.</p>}
+      {success && (
+        <p className="success" role="status">
+          Mensaje enviado (mock). Gracias por contactarnos.
+        </p>
+      )}
     </form>
   );
 }

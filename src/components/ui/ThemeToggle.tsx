@@ -15,9 +15,9 @@ export function ThemeToggle() {
       <div className="theme-toggle__track">
         <div className="theme-toggle__thumb">
           {theme === 'light' ? (
-            <FiSun className="theme-toggle__icon" />
+            <FiSun className="theme-toggle__icon" aria-hidden="true" />
           ) : (
-            <FiMoon className="theme-toggle__icon" />
+            <FiMoon className="theme-toggle__icon" aria-hidden="true" />
           )}
         </div>
       </div>

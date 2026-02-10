@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { orderService } from '../../features/cart/services/orderService';
 import { Order } from '../../features/auth/types';
 import { FiArrowLeft, FiPackage, FiTruck, FiCheck, FiDownload, FiMessageCircle } from 'react-icons/fi';
@@ -78,9 +78,9 @@ export function OrderDetailPage() {
     return (
       <div className="order-detail-error">
         <h2>❌ {error || 'Pedido no encontrado'}</h2>
-        <button className="btn btn--primary" onClick={() => navigate('/portal')}>
+        <Link className="btn btn--primary" to="/portal">
           Volver al Portal
-        </button>
+        </Link>
       </div>
     );
   }
@@ -129,10 +129,10 @@ export function OrderDetailPage() {
     <div className="order-detail-page">
       <FadeIn direction="up">
         <div className="order-detail-header">
-          <button className="back-button" onClick={() => navigate(-1)}>
-            <FiArrowLeft size={20} />
-            Volver
-          </button>
+        <button className="back-button" onClick={() => navigate(-1)}>
+          <FiArrowLeft size={20} aria-hidden="true" />
+          Volver
+        </button>
           <div className="order-detail-header__info">
             <h1>Pedido {order.orderNumber}</h1>
             <p className="muted">Realizado el {new Date(order.date).toLocaleDateString('es-CL', {
@@ -168,7 +168,7 @@ export function OrderDetailPage() {
                     className={`timeline-step ${isCompleted ? 'completed' : ''} ${isCurrent ? 'current' : ''}`}
                   >
                     <div className="timeline-step__icon">
-                      {isCompleted ? <FiCheck /> : statusInfo.icon}
+                      {isCompleted ? <FiCheck aria-hidden="true" /> : statusInfo.icon}
                     </div>
                     <div className="timeline-step__content">
                       <h3>{statusInfo.label}</h3>
@@ -216,7 +216,7 @@ export function OrderDetailPage() {
             <div className="order-info-card">
               <h2>Información de Envío</h2>
               <div className="order-info-item">
-                <FiPackage className="order-info-icon" />
+                <FiPackage className="order-info-icon" aria-hidden="true" />
                 <div>
                   <strong>Dirección de Entrega</strong>
                   <p className="muted">
@@ -226,7 +226,7 @@ export function OrderDetailPage() {
               </div>
               {order.estimatedDelivery && (
                 <div className="order-info-item">
-                  <FiTruck className="order-info-icon" />
+                  <FiTruck className="order-info-icon" aria-hidden="true" />
                   <div>
                     <strong>Entrega Estimada</strong>
                     <p className="muted">
@@ -253,16 +253,16 @@ export function OrderDetailPage() {
         <FadeIn direction="up" delay={0.4}>
           <div className="order-actions-card">
             <button className="btn btn--secondary">
-              <FiDownload />
+              <FiDownload aria-hidden="true" />
               Descargar Factura
             </button>
             <button className="btn btn--secondary">
-              <FiMessageCircle />
+              <FiMessageCircle aria-hidden="true" />
               Contactar Soporte
             </button>
             {order.status === 'enviado' && (
               <button className="btn btn--primary" onClick={handleConfirmDelivery} disabled={isConfirming}>
-                {isConfirming ? 'Confirmando...' : 'Confirmar Entrega'}
+                {isConfirming ? 'Confirmando…' : 'Confirmar Entrega'}
               </button>
             )}
           </div>

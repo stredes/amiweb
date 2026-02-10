@@ -92,7 +92,7 @@ function ProductsPage() {
         <header className="page__header">
           <h1>Productos</h1>
         <p>
-          Catálogo de equipos, reactivos e insumos para laboratorios clínicos.
+          Catálogo de insumos, equipamiento y tecnología para clínicas dentales.
         </p>
         </header>
       </FadeIn>

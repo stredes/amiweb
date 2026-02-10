@@ -85,11 +85,11 @@ export function WarehouseDashboardPage() {
   );
 
   return (
-    <div className="warehouse-dashboard" style={{ backgroundColor: '#F5F5DC', minHeight: '100vh', padding: '2rem' }}>
+    <div className="warehouse-dashboard" style={{ backgroundColor: 'var(--color-bg-secondary)', minHeight: '100vh', padding: '2rem' }}>
       <div className="warehouse-dashboard__header">
         <div className="warehouse-dashboard__welcome">
-          <h1 style={{ color: '#2D1619', fontSize: '2rem' }}>Dashboard de Bodega</h1>
-          <p style={{ color: '#5A3940', fontSize: '1.1rem' }}>Bienvenido, {user?.name || 'Usuario'}</p>
+          <h1 style={{ color: 'var(--color-primary-dark)', fontSize: '2rem' }}>Dashboard de Bodega</h1>
+          <p style={{ color: 'var(--color-text-light)', fontSize: '1.1rem' }}>Bienvenido, {user?.name || 'Usuario'}</p>
         </div>
         <button onClick={logout} className="btn btn-secondary">
           Cerrar Sesión
@@ -101,28 +101,28 @@ export function WarehouseDashboardPage() {
         <div className="stat-card stat-card--pending" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px' }}>
           <div className="stat-card__icon">📦</div>
           <div className="stat-card__info">
-            <h3 style={{ color: '#2D1619' }}>{stats.pending}</h3>
+            <h3 style={{ color: 'var(--color-primary-dark)' }}>{stats.pending}</h3>
             <p>Por Preparar</p>
           </div>
         </div>
         <div className="stat-card stat-card--processing" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px' }}>
           <div className="stat-card__icon">⚙️</div>
           <div className="stat-card__info">
-            <h3 style={{ color: '#2D1619' }}>{stats.processing}</h3>
+            <h3 style={{ color: 'var(--color-primary-dark)' }}>{stats.processing}</h3>
             <p>En Preparación</p>
           </div>
         </div>
         <div className="stat-card stat-card--ready" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px' }}>
           <div className="stat-card__icon">✅</div>
           <div className="stat-card__info">
-            <h3 style={{ color: '#2D1619' }}>{stats.readyToShip}</h3>
+            <h3 style={{ color: 'var(--color-primary-dark)' }}>{stats.readyToShip}</h3>
             <p>Listos para Despacho</p>
           </div>
         </div>
         <div className="stat-card stat-card--shipped" style={{ background: 'white', padding: '1.5rem', borderRadius: '12px' }}>
           <div className="stat-card__icon">🚚</div>
           <div className="stat-card__info">
-            <h3 style={{ color: '#2D1619' }}>{stats.shipped}</h3>
+            <h3 style={{ color: 'var(--color-primary-dark)' }}>{stats.shipped}</h3>
             <p>Despachados</p>
           </div>
         </div>

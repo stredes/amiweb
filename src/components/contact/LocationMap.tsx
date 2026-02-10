@@ -10,7 +10,7 @@ function LocationMap() {
   return (
     <div className="location-map">
       <iframe
-        title="Mapa AMILAB"
+        title="Mapa SP Dental"
         src={mapUrl}
         loading="lazy"
         referrerPolicy="no-referrer-when-downgrade"

@@ -102,7 +102,19 @@ export function QuotationApproval({ orders, onOrderUpdate }: QuotationApprovalPr
 
           return (
             <div key={order.id} className={`quotation-card ${isExpanded ? 'quotation-card--expanded' : ''}`}>
-              <div className="quotation-card__header" onClick={() => toggleOrderExpand(order.id)}>
+              <div
+                className="quotation-card__header"
+                onClick={() => toggleOrderExpand(order.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleOrderExpand(order.id);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-expanded={expandedOrder === order.id}
+              >
                 <div className="quotation-card__info">
                   <div className="quotation-card__number">
                     <strong>#{order.orderNumber}</strong>
@@ -250,14 +262,14 @@ export function QuotationApproval({ orders, onOrderUpdate }: QuotationApprovalPr
                       onClick={() => handleReject(order.id)}
                       disabled={isProcessing}
                     >
-                      {isProcessing ? 'Procesando...' : '❌ Rechazar'}
+                      {isProcessing ? 'Procesando…' : '❌ Rechazar'}
                     </button>
                     <button
                       className="btn btn--approve"
                       onClick={() => handleApprove(order.id)}
                       disabled={isProcessing}
                     >
-                      {isProcessing ? 'Procesando...' : '✅ Aprobar y Enviar a Admin'}
+                      {isProcessing ? 'Procesando…' : '✅ Aprobar y Enviar a Admin'}
                     </button>
                   </div>
                 </div>

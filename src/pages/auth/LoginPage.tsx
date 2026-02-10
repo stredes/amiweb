@@ -82,8 +82,12 @@ export function LoginPage() {
               value={email}
               onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
               required
-              placeholder="socio@empresa.com"
+              placeholder="socio@empresa.com…"
               disabled={isLoading}
+              name="email"
+              autoComplete="email"
+              inputMode="email"
+              spellCheck={false}
             />
 
             <TextInput
@@ -94,6 +98,8 @@ export function LoginPage() {
               required
               placeholder="••••••••"
               disabled={isLoading}
+              name="password"
+              autoComplete="current-password"
             />
 
             <Button
@@ -102,18 +108,18 @@ export function LoginPage() {
               disabled={isLoading}
               fullWidth
             >
-              {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
+              {isLoading ? 'Iniciando sesión…' : 'Iniciar Sesión'}
             </Button>
           </form>
 
           <div className="login-footer">
             <p className="muted">
               <strong>Credenciales de prueba:</strong><br />
-              <strong>Socio:</strong> socio@amilab.com / demo123<br />
-              <strong>Vendedor:</strong> vendedor1@amilab.com / vende123<br />
-              <strong>Bodega:</strong> bodega@amilab.com / bodega123<br />
-              <strong>Admin:</strong> admin@amilab.com / admin123<br />
-              <strong>Root:</strong> root@amilab.com / root2026
+              <strong>Socio:</strong> socio@spdental.com / demo123<br />
+              <strong>Vendedor:</strong> vendedor1@spdental.com / vende123<br />
+              <strong>Bodega:</strong> bodega@spdental.com / bodega123<br />
+              <strong>Admin:</strong> admin@spdental.com / admin123<br />
+              <strong>Root:</strong> root@spdental.com / root2026
             </p>
           </div>
           </div>
@@ -121,7 +127,7 @@ export function LoginPage() {
 
         <FadeIn direction="up" delay={0.2}>
           <div className="login-info">
-          <h2>Bienvenido al Portal de Socios Amilab</h2>
+          <h2>Bienvenido al Portal de Socios SP Dental</h2>
           <ul>
             <li>📦 Rastrea tus pedidos en tiempo real</li>
             <li>📊 Consulta el estado de preparación</li>

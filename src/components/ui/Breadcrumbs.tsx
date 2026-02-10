@@ -18,7 +18,7 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
       <ol className="breadcrumbs__list">
         <li className="breadcrumbs__item">
           <Link to="/" className="breadcrumbs__link">
-            <FiHome className="breadcrumbs__icon" />
+            <FiHome className="breadcrumbs__icon" aria-hidden="true" />
             <span className="breadcrumbs__text">Inicio</span>
           </Link>
         </li>
@@ -28,7 +28,7 @@ export function Breadcrumbs({ items, className = '' }: BreadcrumbsProps) {
           
           return (
             <li key={index} className="breadcrumbs__item">
-              <FiChevronRight className="breadcrumbs__separator" />
+              <FiChevronRight className="breadcrumbs__separator" aria-hidden="true" />
               {item.href && !isLast ? (
                 <Link to={item.href} className="breadcrumbs__link">
                   <span className="breadcrumbs__text">{item.label}</span>

@@ -3,7 +3,7 @@
   max-width: 100%;
   margin: 0 auto;
   min-height: 100vh;
-  background: var(--color-bg-secondary, #F5F5DC);
+  background: var(--color-bg-secondary, #FFFFFF);
 }
 
 @media (min-width: 1920px) {
@@ -18,7 +18,7 @@
   align-items: center;
   justify-content: center;
   min-height: 400px;
-  background: var(--color-bg-secondary, #F5F5DC);
+  background: var(--color-bg-secondary, #FFFFFF);
 }
 
 .warehouse-dashboard__header {
@@ -33,12 +33,12 @@
 .warehouse-dashboard__welcome h1 {
   font-size: 2rem;
   font-weight: 700;
-  color: var(--color-text-primary, #2D1619);
+  color: var(--color-primary-dark, #0D1B2A);
   margin-bottom: 0.5rem;
 }
 
 .warehouse-dashboard__welcome p {
-  color: var(--color-text-secondary, #5A3940);
+  color: var(--color-text-light, #6B6B6B);
   font-size: 1.1rem;
 }
 
@@ -126,7 +126,7 @@
   font-size: 1rem;
   font-weight: 500;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
   position: relative;
 }
 

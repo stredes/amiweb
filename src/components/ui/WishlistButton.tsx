@@ -54,9 +54,9 @@ export function WishlistButton({
       title={inWishlist ? 'Eliminar de favoritos' : 'Agregar a favoritos'}
     >
       {inWishlist ? (
-        <FaHeart className="wishlist-button__icon wishlist-button__icon--filled" />
+        <FaHeart className="wishlist-button__icon wishlist-button__icon--filled" aria-hidden="true" />
       ) : (
-        <FiHeart className="wishlist-button__icon" />
+        <FiHeart className="wishlist-button__icon" aria-hidden="true" />
       )}
       {showLabel && (
         <span className="wishlist-button__label">

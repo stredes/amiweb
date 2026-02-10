@@ -4,6 +4,9 @@
   background: rgba(0, 0, 0, 0.7);
   z-index: 10000;
   animation: fadeIn 0.3s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 @keyframes fadeIn {
@@ -18,7 +21,7 @@
   box-shadow: 0 0 0 9999px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 255, 255, 0.3);
   pointer-events: none;
   z-index: 10001;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .tour-tooltip {
@@ -29,6 +32,7 @@
   max-width: 400px;
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.3);
   animation: slideUp 0.3s ease;
+  overscroll-behavior: contain;
 }
 
 @keyframes slideUp {
@@ -56,7 +60,7 @@
   border-radius: 6px;
   color: rgba(255, 255, 255, 0.8);
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
   font-size: 1.2rem;
 }
 
@@ -113,7 +117,7 @@
   color: white;
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .tour-tooltip__skip:hover {
@@ -137,7 +141,7 @@
   display: flex;
   align-items: center;
   gap: 8px;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .tour-tooltip__prev {

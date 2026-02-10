@@ -102,7 +102,19 @@ export function OrderApproval({ orders, onOrderUpdate }: OrderApprovalProps) {
 
           return (
             <div key={order.id} className={`order-card ${isExpanded ? 'order-card--expanded' : ''}`}>
-              <div className="order-card__header" onClick={() => toggleOrderExpand(order.id)}>
+              <div
+                className="order-card__header"
+                onClick={() => toggleOrderExpand(order.id)}
+                onKeyDown={(e) => {
+                  if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    toggleOrderExpand(order.id);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-expanded={expandedOrder === order.id}
+              >
                 <div className="order-card__info">
                   <div className="order-card__number">
                     <strong>#{order.orderNumber}</strong>
@@ -279,14 +291,14 @@ export function OrderApproval({ orders, onOrderUpdate }: OrderApprovalProps) {
                       onClick={() => handleReject(order.id)}
                       disabled={isProcessing}
                     >
-                      {isProcessing ? 'Procesando...' : '❌ Rechazar Pedido'}
+                      {isProcessing ? 'Procesando…' : '❌ Rechazar Pedido'}
                     </button>
                     <button
                       className="btn btn--approve"
                       onClick={() => handleApprove(order.id)}
                       disabled={isProcessing}
                     >
-                      {isProcessing ? 'Procesando...' : '✅ Aprobar y Enviar a Bodega'}
+                      {isProcessing ? 'Procesando…' : '✅ Aprobar y Enviar a Bodega'}
                     </button>
                   </div>
 

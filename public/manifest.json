@@ -1,11 +1,11 @@
 {
-  "name": "AMIWEB - Equipamiento Industrial",
-  "short_name": "AMIWEB",
-  "description": "Plataforma de comercio electrónico para equipamiento y automatización industrial",
+  "name": "SP Dental - Soluciones Odontológicas",
+  "short_name": "SP Dental",
+  "description": "Plataforma de insumos, equipamiento y tecnología odontológica con soporte especializado",
   "start_url": "/",
   "display": "standalone",
-  "background_color": "#F5F5DC",
-  "theme_color": "#8B1538",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0052FF",
   "orientation": "portrait-primary",
   "icons": [
     {

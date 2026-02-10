@@ -4,7 +4,7 @@ import { AuthResponse, LoginCredentials, Order, Vendor, SupportContact } from '.
 const mockUsers = [
   {
     id: '1',
-    email: 'socio@amilab.com',
+    email: 'socio@spdental.com',
     password: 'demo123',
     name: 'Juan Pérez',
     role: 'socio' as const,
@@ -14,7 +14,7 @@ const mockUsers = [
   },
   {
     id: '2',
-    email: 'admin@amilab.com',
+    email: 'admin@spdental.com',
     password: 'admin123',
     name: 'Roberto Silva',
     role: 'admin' as const,
@@ -23,7 +23,7 @@ const mockUsers = [
   },
   {
     id: '3',
-    email: 'root@amilab.com',
+    email: 'root@spdental.com',
     password: 'root2026',
     name: 'Desarrollador Web',
     role: 'root' as const,
@@ -32,7 +32,7 @@ const mockUsers = [
   },
   {
     id: 'v1',
-    email: 'vendedor1@amilab.com',
+    email: 'vendedor1@spdental.com',
     password: 'vende123',
     name: 'Carlos Ramírez',
     role: 'vendedor' as const,
@@ -41,7 +41,7 @@ const mockUsers = [
   },
   {
     id: 'v2',
-    email: 'vendedor2@amilab.com',
+    email: 'vendedor2@spdental.com',
     password: 'vende123',
     name: 'Ana Torres',
     role: 'vendedor' as const,
@@ -100,7 +100,7 @@ const mockUsers = [
   },
   {
     id: 'w1',
-    email: 'bodega@amilab.com',
+    email: 'bodega@spdental.com',
     password: 'bodega123',
     name: 'Miguel Soto',
     role: 'bodega' as const,
@@ -120,7 +120,7 @@ const mockOrders: Order[] = [
     paymentStatus: 'pendiente',
     paymentMethod: 'transferencia',
     customerName: 'Juan Pérez',
-    customerEmail: 'socio@amilab.com',
+    customerEmail: 'socio@spdental.com',
     customerPhone: '+56 9 1234 5678',
     organization: 'Empresa Demo S.A.',
     taxId: '76.XXX.XXX-1',
@@ -183,7 +183,7 @@ const mockOrders: Order[] = [
     paymentStatus: 'pendiente',
     paymentMethod: 'credito_30',
     customerName: 'Juan Pérez',
-    customerEmail: 'socio@amilab.com',
+    customerEmail: 'socio@spdental.com',
     customerPhone: '+56 9 1234 5678',
     organization: 'Empresa Demo S.A.',
     taxId: '76.XXX.XXX-1',
@@ -381,7 +381,7 @@ const mockOrders: Order[] = [
     paymentStatus: 'pendiente',
     paymentMethod: 'credito_30',
     customerName: 'Juan Pérez',
-    customerEmail: 'socio@amilab.com',
+    customerEmail: 'socio@spdental.com',
     customerPhone: '+56 9 1234 5678',
     organization: 'Empresa Demo S.A.',
     vendorId: 'v1',
@@ -470,7 +470,7 @@ const mockOrders: Order[] = [
     paymentStatus: 'pagado',
     paymentMethod: 'transferencia',
     customerName: 'Juan Pérez',
-    customerEmail: 'socio@amilab.com',
+    customerEmail: 'socio@spdental.com',
     customerPhone: '+56 9 1234 5678',
     organization: 'Empresa Demo S.A.',
     vendorId: 'v1',
@@ -1145,14 +1145,14 @@ const mockVendors: Vendor[] = [
   {
     id: 'v1',
     name: 'Carlos Ramírez',
-    email: 'cramirez@amilab.com',
+    email: 'cramirez@spdental.com',
     phone: '+56 9 5555 1234',
     avatar: '👨‍💼'
   },
   {
     id: 'v2',
     name: 'Ana Torres',
-    email: 'atorres@amilab.com',
+    email: 'atorres@spdental.com',
     phone: '+56 9 5555 5678',
     avatar: '👩‍💼'
   }
@@ -1163,7 +1163,7 @@ const mockSupport: SupportContact[] = [
     id: 's1',
     name: 'Soporte Técnico',
     department: 'Técnico',
-    email: 'soporte@amilab.com',
+    email: 'soporte@spdental.com',
     phone: '+56 2 2345 6789',
     available: true
   },
@@ -1171,7 +1171,7 @@ const mockSupport: SupportContact[] = [
     id: 's2',
     name: 'Servicio al Cliente',
     department: 'Atención al Cliente',
-    email: 'clientes@amilab.com',
+    email: 'clientes@spdental.com',
     phone: '+56 2 2345 6790',
     available: true
   },
@@ -1179,7 +1179,7 @@ const mockSupport: SupportContact[] = [
     id: 's3',
     name: 'Ventas',
     department: 'Ventas',
-    email: 'ventas@amilab.com',
+    email: 'ventas@spdental.com',
     phone: '+56 2 2345 6791',
     available: true
   }
@@ -1191,11 +1191,11 @@ const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
  * IMPORTANTE: Para usar Firebase Auth, debes crear los usuarios en Firebase Console:
  * 1. Ve a Firebase Console > Authentication > Users
  * 2. Crea usuarios con los emails de mockUsers y contraseñas correspondientes:
- *    - socio@amilab.com / demo123
- *    - admin@amilab.com / admin123  
- *    - root@amilab.com / root2026
- *    - vendedor1@amilab.com / vende123
- *    - vendedor2@amilab.com / vende123
+ *    - socio@spdental.com / demo123
+ *    - admin@spdental.com / admin123  
+ *    - root@spdental.com / root2026
+ *    - vendedor1@spdental.com / vende123
+ *    - vendedor2@spdental.com / vende123
  */
 
 export const authApi = {

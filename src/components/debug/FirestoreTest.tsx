@@ -3,20 +3,20 @@ import { collection, getDocs, limit, query } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
 
 export function FirestoreTest() {
-  const [status, setStatus] = useState<string>('Verificando...');
+  const [status, setStatus] = useState<string>('Verificando…');
   const [products, setProducts] = useState<any[]>([]);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const testConnection = async () => {
       try {
-        setStatus('🔄 Conectando a Firestore...');
+        setStatus('🔄 Conectando a Firestore…');
         
         // Intentar obtener los primeros 5 productos
         const productsRef = collection(db, 'products');
         const q = query(productsRef, limit(5));
         
-        setStatus('📥 Obteniendo productos...');
+        setStatus('📥 Obteniendo productos…');
         const snapshot = await getDocs(q);
         
         setStatus(`✅ Conexión exitosa! ${snapshot.size} productos obtenidos`);

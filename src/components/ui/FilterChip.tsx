@@ -18,7 +18,7 @@ export function FilterChip({ label, value, onRemove, icon }: FilterChipProps) {
         onClick={() => onRemove(value)}
         aria-label={`Remove ${label} filter`}
       >
-        <FiX />
+        <FiX aria-hidden="true" />
       </button>
     </div>
   );

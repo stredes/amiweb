@@ -97,7 +97,12 @@ export function TourOverlay() {
   return (
     <div className="tour-overlay">
       {/* Backdrop */}
-      <div className="tour-backdrop" onClick={skipTour} />
+      <button
+        type="button"
+        className="tour-backdrop"
+        onClick={skipTour}
+        aria-label="Cerrar tour"
+      />
 
       {/* Spotlight */}
       {targetRect && (
@@ -120,19 +125,23 @@ export function TourOverlay() {
           top: tooltipPosition.top,
           left: tooltipPosition.left,
         }}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tour-overlay-title"
+        aria-describedby="tour-overlay-content"
       >
         <div className="tour-tooltip__header">
-          <h3 className="tour-tooltip__title">{currentStepData.title}</h3>
+          <h3 className="tour-tooltip__title" id="tour-overlay-title">{currentStepData.title}</h3>
           <button
             className="tour-tooltip__close"
             onClick={skipTour}
             aria-label="Cerrar tour"
           >
-            <FiX />
+            <FiX aria-hidden="true" />
           </button>
         </div>
 
-        <div className="tour-tooltip__content">
+        <div className="tour-tooltip__content" id="tour-overlay-content">
           <p>{currentStepData.content}</p>
         </div>
 
@@ -147,7 +156,7 @@ export function TourOverlay() {
                 className="tour-tooltip__btn tour-tooltip__btn--secondary"
                 onClick={prevStep}
               >
-                <FiArrowLeft />
+                <FiArrowLeft aria-hidden="true" />
                 Anterior
               </button>
             )}
@@ -157,7 +166,7 @@ export function TourOverlay() {
                 className="tour-tooltip__btn tour-tooltip__btn--ghost"
                 onClick={skipTour}
               >
-                <FiSkipForward />
+                <FiSkipForward aria-hidden="true" />
                 Saltar
               </button>
             )}
@@ -167,7 +176,7 @@ export function TourOverlay() {
               onClick={isLastStep ? endTour : nextStep}
             >
               {isLastStep ? 'Finalizar' : 'Siguiente'}
-              {!isLastStep && <FiArrowRight />}
+              {!isLastStep && <FiArrowRight aria-hidden="true" />}
             </button>
           </div>
         </div>

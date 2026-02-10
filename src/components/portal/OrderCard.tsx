@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { Order } from '../../features/auth/types';
 import { FiDownload, FiX, FiMessageCircle, FiAlertCircle, FiEye } from 'react-icons/fi';
 import { orderService } from '../../features/cart/services/orderService';
@@ -26,7 +26,6 @@ const statusConfig = {
 };
 
 export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
-  const navigate = useNavigate();
   const [showCancelModal, setShowCancelModal] = useState(false);
   const [cancelReason, setCancelReason] = useState('');
   const [isCancelling, setIsCancelling] = useState(false);
@@ -98,7 +97,7 @@ export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
     // Abrir chat o email con contexto del pedido
     const subject = `Consulta sobre pedido ${order.orderNumber}`;
     const body = `Hola, tengo una consulta sobre mi pedido ${order.orderNumber}.`;
-    window.location.href = `mailto:soporte@amilab.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+    window.location.href = `mailto:soporte@spdental.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
   };
 
   return (
@@ -145,21 +144,21 @@ export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
       </div>
 
       <div className="order-card__actions">
-        <button 
+        <Link
           className="order-action-btn order-action-btn--primary"
-          onClick={() => navigate(`/portal/orders/${order.id}`)}
+          to={`/portal/orders/${order.id}`}
           title="Ver detalles"
         >
-          <FiEye size={18} />
+          <FiEye size={18} aria-hidden="true" />
           Ver Detalles
-        </button>
+        </Link>
         
         <button 
           className="order-action-btn order-action-btn--secondary"
           onClick={handleDownloadInvoice}
           title="Descargar factura"
         >
-          <FiDownload size={18} />
+          <FiDownload size={18} aria-hidden="true" />
           Factura
         </button>
         
@@ -168,7 +167,7 @@ export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
           onClick={handleContactSupport}
           title="Contactar soporte"
         >
-          <FiMessageCircle size={18} />
+          <FiMessageCircle size={18} aria-hidden="true" />
           Soporte
         </button>
         
@@ -178,7 +177,7 @@ export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
             onClick={() => setShowCancelModal(true)}
             title="Cancelar pedido"
           >
-            <FiX size={18} />
+            <FiX size={18} aria-hidden="true" />
             Cancelar
           </button>
         )}
@@ -187,22 +186,33 @@ export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
       {/* Cancel Modal */}
       {showCancelModal && (
         <>
-          <div className="modal-overlay" onClick={() => setShowCancelModal(false)} />
-          <div className="cancel-modal">
+          <button
+            type="button"
+            className="modal-overlay"
+            onClick={() => setShowCancelModal(false)}
+            aria-label="Cerrar cancelación"
+          />
+          <div className="cancel-modal" role="dialog" aria-modal="true" aria-labelledby="cancel-modal-title">
             <div className="cancel-modal__header">
-              <FiAlertCircle size={24} color="#dc3545" />
-              <h3>¿Cancelar pedido?</h3>
+              <FiAlertCircle size={24} color="#dc3545" aria-hidden="true" />
+              <h3 id="cancel-modal-title">¿Cancelar pedido?</h3>
             </div>
             <p className="cancel-modal__text">
               Estás a punto de cancelar el pedido <strong>{order.orderNumber}</strong>. 
               Esta acción no se puede deshacer.
             </p>
+            <label className="sr-only" htmlFor={`cancel-reason-${order.id}`}>
+              Motivo de cancelación
+            </label>
             <textarea
+              id={`cancel-reason-${order.id}`}
               className="cancel-modal__input"
-              placeholder="Motivo de cancelación (requerido)"
+              placeholder="Motivo de cancelación (requerido)…"
               value={cancelReason}
               onChange={(e) => setCancelReason(e.target.value)}
               rows={3}
+              name="cancelReason"
+              autoComplete="off"
             />
             <div className="cancel-modal__actions">
               <button 
@@ -217,7 +227,7 @@ export function OrderCard({ order, onOrderUpdated }: OrderCardProps) {
                 onClick={handleCancelOrder}
                 disabled={isCancelling}
               >
-                {isCancelling ? 'Cancelando...' : 'Confirmar Cancelación'}
+                {isCancelling ? 'Cancelando…' : 'Confirmar Cancelación'}
               </button>
             </div>
           </div>

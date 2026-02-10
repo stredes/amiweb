@@ -115,7 +115,12 @@ export function ProductTour({ steps, isOpen, onClose, onComplete }: ProductTourP
   return (
     <>
       {/* Overlay */}
-      <div className="tour-overlay" onClick={handleSkip}>
+      <button
+        type="button"
+        className="tour-overlay"
+        onClick={handleSkip}
+        aria-label="Cerrar tour guiado"
+      >
         {/* Spotlight */}
         <div
           className="tour-spotlight"
@@ -126,22 +131,29 @@ export function ProductTour({ steps, isOpen, onClose, onComplete }: ProductTourP
             height: targetRect.height + 8,
           }}
         />
-      </div>
+      </button>
 
       {/* Tooltip */}
-      <div className="tour-tooltip" style={getTooltipStyle()}>
-        <button className="tour-tooltip__close" onClick={handleSkip}>
-          <FiX />
+      <div
+        className="tour-tooltip"
+        style={getTooltipStyle()}
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="tour-title"
+        aria-describedby="tour-content"
+      >
+        <button className="tour-tooltip__close" onClick={handleSkip} aria-label="Cerrar tour">
+          <FiX aria-hidden="true" />
         </button>
 
         <div className="tour-tooltip__header">
-          <h3>{step.title}</h3>
+          <h3 id="tour-title">{step.title}</h3>
           <div className="tour-tooltip__progress">
             {currentStep + 1} / {steps.length}
           </div>
         </div>
 
-        <div className="tour-tooltip__content">
+        <div className="tour-tooltip__content" id="tour-content">
           <p>{step.content}</p>
         </div>
 
@@ -152,13 +164,13 @@ export function ProductTour({ steps, isOpen, onClose, onComplete }: ProductTourP
           <div className="tour-tooltip__navigation">
             {!isFirstStep && (
               <button onClick={handlePrevious} className="tour-tooltip__prev">
-                <FiArrowLeft />
+                <FiArrowLeft aria-hidden="true" />
                 Anterior
               </button>
             )}
             <button onClick={handleNext} className="tour-tooltip__next">
               {isLastStep ? 'Finalizar' : 'Siguiente'}
-              {!isLastStep && <FiArrowRight />}
+              {!isLastStep && <FiArrowRight aria-hidden="true" />}
             </button>
           </div>
         </div>

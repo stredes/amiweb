@@ -18,7 +18,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
   return (
     <article className={`blog-card ${featured ? 'blog-card--featured' : ''}`}>
       <Link to={`/blog/${post.slug}`} className="blog-card__image-link">
-        <img src={post.coverImage} alt={post.title} className="blog-card__image" />
+        <img src={post.coverImage} alt={post.title} className="blog-card__image" width={600} height={200} loading="lazy" />
         {featured && <span className="blog-card__featured-badge">Destacado</span>}
       </Link>
 
@@ -27,11 +27,11 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
           <span className="blog-card__category">{post.category}</span>
           <div className="blog-card__stats">
             <span>
-              <FiClock /> {post.readingTime} min
+              <FiClock aria-hidden="true" /> {post.readingTime} min
             </span>
             {post.views && (
               <span>
-                <FiEye /> {post.views}
+                <FiEye aria-hidden="true" /> {post.views}
               </span>
             )}
           </div>
@@ -45,7 +45,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
 
         <div className="blog-card__footer">
           <div className="blog-card__author">
-            <img src={post.author.avatar} alt={post.author.name} />
+            <img src={post.author.avatar} alt={post.author.name} width={40} height={40} loading="lazy" />
             <div>
               <span className="blog-card__author-name">{post.author.name}</span>
               <span className="blog-card__date">{formattedDate}</span>
@@ -53,7 +53,7 @@ export function BlogCard({ post, featured = false }: BlogCardProps) {
           </div>
 
           <Link to={`/blog/${post.slug}`} className="blog-card__read-more">
-            Leer más <FiArrowRight />
+            Leer más <FiArrowRight aria-hidden="true" />
           </Link>
         </div>
       </div>

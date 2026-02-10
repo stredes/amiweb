@@ -15,7 +15,7 @@ type ProductCardProps = {
 };
 
 const fallbackImage =
-  'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420"><rect width="640" height="420" fill="%23f8f9fa"/><rect x="40" y="40" width="560" height="340" rx="24" fill="%23ffffff" stroke="%23dee2e6" stroke-width="2"/><text x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="28" fill="%238b1538">AMILAB</text></svg>';
+  'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420"><rect width="640" height="420" fill="%23f8f9fa"/><rect x="40" y="40" width="560" height="340" rx="24" fill="%23ffffff" stroke="%23dee2e6" stroke-width="2"/><text x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="28" fill="%230052FF">SP DENTAL</text></svg>';
 
 const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }: ProductCardProps) {
   const { addItem } = useCart();
@@ -57,13 +57,15 @@ const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }
             loading="lazy"
             decoding="async"
             className="product-card__img"
+            width={600}
+            height={400}
             onError={(event) => {
               if (event.currentTarget.src !== fallbackImage) {
                 event.currentTarget.src = fallbackImage;
               }
             }}
           />
-          <div className="product-card__badge">{product.brand || 'AMILAB'}</div>
+          <div className="product-card__badge">{product.brand || 'SP Dental'}</div>
         </div>
 
         {/* Contenido del producto */}
@@ -83,7 +85,7 @@ const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }
           {useMemo(() => {
             if (!product.shortDescription) return null;
             const desc = product.shortDescription.length > 100
-              ? `${product.shortDescription.substring(0, 100)}...`
+              ? `${product.shortDescription.substring(0, 100)}…`
               : product.shortDescription;
             return <p className="product-card__description">{desc}</p>;
           }, [product.shortDescription])}
@@ -117,7 +119,7 @@ const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }
             aria-label="Agregar al carrito"
             title="Agregar al carrito"
           >
-            <FiShoppingCart size={20} />
+            <FiShoppingCart size={20} aria-hidden="true" />
           </button>
         </div>
       </div>

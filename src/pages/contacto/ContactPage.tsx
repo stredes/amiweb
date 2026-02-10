@@ -16,11 +16,11 @@ function ContactPage() {
         <div className="grid two">
         <div className="card">
           <h2>Dónde encontrarnos</h2>
-          <p><strong>Dirección:</strong><br />Canadá 9450, La Florida, Santiago, Chile.</p>
-          <p><strong>Teléfono:</strong><br />+562 22878707</p>
+          <p><strong>Dirección:</strong><br />Santiago, Chile.</p>
+          <p><strong>Teléfono:</strong><br />+56 2 2345 6789</p>
           <p>
             <strong>Correo:</strong><br />
-            <a href="mailto:amilab@amilab.cl">amilab@amilab.cl</a>
+            <a href="mailto:contacto@spdental.cl">contacto@spdental.cl</a>
           </p>
           <LocationMap />
         </div>

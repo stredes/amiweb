@@ -101,12 +101,22 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
 
   return (
     <>
-      <div className="checkout-modal-overlay" onClick={onClose} />
-      <div className="checkout-modal">
+      <button
+        type="button"
+        className="checkout-modal-overlay"
+        onClick={onClose}
+        aria-label="Cerrar formulario de cotización"
+      />
+      <div
+        className="checkout-modal"
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="checkout-modal-title"
+      >
         <div className="checkout-modal__header">
-          <h2>Solicitar Cotización</h2>
-          <button className="checkout-modal__close" onClick={onClose}>
-            <FiX size={24} />
+          <h2 id="checkout-modal-title">Solicitar Cotización</h2>
+          <button className="checkout-modal__close" onClick={onClose} aria-label="Cerrar formulario">
+            <FiX size={24} aria-hidden="true" />
           </button>
         </div>
 
@@ -114,14 +124,14 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
         <div className="checkout-steps">
           <div className={`checkout-step ${step === 'customer' ? 'active' : ''} ${step === 'confirm' ? 'completed' : ''}`}>
             <div className="checkout-step__icon">
-              {step === 'confirm' ? <FiCheck /> : <FiUser />}
+              {step === 'confirm' ? <FiCheck aria-hidden="true" /> : <FiUser aria-hidden="true" />}
             </div>
             <span>Información</span>
           </div>
           <div className="checkout-step__line" />
           <div className={`checkout-step ${step === 'confirm' ? 'active' : ''}`}>
             <div className="checkout-step__icon">
-              <FiCheck />
+              <FiCheck aria-hidden="true" />
             </div>
             <span>Confirmar</span>
           </div>
@@ -138,12 +148,14 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
                 <input
                   id="customerName"
                   type="text"
+                  name="customerName"
                   value={customerData.customerName}
                   onChange={(e) => setCustomerData({ ...customerData, customerName: e.target.value })}
-                  placeholder="Ej: Juan Pérez"
+                  placeholder="Ej: Juan Pérez…"
                   required
+                  autoComplete="name"
                 />
-              </div>
+                </div>
 
               <div className="form-row">
                 <div className="form-group">
@@ -151,10 +163,14 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
                   <input
                     id="customerEmail"
                     type="email"
+                    name="customerEmail"
                     value={customerData.customerEmail}
                     onChange={(e) => setCustomerData({ ...customerData, customerEmail: e.target.value })}
-                    placeholder="juan@empresa.com"
+                    placeholder="juan@empresa.com…"
                     required
+                    autoComplete="email"
+                    inputMode="email"
+                    spellCheck={false}
                   />
                 </div>
 
@@ -163,10 +179,13 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
                   <input
                     id="customerPhone"
                     type="tel"
+                    name="customerPhone"
                     value={customerData.customerPhone}
                     onChange={(e) => setCustomerData({ ...customerData, customerPhone: e.target.value })}
-                    placeholder="+56 9 1234 5678"
+                    placeholder="+56 9 1234 5678…"
                     required
+                    autoComplete="tel"
+                    inputMode="tel"
                   />
                 </div>
               </div>
@@ -176,10 +195,12 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
                 <input
                   id="organization"
                   type="text"
+                  name="organization"
                   value={customerData.organization}
                   onChange={(e) => setCustomerData({ ...customerData, organization: e.target.value })}
-                  placeholder="Laboratorio Central"
+                  placeholder="Laboratorio Central…"
                   required
+                  autoComplete="organization"
                 />
               </div>
 
@@ -188,9 +209,10 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
                 <input
                   id="taxId"
                   type="text"
+                  name="taxId"
                   value={customerData.taxId}
                   onChange={(e) => setCustomerData({ ...customerData, taxId: e.target.value })}
-                  placeholder="76.XXX.XXX-X"
+                  placeholder="76.XXX.XXX-X…"
                 />
               </div>
 
@@ -198,12 +220,17 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
                 <label htmlFor="notes">Notas Adicionales (Opcional)</label>
                 <textarea
                   id="notes"
+                  name="notes"
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Especifica cualquier requerimiento especial o información adicional..."
+                  placeholder="Especifica cualquier requerimiento especial o información adicional…"
                   rows={4}
                   style={{ width: '100%', padding: '0.75rem', borderRadius: '6px', border: '1px solid #ddd' }}
+                  aria-describedby="notes-help"
                 />
+                <p id="notes-help" className="muted" style={{ marginTop: '0.5rem' }}>
+                  Esta información ayuda a tu vendedor a preparar la cotización.
+                </p>
               </div>
 
               <div className="checkout-form__actions">
@@ -222,7 +249,7 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
               <h3>Confirmar Cotización</h3>
               
               <div className="confirm-section">
-                <h4><FiUser /> Información del Cliente</h4>
+                <h4><FiUser aria-hidden="true" /> Información del Cliente</h4>
                 <p><strong>{customerData.customerName}</strong></p>
                 <p>{customerData.customerEmail}</p>
                 <p>{customerData.customerPhone}</p>
@@ -258,7 +285,7 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
               </div>
 
               <div className="checkout-alert">
-                <FiAlertCircle />
+                <FiAlertCircle aria-hidden="true" />
                 <p>Tu solicitud será revisada por tu vendedor asignado. Recibirás una notificación cuando sea procesada.</p>
               </div>
 
@@ -277,7 +304,7 @@ export function CheckoutModal({ isOpen, onClose, onSuccess }: CheckoutModalProps
                   onClick={handleConfirmOrder}
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Enviando...' : 'Enviar Cotización'}
+                  {isSubmitting ? 'Enviando…' : 'Enviar Cotización'}
                 </button>
               </div>
             </div>

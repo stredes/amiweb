@@ -1,19 +1,21 @@
 :root {
-  /* Paleta de colores: Rojos, Blancos y Conchevino */
-  --color-primary: #8B1538;        /* Conchevino oscuro */
-  --color-primary-light: #A0294A;  /* Conchevino medio */
-  --color-primary-dark: #6B0F2A;   /* Conchevino muy oscuro */
-  --color-secondary: #DC143C;      /* Rojo carmesí */
-  --color-accent: #B22222;         /* Rojo ladrillo */
+  /* Paleta SP Dental: Azul Tecnológico y Verde Menta */
+  --color-primary: #0052FF;        /* Azul eléctrico */
+  --color-primary-light: #3D7BFF;  /* Azul claro */
+  --color-primary-dark: #0D1B2A;   /* Azul oscuro */
+  --color-secondary: #0D1B2A;      /* Azul oscuro */
+  --color-accent: #64FFDA;         /* Verde menta */
   --color-white: #FFFFFF;          /* Blanco puro */
-  --color-light: #F5F5DC;          /* Blanco palo/beige */
-  --color-light-gray: #E8E8D8;     /* Beige grisáceo */
-  --color-footer: #4B0082;         /* Lila oscuro */
-  --color-text: #2D1619;           /* Texto oscuro */
-  --color-text-light: #5A3940;     /* Texto medio */
+  --color-light: #E0E0E0;          /* Gris claro */
+  --color-light-gray: #E0E0E0;     /* Gris claro */
+  --color-footer: #0D1B2A;         /* Azul oscuro */
+  --color-text: #4F4F4F;           /* Texto principal */
+  --color-text-light: #6B6B6B;     /* Texto secundario */
   --color-bg-primary: #FFFFFF;
-  --color-bg-secondary: #F5F5DC;
-  --color-border: #E8E8D8;
+  --color-bg-secondary: #FFFFFF;
+  --color-border: #E0E0E0;
+  --color-focus: #0052FF;
+  --focus-ring: 0 0 0 3px rgba(0, 82, 255, 0.35);
   
   /* Espaciado */
   --spacing-xs: 0.25rem;
@@ -44,20 +46,21 @@
 
 /* Dark mode */
 [data-theme='dark'] {
-  --color-primary: #D45D79;
-  --color-primary-light: #E17A93;
-  --color-primary-dark: #B23D5A;
-  --color-secondary: #FF6B8A;
-  --color-accent: #FF4F6D;
-  --color-white: #1a1a1a;
-  --color-light: #0f0f0f;
-  --color-light-gray: #2a2a2a;
-  --color-footer: #1a1a1a;
-  --color-text: #e8e8e8;
-  --color-text-light: #b8b8b8;
-  --color-bg-primary: #1a1a1a;
-  --color-bg-secondary: #0f0f0f;
-  --color-border: #2a2a2a;
+  --color-primary: #5A8BFF;
+  --color-primary-light: #8FB0FF;
+  --color-primary-dark: #0D1B2A;
+  --color-secondary: #64FFDA;
+  --color-accent: #64FFDA;
+  --color-white: #0D1B2A;
+  --color-light: #111827;
+  --color-light-gray: #1F2937;
+  --color-footer: #0B1220;
+  --color-text: #E5E7EB;
+  --color-text-light: #9CA3AF;
+  --color-bg-primary: #0D1B2A;
+  --color-bg-secondary: #0B1220;
+  --color-border: #1F2937;
+  --color-focus: #5A8BFF;
   
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
@@ -78,6 +81,20 @@ body {
   margin: 0;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0.12);
+}
+
+body,
+button,
+input,
+select,
+textarea {
+  text-rendering: optimizeLegibility;
+}
+
+img {
+  max-width: 100%;
+  height: auto;
 }
 
 a {
@@ -90,6 +107,23 @@ a:hover {
   color: var(--color-primary);
 }
 
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+[role="button"]:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--color-focus);
+  outline-offset: 2px;
+  box-shadow: var(--focus-ring);
+}
+
+:focus:not(:focus-visible) {
+  outline: none;
+  box-shadow: none;
+}
+
 h1,
 h2,
 h3,
@@ -100,6 +134,12 @@ h6 {
   line-height: 1.3;
   font-weight: 700;
   color: var(--color-primary-dark);
+  text-wrap: balance;
+  scroll-margin-top: 6rem;
+}
+
+:target {
+  scroll-margin-top: 6rem;
 }
 
 h1 {
@@ -130,6 +170,40 @@ input,
 select,
 textarea {
   font: inherit;
+}
+
+button {
+  cursor: pointer;
+  touch-action: manipulation;
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: 1rem;
+  top: 1rem;
+  padding: 0.65rem 1rem;
+  background: var(--color-secondary);
+  color: var(--color-white);
+  border-radius: var(--radius-sm);
+  transform: translateY(-200%);
+  transition: transform 0.2s ease;
+  z-index: 200;
+}
+
+.skip-link:focus-visible {
+  transform: translateY(0);
 }
 
 .app-shell {
@@ -169,6 +243,14 @@ textarea {
   font-weight: 700;
   font-size: 1.35rem;
   letter-spacing: 0.05em;
+  display: flex;
+  align-items: center;
+}
+
+.navbar__logo img {
+  height: 42px;
+  width: auto;
+  display: block;
 }
 
 .navbar__nav {
@@ -181,7 +263,7 @@ textarea {
   color: var(--color-white);
   padding: var(--spacing-sm) var(--spacing-md);
   border-radius: var(--radius-sm);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, box-shadow 0.3s ease;
   font-weight: 500;
 }
 
@@ -207,13 +289,12 @@ textarea {
   border: 2px solid transparent;
   background: var(--color-white);
   min-width: 200px;
-  transition: all 0.3s ease;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar__search input:focus {
-  outline: none;
   border-color: var(--color-secondary);
-  box-shadow: 0 0 0 3px rgba(220, 20, 60, 0.15);
+  box-shadow: 0 0 0 3px rgba(0, 82, 255, 0.2);
 }
 
 .navbar__search button {
@@ -224,7 +305,7 @@ textarea {
   color: var(--color-white);
   cursor: pointer;
   font-weight: 600;
-  transition: all 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .navbar__search button:hover {
@@ -399,6 +480,15 @@ textarea {
   gap: var(--spacing-lg);
 }
 
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
 .grid.two {
   grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
 }
@@ -443,7 +533,7 @@ textarea {
   border-radius: var(--radius-lg);
   box-shadow: var(--shadow-md);
   border: 2px solid var(--color-light-gray);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
   cursor: pointer;
 }
 
@@ -454,7 +544,7 @@ textarea {
 }
 
 .category-card {
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 @keyframes categoryCardFadeIn {
@@ -477,7 +567,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .card:hover {
@@ -550,7 +640,7 @@ textarea {
   cursor: pointer;
   font-weight: 600;
   font-size: 0.95rem;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -620,13 +710,12 @@ textarea {
   border: 2px solid var(--color-light-gray);
   background: var(--color-white);
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
-.form-control input:focus,
-.form-control select:focus,
-.form-control textarea:focus {
-  outline: none;
+.form-control input:focus-visible,
+.form-control select:focus-visible,
+.form-control textarea:focus-visible {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 4px rgba(139, 21, 56, 0.12);
 }
@@ -682,8 +771,7 @@ textarea {
   background: var(--color-white);
 }
 
-.search-bar input:focus {
-  outline: none;
+.search-bar input:focus-visible {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
 }
@@ -778,7 +866,7 @@ textarea {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .modal__close:hover {
@@ -949,7 +1037,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .stat-card:hover {
@@ -991,7 +1079,7 @@ textarea {
   font-weight: 600;
   font-size: 1.05rem;
   color: var(--color-text-light);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .portal-tab:hover {
@@ -1046,7 +1134,7 @@ textarea {
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-md);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .order-card:hover {
@@ -1150,7 +1238,7 @@ textarea {
   font-size: 0.9rem;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
 }
 
 .order-action-btn:hover {
@@ -1200,6 +1288,9 @@ textarea {
   background: rgba(0, 0, 0, 0.7);
   z-index: 1000;
   animation: fadeIn 0.2s ease;
+  border: none;
+  padding: 0;
+  cursor: pointer;
 }
 
 .cancel-modal {
@@ -1215,6 +1306,7 @@ textarea {
   max-width: 500px;
   padding: var(--spacing-xl);
   animation: slideUp 0.3s ease;
+  overscroll-behavior: contain;
 }
 
 .cancel-modal__header {
@@ -1246,8 +1338,7 @@ textarea {
   resize: vertical;
 }
 
-.cancel-modal__input:focus {
-  outline: none;
+.cancel-modal__input:focus-visible {
   border-color: var(--color-primary);
 }
 
@@ -1262,7 +1353,7 @@ textarea {
   border-radius: var(--radius-sm);
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.2s;
+  transition: color 0.2s ease, background-color 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, transform 0.2s ease, opacity 0.2s ease;
   border: none;
 }
 
@@ -1312,7 +1403,7 @@ textarea {
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .contact-card:hover {
@@ -1482,7 +1573,7 @@ textarea {
   font-weight: 600;
   font-size: 1.1rem;
   color: var(--color-text-light);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .admin-tab:hover {
@@ -1522,7 +1613,7 @@ textarea {
   display: flex;
   align-items: center;
   gap: var(--spacing-lg);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .admin-stat-card:hover {
@@ -1703,7 +1794,7 @@ textarea {
 }
 
 .admin-table tbody tr {
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .admin-table tbody tr:hover {
@@ -1727,15 +1818,14 @@ textarea {
   background: var(--color-white);
   font-size: 0.9rem;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .status-select:hover {
   border-color: var(--color-primary);
 }
 
-.status-select:focus {
-  outline: none;
+.status-select:focus-visible {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
 }
@@ -1798,7 +1888,7 @@ textarea {
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .user-card-admin:hover {
@@ -1955,7 +2045,7 @@ textarea {
   font-weight: 600;
   font-size: 1.1rem;
   color: var(--color-text-light);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .vendor-tab:hover {
@@ -1991,7 +2081,7 @@ textarea {
   border-radius: var(--radius-lg);
   padding: var(--spacing-xl);
   box-shadow: var(--shadow-md);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .sales-metric-card:hover {
@@ -2081,7 +2171,7 @@ textarea {
   border-radius: var(--radius-lg);
   padding: var(--spacing-lg);
   box-shadow: var(--shadow-sm);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
   display: flex;
   flex-direction: column;
   gap: var(--spacing-md);
@@ -2255,7 +2345,7 @@ textarea {
 }
 
 .vendor-table tbody tr {
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .vendor-table tbody tr:hover {
@@ -2507,7 +2597,7 @@ textarea {
   background: var(--color-light);
   border-radius: var(--radius-md);
   border: 2px solid var(--color-light-gray);
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .stat-card:hover {
@@ -2530,6 +2620,7 @@ textarea {
   font-weight: 700;
   color: var(--color-primary);
   margin-bottom: var(--spacing-xs);
+  font-variant-numeric: tabular-nums;
 }
 
 .stat-card__label {
@@ -2552,12 +2643,11 @@ textarea {
   border: 2px solid var(--color-light-gray);
   border-radius: var(--radius-md);
   font-size: 1rem;
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
-.inventory-search:focus,
-.inventory-filter:focus {
-  outline: none;
+.inventory-search:focus-visible,
+.inventory-filter:focus-visible {
   border-color: var(--color-primary);
   box-shadow: 0 0 0 3px rgba(139, 21, 56, 0.1);
 }
@@ -2577,6 +2667,7 @@ textarea {
   table-layout: fixed;
   border-collapse: collapse;
   background: var(--color-white);
+  font-variant-numeric: tabular-nums;
 }
 
 .inventory-table thead {
@@ -2614,7 +2705,7 @@ textarea {
 }
 
 .inventory-table tbody tr {
-  transition: all 0.3s ease;
+  transition: color 0.3s ease, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease, opacity 0.3s ease;
 }
 
 .inventory-table tbody tr:hover {

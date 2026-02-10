@@ -31,7 +31,7 @@ export function WhatsAppButton({
             onClick={() => setShowTooltip(false)}
             aria-label="Close"
           >
-            <FiX />
+            <FiX aria-hidden="true" />
           </button>
           <p className="whatsapp-button__tooltip-text">
             ¿Necesitas ayuda? Chatea con nosotros en WhatsApp
@@ -46,7 +46,7 @@ export function WhatsAppButton({
         onMouseLeave={() => setShowTooltip(false)}
         aria-label="Chat on WhatsApp"
       >
-        <FaWhatsapp className="whatsapp-button__icon" />
+        <FaWhatsapp className="whatsapp-button__icon" aria-hidden="true" />
       </button>
     </div>
   );

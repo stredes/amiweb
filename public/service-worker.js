@@ -1,6 +1,6 @@
-const CACHE_NAME = 'amiweb-v2';
-const API_CACHE_NAME = 'amiweb-api-v2';
-const IMAGE_CACHE_NAME = 'amiweb-images-v2';
+const CACHE_NAME = 'sp-dental-v1';
+const API_CACHE_NAME = 'sp-dental-api-v1';
+const IMAGE_CACHE_NAME = 'sp-dental-images-v1';
 
 const STATIC_ASSETS = [
   '/',
@@ -177,7 +177,7 @@ async function syncPendingQuotes() {
 // Push Notifications - for order updates
 self.addEventListener('push', (event) => {
   const data = event.data ? event.data.json() : {};
-  const title = data.title || 'AMILAB Notificación';
+  const title = data.title || 'SP Dental Notificación';
   const options = {
     body: data.body || 'Tienes una nueva notificación',
     icon: data.icon || '/icon-192x192.png',

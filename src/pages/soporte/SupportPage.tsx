@@ -31,7 +31,7 @@ function SupportPage() {
     const next: Partial<Record<keyof SupportRequest, string>> = {};
     if (!form.type) next.type = 'Selecciona un tipo de servicio';
     if (!form.name.trim()) next.name = 'Ingresa tu nombre';
-    if (!form.organization.trim()) next.organization = 'Ingresa tu laboratorio o institución';
+    if (!form.organization.trim()) next.organization = 'Ingresa tu clínica o institución';
     if (!form.email.trim() || !/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(form.email)) {
       next.email = 'Email inválido';
     }
@@ -72,7 +72,7 @@ function SupportPage() {
             <span className="support-hero__eyebrow">Soporte especializado</span>
             <h1>Soporte</h1>
             <p>
-              Servicios de pre y post venta para acompañar a tu laboratorio clínico con especialistas y
+              Servicios de pre y post venta para acompañar a tu clínica dental con especialistas y
               servicio técnico propio.
             </p>
             <div className="support-hero__actions">
@@ -82,21 +82,21 @@ function SupportPage() {
           </div>
           <div className="support-highlights">
             <div className="support-highlight">
-              <FiClock size={20} />
+              <FiClock size={20} aria-hidden="true" />
               <div>
                 <h3>Respuesta ágil</h3>
                 <p>Priorizamos solicitudes críticas y coordinamos la visita técnica.</p>
               </div>
             </div>
             <div className="support-highlight">
-              <FiMapPin size={20} />
+              <FiMapPin size={20} aria-hidden="true" />
               <div>
                 <h3>Cobertura nacional</h3>
-                <p>Atendemos en laboratorio y en terreno según necesidad.</p>
+                <p>Atendemos en clínica y en terreno según necesidad.</p>
               </div>
             </div>
             <div className="support-highlight">
-              <FiShield size={20} />
+              <FiShield size={20} aria-hidden="true" />
               <div>
                 <h3>Equipo certificado</h3>
                 <p>Técnicos capacitados para equipos y consumibles críticos.</p>
@@ -118,15 +118,15 @@ function SupportPage() {
             <h2>Cómo trabajamos</h2>
             <ul>
               <li>
-                <FiMessageCircle />
+                <FiMessageCircle aria-hidden="true" />
                 Levantamiento de requerimiento y diagnóstico inicial.
               </li>
               <li>
-                <FiTool />
+                <FiTool aria-hidden="true" />
                 Coordinación de visita, repuestos y técnicos asignados.
               </li>
               <li>
-                <FiCheckCircle />
+                <FiCheckCircle aria-hidden="true" />
                 Cierre con informe y recomendaciones de continuidad.
               </li>
             </ul>
@@ -174,14 +174,18 @@ function SupportPage() {
                   value={form.name}
                   onChange={(e) => setForm({ ...form, name: e.target.value })}
                   error={errors.name}
+                  autoComplete="name"
+                  name="name"
                 />
                 <TextInput
                   id="support-organization"
-                  label="Laboratorio/Institución"
+                  label="Clínica/Institución"
                   required
                   value={form.organization}
                   onChange={(e) => setForm({ ...form, organization: e.target.value })}
                   error={errors.organization}
+                  autoComplete="organization"
+                  name="organization"
                 />
                 <TextInput
                   id="support-email"
@@ -191,12 +195,19 @@ function SupportPage() {
                   value={form.email}
                   onChange={(e) => setForm({ ...form, email: e.target.value })}
                   error={errors.email}
+                  autoComplete="email"
+                  name="email"
+                  inputMode="email"
+                  spellCheck={false}
                 />
                 <TextInput
                   id="support-phone"
                   label="Teléfono (opcional)"
                   value={form.phone}
                   onChange={(e) => setForm({ ...form, phone: e.target.value })}
+                  autoComplete="tel"
+                  name="phone"
+                  inputMode="tel"
                 />
                 <div className="form-control">
                   <label htmlFor="support-equipment">Equipo</label>
@@ -205,8 +216,14 @@ function SupportPage() {
                     value={form.equipment}
                     onChange={(e) => setForm({ ...form, equipment: e.target.value })}
                     required
+                    aria-describedby={errors.equipment ? 'support-equipment-error' : undefined}
+                    name="equipment"
                   />
-                  {errors.equipment && <p className="form-error">{errors.equipment}</p>}
+                  {errors.equipment && (
+                    <p id="support-equipment-error" className="form-error" role="alert">
+                      {errors.equipment}
+                    </p>
+                  )}
                 </div>
                 <div className="form-control">
                   <label htmlFor="support-serial">Número de serie (opcional)</label>
@@ -214,6 +231,7 @@ function SupportPage() {
                     id="support-serial"
                     value={form.serial}
                     onChange={(e) => setForm({ ...form, serial: e.target.value })}
+                    name="serial"
                   />
                 </div>
                 <div className="form-control">
@@ -223,14 +241,24 @@ function SupportPage() {
                     value={form.comment}
                     required
                     onChange={(e) => setForm({ ...form, comment: e.target.value })}
+                    aria-describedby={errors.comment ? 'support-comment-error' : undefined}
+                    name="comment"
                   />
-                  {errors.comment && <p className="form-error">{errors.comment}</p>}
+                  {errors.comment && (
+                    <p id="support-comment-error" className="form-error" role="alert">
+                      {errors.comment}
+                    </p>
+                  )}
                 </div>
                 <div className="support-form-actions">
                   <Button type="submit" disabled={submitting}>
-                    {submitting ? 'Enviando...' : 'Enviar solicitud'}
+                    {submitting ? 'Enviando…' : 'Enviar solicitud'}
                   </Button>
-                  {success && <p className="success">Solicitud enviada (mock). Te contactaremos pronto.</p>}
+                  {success && (
+                    <p className="success" role="status">
+                      Solicitud enviada (mock). Te contactaremos pronto.
+                    </p>
+                  )}
                 </div>
               </form>
             </div>

@@ -15,8 +15,11 @@ export function CartButton() {
         data-tour="cart-button"
         onClick={() => setIsDrawerOpen(true)}
         title="Ver carrito de cotización"
+        aria-label="Abrir carrito de cotización"
+        aria-haspopup="dialog"
+        aria-expanded={isDrawerOpen}
       >
-        <FiShoppingCart size={24} />
+        <FiShoppingCart size={24} aria-hidden="true" />
         {itemCount > 0 && (
           <span className="cart-button__badge">{itemCount}</span>
         )}

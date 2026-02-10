@@ -9,9 +9,9 @@ function NotFoundPage() {
   const navigate = useNavigate();
 
   const suggestedLinks = [
-    { to: ROUTES.home, label: 'Inicio', icon: <FiHome /> },
-    { to: '/productos', label: 'Productos', icon: <FiPackage /> },
-    { to: ROUTES.contact, label: 'Contacto', icon: <FiSearch /> },
+    { to: ROUTES.home, label: 'Inicio', icon: <FiHome aria-hidden="true" /> },
+    { to: '/productos', label: 'Productos', icon: <FiPackage aria-hidden="true" /> },
+    { to: ROUTES.contact, label: 'Contacto', icon: <FiSearch aria-hidden="true" /> },
   ];
 
   return (
@@ -38,10 +38,10 @@ function NotFoundPage() {
           <RippleButton variant="primary" size="lg" onClick={() => navigate(-1)}>
             Volver atrás
           </RippleButton>
-          <RippleButton variant="outline" size="lg" onClick={() => navigate(ROUTES.home)}>
-            <FiHome />
+          <Link className="ripple-button ripple-button--outline ripple-button--lg" to={ROUTES.home}>
+            <FiHome aria-hidden="true" />
             Ir al inicio
-          </RippleButton>
+          </Link>
           </div>
         </FadeIn>
 

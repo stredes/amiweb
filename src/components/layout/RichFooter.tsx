@@ -45,19 +45,25 @@ export function RichFooter() {
           <p>Recibe las últimas novedades, ofertas y contenido exclusivo</p>
           <form onSubmit={handleNewsletterSubmit} className="newsletter-form">
             <div className="newsletter-form__input-group">
-              <FiMail className="newsletter-form__icon" />
+              <FiMail className="newsletter-form__icon" aria-hidden="true" />
+              <label className="sr-only" htmlFor="newsletter-email">
+                Email para suscripción
+              </label>
               <input
+                id="newsletter-email"
                 type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Tu email"
+                placeholder="Tu email…"
                 required
                 disabled={isSubmitting}
+                autoComplete="email"
+                name="newsletterEmail"
               />
             </div>
             <button type="submit" disabled={isSubmitting}>
-              <FiSend />
-              {isSubmitting ? 'Enviando...' : 'Suscribirse'}
+              <FiSend aria-hidden="true" />
+              {isSubmitting ? 'Enviando…' : 'Suscribirse'}
             </button>
           </form>
         </div>
@@ -66,23 +72,23 @@ export function RichFooter() {
         <div className="rich-footer__content">
           {/* Company Info */}
           <div className="rich-footer__section">
-            <h4>AMILAB</h4>
+            <h4>SP Dental</h4>
             <p className="rich-footer__description">
-              Equipos, reactivos e insumos con soporte técnico especializado.
-              Soluciones integrales para laboratorios clínicos con servicio preventivo y correctivo.
+              Insumos, equipamiento y tecnología odontológica con soporte técnico especializado.
+              Soluciones integrales para clínicas dentales con servicio preventivo y correctivo.
             </p>
             <div className="rich-footer__social">
-              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer">
-                <FiFacebook />
+              <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+                <FiFacebook aria-hidden="true" />
               </a>
-              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">
-                <FiInstagram />
+              <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+                <FiInstagram aria-hidden="true" />
               </a>
-              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer">
-                <FiLinkedin />
+              <a href="https://linkedin.com" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+                <FiLinkedin aria-hidden="true" />
               </a>
-              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer">
-                <FiTwitter />
+              <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" aria-label="Twitter">
+                <FiTwitter aria-hidden="true" />
               </a>
             </div>
           </div>
@@ -104,13 +110,12 @@ export function RichFooter() {
           <div className="rich-footer__section">
             <h4>Categorías</h4>
             <ul>
-              <li><Link to="/productos?categoria=quimica">Química Clínica</Link></li>
-              <li><Link to="/productos?categoria=hematologia">Hematología</Link></li>
-              <li><Link to="/productos?categoria=orinas">Orinas</Link></li>
-              <li><Link to="/productos?categoria=microbiologia">Microbiología</Link></li>
-              <li><Link to="/productos?categoria=electrolitos">Electrolitos</Link></li>
-              <li><Link to="/productos?categoria=tbc">TBC</Link></li>
-              <li><Link to="/productos?categoria=toma-muestras">Toma de Muestras</Link></li>
+              <li><Link to="/productos?categoryId=ESTETICA">Estética y Blanqueamiento</Link></li>
+              <li><Link to="/productos?categoryId=RESTAURADORA">Odontología Restauradora</Link></li>
+              <li><Link to="/productos?categoryId=CIRUGIA">Cirugía e Implantología</Link></li>
+              <li><Link to="/productos?categoryId=ENDODONCIA">Endodoncia</Link></li>
+              <li><Link to="/productos?categoryId=IMAGENOLOGIA">Imagenología y Equipos</Link></li>
+              <li><Link to="/productos?categoryId=CONSUMIBLES">Consumibles Clínicos</Link></li>
             </ul>
           </div>
 
@@ -119,16 +124,16 @@ export function RichFooter() {
             <h4>Contacto</h4>
             <ul className="rich-footer__contact">
               <li>
-                <FiMapPin />
-                <span>Canadá 9450, La Florida, Santiago, Chile</span>
+                <FiMapPin aria-hidden="true" />
+                <span>Santiago, Chile</span>
               </li>
               <li>
-                <FiPhone />
-                <a href="tel:+56222878707">+562 22878707</a>
+                <FiPhone aria-hidden="true" />
+                <a href="tel:+56223456789">+56 2 2345 6789</a>
               </li>
               <li>
-                <FiMail />
-                <a href="mailto:amilab@amilab.cl">amilab@amilab.cl</a>
+                <FiMail aria-hidden="true" />
+                <a href="mailto:contacto@spdental.cl">contacto@spdental.cl</a>
               </li>
             </ul>
             <div className="rich-footer__hours">
@@ -142,7 +147,7 @@ export function RichFooter() {
         <div className="rich-footer__bottom">
           <div>
             <div className="rich-footer__legal">
-              <p>&copy; {currentYear} AMILAB. Todos los derechos reservados.</p>
+              <p>&copy; {currentYear} SP Dental. Todos los derechos reservados.</p>
               <div className="rich-footer__legal-links">
                 <Link to="/privacidad">Política de Privacidad</Link>
                 <span>•</span>
@@ -154,7 +159,7 @@ export function RichFooter() {
             <div className="rich-footer__payments">
               <span>Representaciones:</span>
               <div className="rich-footer__payment-icons">
-                <span style={{fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.85)'}}>Becton Dickinson • Olympus • Mindray</span>
+                <span style={{fontSize: '0.85rem', color: 'rgba(255, 255, 255, 0.85)'}}>FGM Dental Group • Wisedent • Dimed • SMI • Acteon</span>
               </div>
             </div>
           </div>

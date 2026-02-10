@@ -62,7 +62,7 @@ export function Testimonials({
           aria-label="Previous testimonial"
           disabled={testimonials.length <= 1}
         >
-          <FiChevronLeft />
+          <FiChevronLeft aria-hidden="true" />
         </button>
 
         <div className="testimonials__content">
@@ -79,6 +79,9 @@ export function Testimonials({
                   src={currentTestimonial.avatar}
                   alt={currentTestimonial.author}
                   className="testimonials__avatar"
+                  width={60}
+                  height={60}
+                  loading="lazy"
                 />
               ) : (
                 <div className="testimonials__avatar testimonials__avatar--placeholder">
@@ -103,7 +106,7 @@ export function Testimonials({
           aria-label="Next testimonial"
           disabled={testimonials.length <= 1}
         >
-          <FiChevronRight />
+          <FiChevronRight aria-hidden="true" />
         </button>
       </div>
 
@@ -151,6 +154,9 @@ export function TestimonialsGrid({
                 src={testimonial.avatar}
                 alt={testimonial.author}
                 className="testimonials-grid__avatar"
+                width={40}
+                height={40}
+                loading="lazy"
               />
             ) : (
               <div className="testimonials-grid__avatar testimonials-grid__avatar--placeholder">

@@ -172,7 +172,7 @@ export function WarehouseStock() {
     <div className="warehouse-stock">
       <div className="warehouse-stock__banner">
         <span>Importante: La opcion "Stock fuera de bodega" ahora es "Stock de bodega temporal".</span>
-        <button className="warehouse-stock__close" type="button">×</button>
+        <button className="warehouse-stock__close" type="button" aria-label="Cerrar aviso">×</button>
       </div>
 
       <div className="warehouse-stock__tabs">
@@ -190,18 +190,22 @@ export function WarehouseStock() {
 
       <div className="warehouse-stock__filters">
         <div className="filter-field">
-          <label>Fecha</label>
+          <label htmlFor="warehouse-filter-date">Fecha</label>
           <input
+            id="warehouse-filter-date"
             type="date"
             value={filters.date}
             onChange={(event) => setFilters(prev => ({ ...prev, date: event.target.value }))}
+            name="date"
           />
         </div>
         <div className="filter-field">
-          <label>Familia</label>
+          <label htmlFor="warehouse-filter-familia">Familia</label>
           <select
+            id="warehouse-filter-familia"
             value={filters.familia}
             onChange={(event) => setFilters(prev => ({ ...prev, familia: event.target.value, subfamilia: '' }))}
+            name="familia"
           >
             <option value="">Todas</option>
             {familias.map((familia) => (
@@ -210,10 +214,12 @@ export function WarehouseStock() {
           </select>
         </div>
         <div className="filter-field">
-          <label>SubFamilia</label>
+          <label htmlFor="warehouse-filter-subfamilia">SubFamilia</label>
           <select
+            id="warehouse-filter-subfamilia"
             value={filters.subfamilia}
             onChange={(event) => setFilters(prev => ({ ...prev, subfamilia: event.target.value }))}
+            name="subfamilia"
           >
             <option value="">Todas</option>
             {subfamilias.map((subfamilia) => (
@@ -222,10 +228,12 @@ export function WarehouseStock() {
           </select>
         </div>
         <div className="filter-field">
-          <label>Bodega</label>
+          <label htmlFor="warehouse-filter-bodega">Bodega</label>
           <select
+            id="warehouse-filter-bodega"
             value={filters.bodega}
             onChange={(event) => setFilters(prev => ({ ...prev, bodega: event.target.value }))}
+            name="bodega"
           >
             <option value="">Todas</option>
             {bodegas.map((bodega) => (
@@ -234,10 +242,12 @@ export function WarehouseStock() {
           </select>
         </div>
         <div className="filter-field">
-          <label>Ubicacion</label>
+          <label htmlFor="warehouse-filter-ubicacion">Ubicación</label>
           <select
+            id="warehouse-filter-ubicacion"
             value={filters.ubicacion}
             onChange={(event) => setFilters(prev => ({ ...prev, ubicacion: event.target.value }))}
+            name="ubicacion"
           >
             <option value="">Todas</option>
             {ubicaciones.map((ubicacion) => (
@@ -246,60 +256,76 @@ export function WarehouseStock() {
           </select>
         </div>
         <div className="filter-field filter-field--wide">
-          <label>Codigo de articulo</label>
+          <label htmlFor="warehouse-filter-codigo">Código de artículo</label>
           <div className="filter-input-group">
-            <button type="button" className="filter-pill">×</button>
+            <button type="button" className="filter-pill" aria-label="Limpiar código">×</button>
             <input
+              id="warehouse-filter-codigo"
               type="text"
               value={filters.codigoArticulo}
               onChange={(event) => setFilters(prev => ({ ...prev, codigoArticulo: event.target.value }))}
-              placeholder="Codigo"
+              placeholder="Código…"
+              aria-label="Código de artículo"
+              name="codigoArticulo"
+              autoComplete="off"
             />
-            <input type="text" placeholder="Descripcion" />
-            <button type="button" className="filter-icon">🔍</button>
+            <input type="text" placeholder="Descripción…" aria-label="Descripción del artículo" autoComplete="off" />
+            <button type="button" className="filter-icon" aria-label="Buscar código">🔍</button>
           </div>
         </div>
         <div className="filter-field filter-field--wide">
-          <label>Unidad de negocio</label>
+          <label htmlFor="warehouse-filter-unidad">Unidad de negocio</label>
           <div className="filter-input-group">
-            <button type="button" className="filter-pill">×</button>
+            <button type="button" className="filter-pill" aria-label="Limpiar unidad de negocio">×</button>
             <input
+              id="warehouse-filter-unidad"
               type="text"
               list="unidades-negocio"
               value={filters.unidadNegocio}
               onChange={(event) => setFilters(prev => ({ ...prev, unidadNegocio: event.target.value }))}
-              placeholder="Buscar unidad de negocio"
+              placeholder="Buscar unidad de negocio…"
+              aria-label="Unidad de negocio"
+              name="unidadNegocio"
+              autoComplete="off"
             />
-            <input type="text" placeholder="Descripcion" />
-            <button type="button" className="filter-icon">🔍</button>
+            <input type="text" placeholder="Descripción…" aria-label="Descripción de unidad de negocio" autoComplete="off" />
+            <button type="button" className="filter-icon" aria-label="Buscar unidad de negocio">🔍</button>
           </div>
         </div>
         <div className="filter-field filter-field--wide">
-          <label>Marca</label>
+          <label htmlFor="warehouse-filter-marca">Marca</label>
           <div className="filter-input-group">
-            <button type="button" className="filter-pill">×</button>
+            <button type="button" className="filter-pill" aria-label="Limpiar marca">×</button>
             <input
+              id="warehouse-filter-marca"
               type="text"
               list="marcas"
               value={filters.marca}
               onChange={(event) => setFilters(prev => ({ ...prev, marca: event.target.value }))}
+              aria-label="Marca"
+              name="marca"
+              autoComplete="off"
             />
-            <input type="text" placeholder="Descripcion" />
-            <button type="button" className="filter-icon">🔍</button>
+            <input type="text" placeholder="Descripción…" aria-label="Descripción de marca" autoComplete="off" />
+            <button type="button" className="filter-icon" aria-label="Buscar marca">🔍</button>
           </div>
         </div>
         <div className="filter-field filter-field--wide">
-          <label>Origen</label>
+          <label htmlFor="warehouse-filter-origen">Origen</label>
           <div className="filter-input-group">
-            <button type="button" className="filter-pill">×</button>
+            <button type="button" className="filter-pill" aria-label="Limpiar origen">×</button>
             <input
+              id="warehouse-filter-origen"
               type="text"
               list="origenes"
               value={filters.origen}
               onChange={(event) => setFilters(prev => ({ ...prev, origen: event.target.value }))}
+              aria-label="Origen"
+              name="origen"
+              autoComplete="off"
             />
-            <input type="text" placeholder="Descripcion" />
-            <button type="button" className="filter-icon">🔍</button>
+            <input type="text" placeholder="Descripción…" aria-label="Descripción de origen" autoComplete="off" />
+            <button type="button" className="filter-icon" aria-label="Buscar origen">🔍</button>
           </div>
         </div>
         <div className="filter-field filter-field--checkbox">
@@ -360,6 +386,7 @@ export function WarehouseStock() {
               setPageSize(Number(event.target.value));
               setPage(1);
             }}
+            aria-label="Cantidad de registros por página"
           >
             <option value="10">10</option>
             <option value="25">25</option>
@@ -368,76 +395,85 @@ export function WarehouseStock() {
           <span>registros</span>
         </div>
         <div className="toolbar-right">
-          <span>Buscar</span>
+          <label htmlFor="warehouse-search">Buscar</label>
           <input
+            id="warehouse-search"
             type="search"
-            placeholder="Buscar"
+            placeholder="Buscar…"
             value={searchTerm}
             onChange={(event) => setSearchTerm(event.target.value)}
+            aria-label="Buscar en resultados"
+            name="search"
+            inputMode="search"
+            autoComplete="off"
           />
         </div>
       </div>
 
-      {error && <div className="warehouse-stock__error">{error}</div>}
+      {error && (
+        <div className="warehouse-stock__error" role="alert">
+          {error}
+        </div>
+      )}
 
-      <div className="warehouse-stock__table">
-        <div className="warehouse-stock__table-head">
-          <span>Familia</span>
-          <span>Subfamilia</span>
-          <span>Producto</span>
-          <span>Unidad</span>
-          <span>Unidad neg.</span>
-          <span>Bodega</span>
-          <span>Ubicacion</span>
-          <span>N° serie</span>
-          <span>Lote</span>
-          <span>Fecha ven.</span>
-          <span>Por llegar</span>
-          <span>Reserva</span>
-          <span>Saldo stock</span>
+      <div className="warehouse-stock__table" role="table" aria-label="Resultados de stock" aria-live="polite">
+        <div className="warehouse-stock__table-head" role="row">
+          <span role="columnheader">Familia</span>
+          <span role="columnheader">Subfamilia</span>
+          <span role="columnheader">Producto</span>
+          <span role="columnheader">Unidad</span>
+          <span role="columnheader">Unidad neg.</span>
+          <span role="columnheader">Bodega</span>
+          <span role="columnheader">Ubicación</span>
+          <span role="columnheader">N° serie</span>
+          <span role="columnheader">Lote</span>
+          <span role="columnheader">Fecha ven.</span>
+          <span role="columnheader">Por llegar</span>
+          <span role="columnheader">Reserva</span>
+          <span role="columnheader">Saldo stock</span>
         </div>
         {isLoading && (
-          <div className="warehouse-stock__table-row warehouse-stock__table-row--empty">
-            <span>Cargando resultados...</span>
+          <div className="warehouse-stock__table-row warehouse-stock__table-row--empty" role="row">
+            <span role="cell">Cargando resultados…</span>
           </div>
         )}
         {!isLoading && items.length === 0 && (
-          <div className="warehouse-stock__table-row warehouse-stock__table-row--empty">
-            <span>{error ? 'No se pudo cargar la informacion.' : 'No hay registros para los filtros actuales.'}</span>
+          <div className="warehouse-stock__table-row warehouse-stock__table-row--empty" role="row">
+            <span role="cell">{error ? 'No se pudo cargar la informacion.' : 'No hay registros para los filtros actuales.'}</span>
           </div>
         )}
         {!isLoading && items.map((item, index) => (
-          <div key={`${item.producto}-${item.serie}-${index}`} className="warehouse-stock__table-row">
-            <span>{item.familia || '-'}</span>
-            <span>{item.subfamilia || '-'}</span>
-            <span>{item.producto || '-'}</span>
-            <span>{item.unidad || '-'}</span>
-            <span>{item.unidadNegocio || '-'}</span>
-            <span>{item.bodega || '-'}</span>
-            <span>{item.ubicacion || '-'}</span>
-            <span>{item.serie || '-'}</span>
-            <span>{item.lote || '-'}</span>
-            <span>{item.fechaVencimiento || '-'}</span>
-            <span>{item.porLlegar ?? 0}</span>
-            <span>{item.reserva ?? 0}</span>
-            <span>{item.saldoStock ?? 0}</span>
+          <div key={`${item.producto}-${item.serie}-${index}`} className="warehouse-stock__table-row" role="row">
+            <span role="cell">{item.familia || '-'}</span>
+            <span role="cell">{item.subfamilia || '-'}</span>
+            <span role="cell">{item.producto || '-'}</span>
+            <span role="cell">{item.unidad || '-'}</span>
+            <span role="cell">{item.unidadNegocio || '-'}</span>
+            <span role="cell">{item.bodega || '-'}</span>
+            <span role="cell">{item.ubicacion || '-'}</span>
+            <span role="cell">{item.serie || '-'}</span>
+            <span role="cell">{item.lote || '-'}</span>
+            <span role="cell">{item.fechaVencimiento || '-'}</span>
+            <span role="cell">{item.porLlegar ?? 0}</span>
+            <span role="cell">{item.reserva ?? 0}</span>
+            <span role="cell">{item.saldoStock ?? 0}</span>
           </div>
         ))}
         {!isLoading && items.length > 0 && (
-          <div className="warehouse-stock__table-row warehouse-stock__table-row--total">
-            <span>Total</span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span></span>
-            <span>{summaryTotals.porLlegar}</span>
-            <span>{summaryTotals.reserva}</span>
-            <span>{summaryTotals.saldoStock}</span>
+          <div className="warehouse-stock__table-row warehouse-stock__table-row--total" role="row">
+            <span role="cell">Total</span>
+            <span role="cell"></span>
+            <span role="cell"></span>
+            <span role="cell"></span>
+            <span role="cell"></span>
+            <span role="cell"></span>
+            <span role="cell"></span>
+            <span role="cell"></span>
+            <span role="cell"></span>
+            <span role="cell"></span>
+            <span role="cell">{summaryTotals.porLlegar}</span>
+            <span role="cell">{summaryTotals.reserva}</span>
+            <span role="cell">{summaryTotals.saldoStock}</span>
           </div>
         )}
       </div>

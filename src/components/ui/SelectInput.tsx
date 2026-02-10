@@ -1,4 +1,4 @@
-import { SelectHTMLAttributes } from 'react';
+import { SelectHTMLAttributes, useId } from 'react';
 
 type Option = {
   value: string;
@@ -21,10 +21,18 @@ function SelectInput({
   className = '',
   ...props
 }: SelectInputProps) {
+  const autoId = useId();
+  const selectId = id ?? autoId;
+  const errorId = error ? `${selectId}-error` : undefined;
   return (
     <div className={`form-control ${className}`.trim()}>
-      <label htmlFor={id}>{label}</label>
-      <select id={id} {...props}>
+      <label htmlFor={selectId}>{label}</label>
+      <select
+        id={selectId}
+        aria-invalid={Boolean(error)}
+        aria-describedby={errorId}
+        {...props}
+      >
         <option value="">{placeholder}</option>
         {options.map((option) => (
           <option key={option.value} value={option.value}>
@@ -32,7 +40,11 @@ function SelectInput({
           </option>
         ))}
       </select>
-      {error && <p className="form-error">{error}</p>}
+      {error && (
+        <p id={errorId} className="form-error" role="alert">
+          {error}
+        </p>
+      )}
     </div>
   );
 }

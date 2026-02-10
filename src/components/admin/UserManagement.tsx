@@ -157,7 +157,7 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
         <h2>Gestión de Usuarios</h2>
         {isRoot && (
           <button className="btn btn--primary" onClick={handleCreateUser}>
-            <FiPlus /> Crear Usuario
+            <FiPlus aria-hidden="true" /> Crear Usuario
           </button>
         )}
       </div>
@@ -195,15 +195,17 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                       className="btn-icon" 
                       onClick={() => handleEditUser(user)}
                       title="Editar usuario"
+                      aria-label={`Editar usuario ${user.name}`}
                     >
-                      <FiEdit2 />
+                      <FiEdit2 aria-hidden="true" />
                     </button>
                     <button 
                       className="btn-icon btn-icon--danger" 
                       onClick={() => handleDeleteUser(user.id, user.name)}
                       title="Eliminar usuario"
+                      aria-label={`Eliminar usuario ${user.name}`}
                     >
-                      <FiTrash2 />
+                      <FiTrash2 aria-hidden="true" />
                     </button>
                   </div>
                 )}
@@ -247,11 +249,17 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
       </div>
 
       {showModal && (
-        <div className="modal-overlay" onClick={() => setShowModal(false)}>
-          <div className="modal" onClick={(e) => e.stopPropagation()}>
+        <>
+          <button
+            type="button"
+            className="modal-overlay"
+            onClick={() => setShowModal(false)}
+            aria-label="Cerrar modal de usuario"
+          />
+          <div className="modal" onClick={(e) => e.stopPropagation()} role="dialog" aria-modal="true" aria-labelledby="user-modal-title">
             <div className="modal__header">
-              <h3>{editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}</h3>
-              <button className="btn-close" onClick={() => setShowModal(false)}>×</button>
+              <h3 id="user-modal-title">{editingUser ? 'Editar Usuario' : 'Crear Nuevo Usuario'}</h3>
+              <button className="btn-close" onClick={() => setShowModal(false)} aria-label="Cerrar">×</button>
             </div>
 
             <form onSubmit={handleSubmit} className="modal__body">
@@ -260,9 +268,11 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                 <input
                   id="name"
                   type="text"
+                  name="name"
                   value={formData.name}
                   onChange={(e) => setFormData({ ...formData, name: e.target.value })}
                   required
+                  autoComplete="name"
                 />
               </div>
 
@@ -271,9 +281,13 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                 <input
                   id="email"
                   type="email"
+                  name="email"
                   value={formData.email}
                   onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                   required
+                  autoComplete="email"
+                  inputMode="email"
+                  spellCheck={false}
                 />
               </div>
 
@@ -284,10 +298,12 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                 <input
                   id="password"
                   type="password"
+                  name="password"
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required={!editingUser}
                   minLength={6}
+                  autoComplete="new-password"
                 />
               </div>
 
@@ -295,6 +311,7 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                 <label htmlFor="role">Tipo de Usuario *</label>
                 <select
                   id="role"
+                  name="role"
                   value={formData.role}
                   onChange={(e) => setFormData({ ...formData, role: e.target.value as User['role'] })}
                   required
@@ -314,9 +331,12 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                 <input
                   id="phone"
                   type="tel"
+                  name="phone"
                   value={formData.phone}
                   onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
-                  placeholder="+56 9 1234 5678"
+                  placeholder="+56 9 1234 5678…"
+                  autoComplete="tel"
+                  inputMode="tel"
                 />
               </div>
 
@@ -325,8 +345,10 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                 <input
                   id="company"
                   type="text"
+                  name="company"
                   value={formData.company}
                   onChange={(e) => setFormData({ ...formData, company: e.target.value })}
+                  autoComplete="organization"
                 />
               </div>
 
@@ -335,9 +357,11 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                 <input
                   id="department"
                   type="text"
+                  name="department"
                   value={formData.department}
                   onChange={(e) => setFormData({ ...formData, department: e.target.value })}
-                  placeholder="Ventas, Soporte, Logística, etc."
+                  placeholder="Ventas, Soporte, Logística, etc.…"
+                  autoComplete="organization-title"
                 />
               </div>
 
@@ -355,12 +379,12 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                   className="btn btn--primary"
                   disabled={isSubmitting}
                 >
-                  {isSubmitting ? 'Procesando...' : editingUser ? 'Actualizar Usuario' : 'Crear Usuario'}
+                  {isSubmitting ? 'Procesando…' : editingUser ? 'Actualizar Usuario' : 'Crear Usuario'}
                 </button>
               </div>
             </form>
           </div>
-        </div>
+        </>
       )}
     </div>
   );

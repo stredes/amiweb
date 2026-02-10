@@ -6,7 +6,7 @@
   padding: 20px;
   --outer-r: 20px;
   --p-distance: 20px;
-  background: linear-gradient(135deg, rgba(139, 0, 0, 0.05) 0%, rgba(178, 34, 34, 0.05) 100%);
+  background: linear-gradient(135deg, rgba(0, 82, 255, 0.08) 0%, rgba(100, 255, 218, 0.12) 100%);
   box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
 }
 
@@ -23,10 +23,10 @@
   justify-content: space-between;
   border: none;
   border-radius: calc(var(--outer-r) - 4px);
-  background: linear-gradient(135deg, #8B0000 0%, #B22222 100%);
+  background: linear-gradient(135deg, #0D1B2A 0%, #0052FF 100%);
   overflow: hidden;
   cursor: grab;
-  box-shadow: 0 8px 32px rgba(139, 0, 0, 0.3);
+  box-shadow: 0 8px 32px rgba(0, 82, 255, 0.3);
 }
 
 .carousel-item:active {
@@ -126,7 +126,7 @@
   width: 8px;
   border-radius: 50%;
   cursor: pointer;
-  transition: all 250ms ease;
+  transition: color 250ms ease, background-color 250ms ease, border-color 250ms ease, box-shadow 250ms ease, transform 250ms ease, opacity 250ms ease;
 }
 
 .carousel-indicator.active {

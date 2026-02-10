@@ -44,7 +44,7 @@ function App() {
                   <TourProvider>
                     <AppRouter />
                     <ToastContainer />
-                    <WhatsAppButton phoneNumber="56912345678" message="Hola! Tengo una consulta sobre AMIWEB" />
+                    <WhatsAppButton phoneNumber="56912345678" message="Hola! Tengo una consulta sobre SP Dental" />
                     <CartButton />
                     <CompareTable />
                     <WishlistManager />

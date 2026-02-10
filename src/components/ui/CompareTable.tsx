@@ -35,7 +35,7 @@ export function CompareTable() {
     <div className="compare-table-wrapper">
       <div className="compare-table__header">
         <h2>Comparación de Productos ({products.length})</h2>
-        <button onClick={clearCompare} className="compare-table__clear">
+        <button type="button" onClick={clearCompare} className="compare-table__clear">
           Limpiar todo
         </button>
       </div>
@@ -44,21 +44,24 @@ export function CompareTable() {
         <table>
           <thead>
             <tr>
-              <th className="compare-table__row-header">Producto</th>
+              <th className="compare-table__row-header" scope="col">Producto</th>
               {products.map((product) => (
-                <th key={product.id} className="compare-table__product-header">
+                <th key={product.id} className="compare-table__product-header" scope="col">
                   <button
                     onClick={() => removeProduct(product.id)}
                     className="compare-table__remove"
-                    aria-label="Remove from comparison"
+                    aria-label={`Eliminar ${product.name} de la comparación`}
                   >
-                    <FiX />
+                    <FiX aria-hidden="true" />
                   </button>
                   {product.image && (
                     <img
                       src={product.image}
                       alt={product.name}
                       className="compare-table__product-image"
+                      width={120}
+                      height={120}
+                      loading="lazy"
                     />
                   )}
                   <div className="compare-table__product-name">{product.name}</div>
@@ -71,7 +74,7 @@ export function CompareTable() {
           </thead>
           <tbody>
             <tr>
-              <td className="compare-table__row-header">Precio</td>
+              <th className="compare-table__row-header" scope="row">Precio</th>
               {products.map((product) => (
                 <td key={product.id} className="compare-table__cell compare-table__cell--price">
                   {formatPrice(product.price)}
@@ -81,7 +84,7 @@ export function CompareTable() {
             
             {products.some((p) => p.rating) && (
               <tr>
-                <td className="compare-table__row-header">Calificación</td>
+                <th className="compare-table__row-header" scope="row">Calificación</th>
                 {products.map((product) => (
                   <td key={product.id} className="compare-table__cell">
                     {product.rating ? (
@@ -96,7 +99,7 @@ export function CompareTable() {
 
             {products.some((p) => p.category) && (
               <tr>
-                <td className="compare-table__row-header">Categoría</td>
+                <th className="compare-table__row-header" scope="row">Categoría</th>
                 {products.map((product) => (
                   <td key={product.id} className="compare-table__cell">
                     {product.category || '-'}
@@ -107,7 +110,7 @@ export function CompareTable() {
 
             {Array.from(allSpecs).map((spec) => (
               <tr key={spec}>
-                <td className="compare-table__row-header">{spec}</td>
+                <th className="compare-table__row-header" scope="row">{spec}</th>
                 {products.map((product) => {
                   const value = product.specs?.[spec];
                   const hasValue = value !== undefined && value !== null && value !== '';
@@ -116,12 +119,12 @@ export function CompareTable() {
                     <td key={product.id} className="compare-table__cell">
                       {hasValue ? (
                         <span className="compare-table__spec-value">
-                          <FiCheck className="compare-table__check" />
+                          <FiCheck className="compare-table__check" aria-hidden="true" />
                           {value}
                         </span>
                       ) : (
                         <span className="compare-table__spec-empty">
-                          <FiMinus />
+                          <FiMinus aria-hidden="true" />
                         </span>
                       )}
                     </td>
