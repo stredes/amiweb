@@ -60,34 +60,40 @@ if (!PROJECT_ID) {
 // Usuarios a crear
 const users = [
   {
-    email: 'root@amilab.com',
+    email: 'root@spdental.com',
     password: 'root2026',
     displayName: 'Desarrollador Web',
     role: 'root'
   },
   {
-    email: 'admin@amilab.com',
+    email: 'admin@spdental.com',
     password: 'admin123',
     displayName: 'Roberto Silva',
     role: 'admin'
   },
   {
-    email: 'vendedor1@amilab.com',
+    email: 'vendedor1@spdental.com',
     password: 'vende123',
     displayName: 'Carlos Ramírez',
     role: 'vendedor'
   },
   {
-    email: 'vendedor2@amilab.com',
+    email: 'vendedor2@spdental.com',
     password: 'vende123',
     displayName: 'Ana Torres',
     role: 'vendedor'
   },
   {
-    email: 'socio@amilab.com',
+    email: 'socio@spdental.com',
     password: 'demo123',
     displayName: 'Juan Pérez',
     role: 'socio'
+  },
+  {
+    email: 'bodega@spdental.com',
+    password: 'bodega123',
+    displayName: 'Miguel Soto',
+    role: 'bodega'
   },
 ];
 
