@@ -26,6 +26,7 @@ function Navbar() {
       <div className="navbar__brand" role="banner">
         <div className="navbar__logo" aria-label="SP Dental logo">
           <img src="/logo.png" alt="SP Dental" width={140} height={60} loading="eager" />
+          <span className="navbar__brand-name">SP DENTAL</span>
         </div>
       </div>
       <nav className="navbar__nav" aria-label="Menú principal">
