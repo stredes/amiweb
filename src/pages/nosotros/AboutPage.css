@@ -2,6 +2,7 @@
   width: 100%;
   max-width: 100%;
   padding: 0;
+  color: var(--color-text-primary);
 }
 
 /* Hero Section */
@@ -46,7 +47,7 @@
 /* Achievements Section */
 .about-achievements {
   padding: 3rem 2rem;
-  background: var(--color-background-alt, #f8f9fa);
+  background: var(--color-light);
   margin-bottom: 4rem;
 }
 
@@ -61,7 +62,7 @@
 .achievement-card {
   text-align: center;
   padding: 2rem;
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -86,7 +87,7 @@
 
 .achievement-label {
   font-size: 1rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary);
 }
 
 /* Mission, Vision, Values */
@@ -100,7 +101,7 @@
   display: flex;
   gap: 1rem;
   margin-bottom: 2rem;
-  border-bottom: 2px solid var(--color-border, #e0e0e0);
+  border-bottom: 2px solid var(--color-border);
 }
 
 .mvv-tab {
@@ -109,7 +110,7 @@
   border: none;
   font-size: 1.1rem;
   font-weight: 600;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary);
   cursor: pointer;
   position: relative;
   transition: color 0.3s ease;
@@ -141,7 +142,7 @@
 
 .mvv-content {
   padding: 2rem;
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
 }
@@ -155,7 +156,7 @@
 .mvv-panel p {
   font-size: 1.1rem;
   line-height: 1.8;
-  color: var(--color-text, #333);
+  color: var(--color-text-primary);
 }
 
 .values-list {
@@ -165,9 +166,10 @@
 
 .values-list li {
   padding: 1rem 0;
-  border-bottom: 1px solid var(--color-border, #e0e0e0);
+  border-bottom: 1px solid var(--color-border);
   font-size: 1.1rem;
   line-height: 1.6;
+  color: var(--color-text-primary);
 }
 
 .values-list li:last-child {
@@ -190,7 +192,7 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 3rem;
-  color: var(--color-text, #333);
+  color: var(--color-heading);
 }
 
 .services-grid {
@@ -201,7 +203,7 @@
 
 .service-card {
   padding: 2rem;
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   text-align: center;
@@ -225,7 +227,7 @@
 }
 
 .service-card p {
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary);
   line-height: 1.6;
 }
 
@@ -234,7 +236,7 @@
   max-width: 1200px;
   margin: 0 auto 4rem;
   padding: 3rem 2rem;
-  background: var(--color-background-alt, #f8f9fa);
+  background: var(--color-light);
   border-radius: 16px;
 }
 
@@ -242,7 +244,7 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 3rem;
-  color: var(--color-text, #333);
+  color: var(--color-heading);
 }
 
 .team-grid {
@@ -253,7 +255,7 @@
 
 .team-card {
   padding: 2rem;
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   text-align: center;
   transition: transform 0.3s ease;
@@ -283,7 +285,7 @@
 
 .team-description {
   font-size: 0.95rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary);
   line-height: 1.5;
 }
 
@@ -298,13 +300,13 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
-  color: var(--color-text, #333);
+  color: var(--color-heading);
 }
 
 .brands-intro {
   text-align: center;
   font-size: 1.1rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary);
   margin-bottom: 3rem;
 }
 
@@ -316,7 +318,7 @@
 
 .brand-card {
   padding: 2rem;
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   box-shadow: 0 2px 12px rgba(0, 0, 0, 0.08);
   border-left: 4px solid var(--color-primary);
@@ -343,7 +345,7 @@
 
 .brand-description {
   font-size: 0.95rem;
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary);
   line-height: 1.5;
 }
 
@@ -358,7 +360,7 @@
   text-align: center;
   font-size: 2.5rem;
   margin-bottom: 3rem;
-  color: var(--color-text, #333);
+  color: var(--color-heading);
 }
 
 .advantages-list {
@@ -371,7 +373,7 @@
   display: flex;
   gap: 1.5rem;
   padding: 1.5rem;
-  background: white;
+  background: var(--color-bg-primary);
   border-radius: 12px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
   transition: transform 0.3s ease, box-shadow 0.3s ease;
@@ -403,7 +405,7 @@
 }
 
 .advantage-content p {
-  color: var(--color-text-secondary, #666);
+  color: var(--color-text-secondary);
   line-height: 1.6;
   margin: 0;
 }
@@ -508,7 +510,7 @@
 
   .mvv-tab {
     padding: 1rem;
-    border-bottom: 1px solid var(--color-border, #e0e0e0);
+    border-bottom: 1px solid var(--color-border);
   }
 
   .mvv-tab::after {
@@ -516,7 +518,7 @@
   }
 
   .mvv-tab.active {
-    background: var(--color-background-alt, #f8f9fa);
+    background: var(--color-light);
   }
 
   .services-grid,
