@@ -20,7 +20,7 @@ function HomePage() {
             formación continua para que tu práctica evolucione con confianza.
           </p>
           <div className="actions">
-            <Link to={ROUTES.products} className="btn btn-primary">Ver catálogo</Link>
+            <Link to={ROUTES.products} className="btn btn-primary home-cta-catalog">Ver catálogo</Link>
             <Link to={ROUTES.support} className="btn btn-secondary">Contactar soporte</Link>
           </div>
         </div>
@@ -46,26 +46,26 @@ function HomePage() {
       <FadeIn direction="up" delay={0.3}>
         <section className="support-block">
           <h2>Soporte integral</h2>
-          <p>
+          <p className="support-block__description">
             Acompañamos en la evaluación previa, implementación y operación diaria con especialistas
             clínicos y servicio técnico local.
           </p>
-        <div className="grid two">
-          <div className="card">
-            <h3>Pre venta</h3>
+        <div className="grid two support-block__options">
+          <div className="card support-option-card" role="button" tabIndex={0} aria-label="Soporte de pre venta">
+            <h3><span aria-hidden="true">✓</span> Pre venta</h3>
             <p>Demostraciones, presentaciones clínicas y acompañamiento de especialistas.</p>
           </div>
-          <div className="card">
-            <h3>Post venta</h3>
+          <div className="card support-option-card" role="button" tabIndex={0} aria-label="Soporte de post venta">
+            <h3><span aria-hidden="true">✓</span> Post venta</h3>
             <p>Servicio técnico propio, mantenimiento programado y contratos de continuidad.</p>
           </div>
         </div>
-        <Link to={ROUTES.support} className="btn btn-secondary">Ver soporte</Link>
+        <Link to={ROUTES.support} className="btn btn-secondary support-block__cta">Ver soporte</Link>
         </section>
       </FadeIn>
 
       <FadeIn direction="up" delay={0.4}>
-        <section>
+        <section className="home-trust-section">
         <h2>Confianza y experiencia</h2>
         <div className="grid three">
           <div className="card">

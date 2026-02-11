@@ -66,6 +66,10 @@
   gap: var(--spacing-sm);
 }
 
+.support-service-card p {
+  margin: 0;
+}
+
 .support-service-card ul {
   margin: 0;
   padding-left: 1.25rem;
@@ -92,7 +96,8 @@
 .support-form-grid {
   display: grid;
   gap: var(--spacing-lg);
-  grid-template-columns: minmax(0, 2fr) minmax(0, 1fr);
+  grid-template-columns: minmax(0, 1fr);
+  max-width: 920px;
 }
 
 .support-form-card {
@@ -105,22 +110,16 @@
   gap: var(--spacing-xs);
 }
 
+.support-form-tips {
+  margin: var(--spacing-sm) 0 0;
+  padding-left: 1.15rem;
+  display: grid;
+  gap: 0.35rem;
+}
+
 .support-form-actions {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
-}
-
-.support-aside {
-  display: grid;
-  gap: var(--spacing-md);
-}
-
-.support-contact-card ul {
-  margin: 0;
-  padding-left: 1.25rem;
-  color: var(--color-text-light);
-  display: grid;
   gap: 0.5rem;
 }
 
@@ -144,8 +143,8 @@
 }
 
 .support-plan-card--featured {
-  border: 2px solid var(--color-primary);
-  box-shadow: var(--shadow-lg);
+  border: 2px solid var(--color-border);
+  box-shadow: var(--shadow-md);
 }
 
 @media (max-width: 960px) {

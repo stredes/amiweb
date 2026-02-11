@@ -14,7 +14,7 @@ function MaintenancePlans() {
             <li>Recomendaciones de continuidad.</li>
           </ul>
         </div>
-        <div className="card support-plan-card support-plan-card--featured">
+        <div className="card support-plan-card">
           <h3>Plan Continuidad</h3>
           <ul>
             <li>Visitas preventivas programadas.</li>

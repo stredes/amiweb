@@ -63,7 +63,9 @@
 .blog-card__meta {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: flex-start;
+  gap: 0.6rem;
+  flex-wrap: wrap;
   margin-bottom: 12px;
 }
 
@@ -80,6 +82,7 @@
 
 .blog-card__stats {
   display: flex;
+  flex-wrap: wrap;
   gap: 16px;
   color: var(--color-text-light);
   font-size: 0.85rem;
@@ -96,7 +99,7 @@
   font-size: 1.4rem;
   font-weight: 600;
   color: var(--color-text);
-  line-height: 1.4;
+  line-height: 1.35;
   transition: color 0.2s;
 }
 
@@ -105,18 +108,26 @@
 }
 
 .blog-card__excerpt {
-  margin: 0 0 auto 0;
+  margin: 0;
   color: var(--color-text-light);
-  line-height: 1.6;
-  margin-bottom: 20px;
+  line-height: 1.55;
+  min-height: 4.8rem;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .blog-card__footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding-top: 16px;
+  padding-top: 14px;
+  gap: 0.8rem;
   border-top: 1px solid var(--color-border);
+  margin-top: 1rem;
 }
 
 .blog-card__author {
@@ -153,15 +164,21 @@
   display: flex;
   align-items: center;
   gap: 6px;
-  color: var(--color-primary);
-  font-weight: 500;
+  color: #fff;
+  background: var(--color-primary);
+  border: 1px solid var(--color-primary);
+  border-radius: 999px;
+  padding: 0.38rem 0.8rem;
+  font-weight: 600;
   font-size: 0.9rem;
   text-decoration: none;
-  transition: gap 0.2s;
+  transition: transform 0.2s ease, background-color 0.2s ease, border-color 0.2s ease;
 }
 
 .blog-card__read-more:hover {
-  gap: 10px;
+  transform: translateY(-1px);
+  background: var(--color-primary-dark);
+  border-color: var(--color-primary-dark);
 }
 
 /* Featured Card Layout */
@@ -206,8 +223,13 @@
 
 @media (max-width: 768px) {
   .blog-card__footer {
-    flex-direction: column;
-    align-items: start;
-    gap: 16px;
+    flex-direction: row;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .blog-card__excerpt {
+    min-height: auto;
   }
 }

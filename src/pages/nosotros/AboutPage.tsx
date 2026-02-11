@@ -18,6 +18,7 @@ interface Brand {
 
 function AboutPage() {
   const [activeTab, setActiveTab] = useState<'mision' | 'vision' | 'valores'>('mision');
+  const [brandIndex, setBrandIndex] = useState(0);
 
   const teamMembers: TeamMember[] = [
     {
@@ -73,6 +74,10 @@ function AboutPage() {
       description: "Tecnología avanzada para diagnóstico y tratamiento"
     }
   ];
+  const maxBrandIndex = Math.max(0, brands.length - 3);
+
+  const handlePrevBrands = () => setBrandIndex((prev) => Math.max(0, prev - 1));
+  const handleNextBrands = () => setBrandIndex((prev) => Math.min(maxBrandIndex, prev + 1));
 
   const achievements = [
     { number: "Consultivo", label: "Equipo clínico especializado", icon: "📅" },
@@ -273,15 +278,35 @@ function AboutPage() {
           <p className="brands-intro">
             Trabajamos con las marcas líderes del mercado internacional:
           </p>
-          
-          <div className="brands-grid">
-            {brands.map((brand, index) => (
-              <div key={index} className="brand-card">
-                <h3>{brand.name}</h3>
-                <p className="brand-category">{brand.category}</p>
-                <p className="brand-description">{brand.description}</p>
-              </div>
-            ))}
+
+          <div className="brands-carousel">
+            <button
+              type="button"
+              className="brands-carousel__arrow"
+              onClick={handlePrevBrands}
+              disabled={brandIndex === 0}
+              aria-label="Ver marcas anteriores"
+            >
+              ←
+            </button>
+            <div className="brands-grid">
+              {brands.slice(brandIndex, brandIndex + 3).map((brand, index) => (
+                <div key={`${brand.name}-${index}`} className="brand-card">
+                  <h3>{brand.name}</h3>
+                  <p className="brand-category">{brand.category}</p>
+                  <p className="brand-description">{brand.description}</p>
+                </div>
+              ))}
+            </div>
+            <button
+              type="button"
+              className="brands-carousel__arrow"
+              onClick={handleNextBrands}
+              disabled={brandIndex >= maxBrandIndex}
+              aria-label="Ver más marcas"
+            >
+              →
+            </button>
           </div>
         </section>
       </FadeIn>

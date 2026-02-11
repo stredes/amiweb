@@ -115,11 +115,12 @@ const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }
           <button 
             type="button" 
             onClick={handleAddToCart}
-            className="product-card__btn-icon"
+            className="product-card__btn-cart"
             aria-label="Agregar al carrito"
             title="Agregar al carrito"
           >
-            <FiShoppingCart size={20} aria-hidden="true" />
+            <FiShoppingCart size={18} aria-hidden="true" />
+            <span>Agregar</span>
           </button>
         </div>
       </div>

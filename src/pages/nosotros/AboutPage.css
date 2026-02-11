@@ -24,7 +24,8 @@
 
 .about-title {
   font-size: 4rem;
-  font-weight: 800;
+  font-weight: 900;
+  color: #fff;
   margin-bottom: 1rem;
   letter-spacing: 2px;
 }
@@ -92,9 +93,9 @@
 
 /* Mission, Vision, Values */
 .about-mvv {
-  max-width: 900px;
-  margin: 0 auto 4rem;
-  padding: 0 2rem;
+  max-width: none;
+  margin: 0 2rem 4rem;
+  padding: 0;
 }
 
 .mvv-tabs {
@@ -183,9 +184,9 @@
 
 /* Services Section */
 .about-services {
-  max-width: 1200px;
-  margin: 0 auto 4rem;
-  padding: 0 2rem;
+  max-width: none;
+  margin: 0 2rem 4rem;
+  padding: 0;
 }
 
 .about-services h2 {
@@ -233,8 +234,8 @@
 
 /* Team Section */
 .about-team {
-  max-width: 1200px;
-  margin: 0 auto 4rem;
+  max-width: none;
+  margin: 0 2rem 4rem;
   padding: 3rem 2rem;
   background: var(--color-light);
   border-radius: 16px;
@@ -291,28 +292,52 @@
 
 /* Brands Section */
 .about-brands {
-  max-width: 1200px;
-  margin: 0 auto 4rem;
-  padding: 0 2rem;
+  max-width: none;
+  margin: 0 2rem 4rem;
+  padding: 0;
 }
 
 .about-brands h2 {
-  text-align: center;
+  text-align: left;
   font-size: 2.5rem;
   margin-bottom: 1.5rem;
   color: var(--color-heading);
 }
 
 .brands-intro {
-  text-align: center;
+  text-align: left;
   font-size: 1.1rem;
   color: var(--color-text-secondary);
   margin-bottom: 3rem;
 }
 
+.brands-carousel {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  gap: 1rem;
+  align-items: center;
+}
+
+.brands-carousel__arrow {
+  width: 2.6rem;
+  height: 2.6rem;
+  border-radius: 999px;
+  border: 2px solid var(--color-primary);
+  background: var(--color-bg-primary);
+  color: var(--color-primary);
+  font-size: 1.2rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.brands-carousel__arrow:disabled {
+  opacity: 0.35;
+  cursor: not-allowed;
+}
+
 .brands-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   gap: 2rem;
 }
 
@@ -351,9 +376,9 @@
 
 /* Advantages Section */
 .about-advantages {
-  max-width: 900px;
-  margin: 0 auto 4rem;
-  padding: 0 2rem;
+  max-width: none;
+  margin: 0 2rem 4rem;
+  padding: 0;
 }
 
 .about-advantages h2 {
@@ -364,8 +389,8 @@
 }
 
 .advantages-list {
-  display: flex;
-  flex-direction: column;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1.5rem;
 }
 
@@ -524,6 +549,18 @@
   .services-grid,
   .team-grid,
   .brands-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .brands-carousel {
+    grid-template-columns: 1fr;
+  }
+
+  .brands-carousel__arrow {
+    justify-self: center;
+  }
+
+  .advantages-list {
     grid-template-columns: 1fr;
   }
 

@@ -6,6 +6,10 @@ function PreSaleSection() {
         Servicio creado para resolver tus consultas y guiarte a través de nuestras soluciones
         odontológicas para que tomes la mejor decisión según tus necesidades clínicas.
       </p>
+      <p>
+        Nuestro equipo evalúa contexto clínico, flujo operativo y objetivos de la clínica para
+        recomendar equipamiento, insumos y configuración técnica alineada a tu realidad.
+      </p>
       <p>Para esto contamos con:</p>
       <ul>
         <li>Atención directa de representantes clínicos.</li>
