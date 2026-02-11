@@ -31,10 +31,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
           if (stored) {
             const parsed = JSON.parse(stored);
             setUser(parsed.user);
-            // Obtener token fresco de Firebase
-            const freshToken = await firebaseUser.getIdToken();
-            setToken(freshToken);
           }
+          // Obtener token fresco de Firebase en cada carga.
+          const freshToken = await firebaseUser.getIdToken();
+          setToken(freshToken);
         } else {
           // No hay sesión Firebase, limpiar
           setUser(null);
@@ -54,7 +54,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const login = (newUser: User, newToken: string) => {
     setUser(newUser);
     setToken(newToken);
-    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user: newUser, token: newToken }));
+    // Persistimos solo perfil; el token queda en memoria para reducir exposición ante XSS.
+    localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user: newUser }));
   };
 
   const logout = async () => {

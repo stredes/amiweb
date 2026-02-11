@@ -16,6 +16,7 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
+  const showDemoCredentials = import.meta.env.DEV;
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -112,16 +113,18 @@ export function LoginPage() {
             </Button>
           </form>
 
-          <div className="login-footer">
-            <p className="muted">
-              <strong>Credenciales de prueba:</strong><br />
-              <strong>Socio:</strong> socio@spdental.com / demo123<br />
-              <strong>Vendedor:</strong> vendedor1@spdental.com / vende123<br />
-              <strong>Bodega:</strong> bodega@spdental.com / bodega123<br />
-              <strong>Admin:</strong> admin@spdental.com / admin123<br />
-              <strong>Root:</strong> root@spdental.com / root2026
-            </p>
-          </div>
+          {showDemoCredentials && (
+            <div className="login-footer">
+              <p className="muted">
+                <strong>Credenciales de prueba:</strong><br />
+                <strong>Socio:</strong> socio@spdental.com / demo123<br />
+                <strong>Vendedor:</strong> vendedor1@spdental.com / vende123<br />
+                <strong>Bodega:</strong> bodega@spdental.com / bodega123<br />
+                <strong>Admin:</strong> admin@spdental.com / admin123<br />
+                <strong>Root:</strong> root@spdental.com / root2026
+              </p>
+            </div>
+          )}
           </div>
         </FadeIn>
 
