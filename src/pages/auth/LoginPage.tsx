@@ -16,7 +16,14 @@ export function LoginPage() {
   const [password, setPassword] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState('');
-  const showDemoCredentials = import.meta.env.DEV;
+  const showDemoCredentials = import.meta.env.VITE_SHOW_DEMO_CREDENTIALS !== 'false';
+  const demoCredentials = [
+    { role: 'Socio', email: 'socio@spdental.com', password: 'demo123' },
+    { role: 'Vendedor', email: 'vendedor1@spdental.com', password: 'vende123' },
+    { role: 'Bodega', email: 'bodega@spdental.com', password: 'bodega123' },
+    { role: 'Admin', email: 'admin@spdental.com', password: 'admin123' },
+    { role: 'Root', email: 'root@spdental.com', password: 'root2026' }
+  ];
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -114,15 +121,18 @@ export function LoginPage() {
           </form>
 
           {showDemoCredentials && (
-            <div className="login-footer">
-              <p className="muted">
-                <strong>Credenciales de prueba:</strong><br />
-                <strong>Socio:</strong> socio@spdental.com / demo123<br />
-                <strong>Vendedor:</strong> vendedor1@spdental.com / vende123<br />
-                <strong>Bodega:</strong> bodega@spdental.com / bodega123<br />
-                <strong>Admin:</strong> admin@spdental.com / admin123<br />
-                <strong>Root:</strong> root@spdental.com / root2026
-              </p>
+            <div className="login-footer demo-credentials">
+              <p className="demo-credentials__title">Credenciales de prueba</p>
+              <ul className="demo-credentials__list">
+                {demoCredentials.map((credential) => (
+                  <li key={credential.role}>
+                    <span className="demo-credentials__role">{credential.role}</span>
+                    <span className="demo-credentials__value">
+                      {credential.email} / {credential.password}
+                    </span>
+                  </li>
+                ))}
+              </ul>
             </div>
           )}
           </div>
