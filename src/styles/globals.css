@@ -61,7 +61,7 @@
   --color-accent: #64FFDA;
   --color-white: #0D1B2A;
   --color-light: #111827;
-  --color-light-gray: #1F2937;
+  --color-light-gray: #334155;
   --color-footer: #0B1220;
   --color-text: #FFFFFF;
   --color-text-light: #F3F4F6;
@@ -75,7 +75,7 @@
   --color-heading: #FFFFFF;
   --color-bg-primary: #0D1B2A;
   --color-bg-secondary: #0B1220;
-  --color-border: #1F2937;
+  --color-border: #475569;
   --color-focus: #5A8BFF;
   
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
@@ -598,6 +598,13 @@ button {
 .card:hover {
   box-shadow: var(--shadow-lg);
   transform: translateY(-2px);
+}
+
+[data-theme='dark'] .card,
+[data-theme='dark'] .category-card,
+[data-theme='dark'] [class$='-card'] {
+  border-color: var(--color-border);
+  border-width: 2px;
 }
 
 @keyframes cardFadeIn {
