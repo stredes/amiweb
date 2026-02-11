@@ -116,6 +116,10 @@ function SupportPage() {
           </div>
           <div className="card support-service-card support-service-card--accent">
             <h2>Cómo trabajamos</h2>
+            <p>
+              Coordinamos cada caso con un flujo de atención escalable para reducir tiempos de espera,
+              asegurar trazabilidad y entregar continuidad operativa en clínica.
+            </p>
             <ul>
               <li>
                 <FiMessageCircle />
@@ -128,6 +132,10 @@ function SupportPage() {
               <li>
                 <FiCheckCircle />
                 Cierre con informe y recomendaciones de continuidad.
+              </li>
+              <li>
+                <FiClock aria-hidden="true" />
+                Seguimiento post-servicio para validar resultados y prevenir reincidencias.
               </li>
             </ul>
           </div>
@@ -150,6 +158,11 @@ function SupportPage() {
                   Completa tus datos y un especialista te contactará. Campos marcados como obligatorios se
                   validan en el frontend.
                 </p>
+                <ul className="support-form-tips">
+                  <li>Ten a mano modelo y número de serie.</li>
+                  <li>Describe síntomas y mensajes de error.</li>
+                  <li>Indica horario preferido de contacto.</li>
+                </ul>
               </div>
               <form className="form" onSubmit={handleSubmit}>
                 <SelectInput
@@ -234,24 +247,6 @@ function SupportPage() {
                 </div>
               </form>
             </div>
-            <aside className="support-aside">
-              <div className="card support-contact-card">
-                <h3>Canales disponibles</h3>
-                <ul>
-                  <li>WhatsApp y teléfono para urgencias.</li>
-                  <li>Correo y portal para seguimiento.</li>
-                  <li>Visitas técnicas coordinadas.</li>
-                </ul>
-              </div>
-              <div className="card support-contact-card">
-                <h3>Antes de enviar</h3>
-                <ul>
-                  <li>Ten a mano modelo y número de serie.</li>
-                  <li>Describe síntomas y mensajes de error.</li>
-                  <li>Indica horario preferido de contacto.</li>
-                </ul>
-              </div>
-            </aside>
           </div>
         </section>
       </FadeIn>

@@ -13,6 +13,8 @@ function ProductsPage() {
   const { term, setTerm } = useSearchStore();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [searchTerm, setSearchTerm] = useState(term);
+  const [minPrice, setMinPrice] = useState('');
+  const [maxPrice, setMaxPrice] = useState('');
   const [quotedProduct, setQuotedProduct] = useState<Product | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
   const { products, categories, loading, error } = useProducts(
@@ -21,6 +23,17 @@ function ProductsPage() {
   );
   const [visibleCount, setVisibleCount] = useState(16);
   const batchSize = 16;
+  const productPriceById = useMemo(
+    () => ({
+      'p-est-01': 129000,
+      'p-res-01': 59000,
+      'p-cir-01': 45000,
+      'p-end-01': 68000,
+      'p-img-01': 2450000,
+      'p-con-01': 12900
+    }),
+    []
+  );
 
   // Map de categorías para mostrar nombres en tarjetas.
   const categoryNameById = useMemo(
@@ -70,20 +83,29 @@ function ProductsPage() {
     setQuotedProduct(product);
   }, []);
 
+  const filteredProductsByPrice = useMemo(() => {
+    const min = minPrice ? Number(minPrice) : 0;
+    const max = maxPrice ? Number(maxPrice) : Number.POSITIVE_INFINITY;
+    return products.filter((product) => {
+      const price = productPriceById[product.id as keyof typeof productPriceById] ?? 0;
+      return price >= min && price <= max;
+    });
+  }, [products, minPrice, maxPrice, productPriceById]);
+
+  const visibleProducts = useMemo(
+    () => filteredProductsByPrice.slice(0, visibleCount),
+    [filteredProductsByPrice, visibleCount]
+  );
+
   const handleGridScroll = useCallback(
     (event: UIEvent<HTMLDivElement>) => {
       const target = event.currentTarget;
       const threshold = 200;
       if (target.scrollHeight - target.scrollTop - target.clientHeight < threshold) {
-        setVisibleCount((prev) => Math.min(prev + batchSize, products.length));
+        setVisibleCount((prev) => Math.min(prev + batchSize, filteredProductsByPrice.length));
       }
     },
-    [batchSize, products.length]
-  );
-
-  const visibleProducts = useMemo(
-    () => products.slice(0, visibleCount),
-    [products, visibleCount]
+    [batchSize, filteredProductsByPrice.length]
   );
 
   return (
@@ -102,8 +124,12 @@ function ProductsPage() {
         categories={categories}
         selectedCategory={selectedCategory}
         searchTerm={searchTerm}
+        minPrice={minPrice}
+        maxPrice={maxPrice}
         onCategoryChange={handleCategoryChange}
         onSearchChange={handleSearchChange}
+        onMinPriceChange={setMinPrice}
+        onMaxPriceChange={setMaxPrice}
         />
       </FadeIn>
 
@@ -131,7 +157,7 @@ function ProductsPage() {
                   onQuote={handleQuote}
                 />
               ))}
-              {products.length === 0 && (
+              {filteredProductsByPrice.length === 0 && (
                 <p>No hay productos que coincidan con los filtros seleccionados.</p>
               )}
             </div>

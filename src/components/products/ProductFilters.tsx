@@ -5,16 +5,24 @@ type ProductFiltersProps = {
   categories: ProductCategory[];
   selectedCategory: string;
   searchTerm: string;
+  minPrice: string;
+  maxPrice: string;
   onCategoryChange: (categoryId: string) => void;
   onSearchChange: (value: string) => void;
+  onMinPriceChange: (value: string) => void;
+  onMaxPriceChange: (value: string) => void;
 };
 
 function ProductFilters({
   categories,
   selectedCategory,
   searchTerm,
+  minPrice,
+  maxPrice,
   onCategoryChange,
-  onSearchChange
+  onSearchChange,
+  onMinPriceChange,
+  onMaxPriceChange
 }: ProductFiltersProps) {
   return (
     <div className="filters" data-tour="filters-button">
@@ -39,10 +47,34 @@ function ProductFilters({
           onChange={(e) => onSearchChange(e.target.value)}
         />
       </div>
-      <p className="muted">
-        {/* TODO: agregar filtros avanzados (marca, stock, etc.) y conectarlos a backend */}
-        Filtros básicos de catálogo aplicados en el frontend (mock).
-      </p>
+      <div className="form-control">
+        <label htmlFor="min-price">Precio mínimo</label>
+        <input
+          id="min-price"
+          type="number"
+          min="0"
+          step="1"
+          value={minPrice}
+          placeholder="0"
+          onChange={(e) => onMinPriceChange(e.target.value)}
+          name="minPrice"
+          inputMode="numeric"
+        />
+      </div>
+      <div className="form-control">
+        <label htmlFor="max-price">Precio máximo</label>
+        <input
+          id="max-price"
+          type="number"
+          min="0"
+          step="1"
+          value={maxPrice}
+          placeholder="Sin tope"
+          onChange={(e) => onMaxPriceChange(e.target.value)}
+          name="maxPrice"
+          inputMode="numeric"
+        />
+      </div>
     </div>
   );
 }

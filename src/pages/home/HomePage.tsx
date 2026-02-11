@@ -1,5 +1,4 @@
-import { useNavigate } from 'react-router-dom';
-import Button from '../../components/ui/Button';
+import { Link } from 'react-router-dom';
 import ProductCategoryGrid from '../../components/products/ProductCategoryGrid';
 import Carousel from '../../components/ui/Carousel';
 import { FadeIn } from '../../components/ui/FadeIn';
@@ -8,8 +7,6 @@ import { ROUTES } from '../../config/routes';
 
 // Página de inicio con navegación rápida a catálogo y soporte.
 function HomePage() {
-  const navigate = useNavigate();
-
   return (
     <div className="page">
       <FadeIn direction="up">
@@ -24,10 +21,8 @@ function HomePage() {
             con productos de muy buena calidad.
           </p>
           <div className="actions">
-            <Button onClick={() => navigate(ROUTES.products)}>Ver catálogo</Button>
-            <Button variant="secondary" onClick={() => navigate(ROUTES.support)}>
-              Contactar soporte
-            </Button>
+            <Link to={ROUTES.products} className="btn btn-primary home-cta-catalog">Ver catálogo</Link>
+            <Link to={ROUTES.support} className="btn btn-secondary">Contactar soporte</Link>
           </div>
         </div>
         <div className="hero__visual">
@@ -52,28 +47,26 @@ function HomePage() {
       <FadeIn direction="up" delay={0.3}>
         <section className="support-block">
           <h2>Soporte integral</h2>
-          <p>
-            Acompañamos en la evaluación previa, en la implementación y en la operación diaria con
-            especialistas de producto y servicio técnico local.
+          <p className="support-block__description">
+            Acompañamos en la evaluación previa, implementación y operación diaria con especialistas
+            clínicos y servicio técnico local.
           </p>
-        <div className="grid two">
-          <div className="card">
-            <h3>Pre venta</h3>
-            <p>Demostraciones, presentaciones y acompañamiento de especialistas.</p>
+        <div className="grid two support-block__options">
+          <div className="card support-option-card" role="button" tabIndex={0} aria-label="Soporte de pre venta">
+            <h3><span aria-hidden="true">✓</span> Pre venta</h3>
+            <p>Demostraciones, presentaciones clínicas y acompañamiento de especialistas.</p>
           </div>
-          <div className="card">
-            <h3>Post venta</h3>
+          <div className="card support-option-card" role="button" tabIndex={0} aria-label="Soporte de post venta">
+            <h3><span aria-hidden="true">✓</span> Post venta</h3>
             <p>Servicio técnico propio, mantenimiento programado y contratos de continuidad.</p>
           </div>
         </div>
-        <Button variant="secondary" onClick={() => navigate(ROUTES.support)}>
-          Ver soporte
-        </Button>
+        <Link to={ROUTES.support} className="btn btn-secondary support-block__cta">Ver soporte</Link>
         </section>
       </FadeIn>
 
       <FadeIn direction="up" delay={0.4}>
-        <section>
+        <section className="home-trust-section">
         <h2>Confianza y experiencia</h2>
         <div className="grid three">
           <div className="card">
