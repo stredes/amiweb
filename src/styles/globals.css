@@ -6,11 +6,19 @@
   --color-secondary: #DC143C;      /* Rojo carmesí */
   --color-accent: #B22222;         /* Rojo ladrillo */
   --color-white: #FFFFFF;          /* Blanco puro */
-  --color-light: #F5F5DC;          /* Blanco palo/beige */
-  --color-light-gray: #E8E8D8;     /* Beige grisáceo */
-  --color-footer: #4B0082;         /* Lila oscuro */
-  --color-text: #2D1619;           /* Texto oscuro */
-  --color-text-light: #5A3940;     /* Texto medio */
+  --color-light: #E0E0E0;          /* Gris claro */
+  --color-light-gray: #E0E0E0;     /* Gris claro */
+  --color-footer: #0D1B2A;         /* Azul oscuro */
+  --color-text: #000000;           /* Texto principal sobre fondo claro */
+  --color-text-light: #111111;     /* Texto secundario (alto contraste) */
+  --color-text-primary: #000000;
+  --color-text-secondary: #111111;
+  --color-muted: #111111;
+  --color-error: #DC2626;
+  --color-success: #16A34A;
+  --color-warning: #D97706;
+  --color-info: #2563EB;
+  --color-heading: #0D1B2A;
   --color-bg-primary: #FFFFFF;
   --color-bg-secondary: #F5F5DC;
   --color-border: #E8E8D8;
@@ -44,20 +52,29 @@
 
 /* Dark mode */
 [data-theme='dark'] {
-  --color-primary: #D45D79;
-  --color-primary-light: #E17A93;
-  --color-primary-dark: #B23D5A;
-  --color-secondary: #FF6B8A;
-  --color-accent: #FF4F6D;
-  --color-white: #1a1a1a;
-  --color-light: #0f0f0f;
-  --color-light-gray: #2a2a2a;
-  --color-footer: #1a1a1a;
-  --color-text: #e8e8e8;
-  --color-text-light: #b8b8b8;
-  --color-bg-primary: #1a1a1a;
-  --color-bg-secondary: #0f0f0f;
-  --color-border: #2a2a2a;
+  --color-primary: #5A8BFF;
+  --color-primary-light: #8FB0FF;
+  --color-primary-dark: #0D1B2A;
+  --color-secondary: #64FFDA;
+  --color-accent: #64FFDA;
+  --color-white: #0D1B2A;
+  --color-light: #111827;
+  --color-light-gray: #1F2937;
+  --color-footer: #0B1220;
+  --color-text: #FFFFFF;
+  --color-text-light: #F3F4F6;
+  --color-text-primary: #FFFFFF;
+  --color-text-secondary: #F3F4F6;
+  --color-muted: #E5E7EB;
+  --color-error: #F87171;
+  --color-success: #4ADE80;
+  --color-warning: #FBBF24;
+  --color-info: #60A5FA;
+  --color-heading: #FFFFFF;
+  --color-bg-primary: #0D1B2A;
+  --color-bg-secondary: #0B1220;
+  --color-border: #1F2937;
+  --color-focus: #5A8BFF;
   
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
