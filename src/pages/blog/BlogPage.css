@@ -136,6 +136,10 @@
   gap: 32px;
 }
 
+.blog-featured__item {
+  grid-column: 1 / -1;
+}
+
 /* Posts Section */
 .blog-posts h2 {
   margin: 0 0 32px 0;
