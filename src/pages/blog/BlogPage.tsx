@@ -87,7 +87,12 @@ export function BlogPage() {
             </FadeIn>
             <div className="blog-featured__grid">
               {featuredPosts.map((post, index) => (
-                <FadeIn key={post.id} direction="up" delay={0.3 + index * 0.1}>
+                <FadeIn
+                  key={post.id}
+                  direction="up"
+                  delay={0.3 + index * 0.1}
+                  className="blog-featured__item"
+                >
                   <BlogCard post={post} featured />
                 </FadeIn>
               ))}
