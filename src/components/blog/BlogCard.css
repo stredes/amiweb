@@ -200,6 +200,12 @@
 .blog-card--featured .blog-card__excerpt {
   font-size: 1.05rem;
   margin-bottom: 24px;
+  min-height: 0;
+  display: block;
+  -webkit-line-clamp: unset;
+  line-clamp: unset;
+  overflow: visible;
+  text-overflow: initial;
 }
 
 @media (max-width: 1024px) {

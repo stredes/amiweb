@@ -59,15 +59,22 @@
   display: grid;
   gap: var(--spacing-lg);
   grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  align-items: stretch;
 }
 
 .support-service-card {
   display: grid;
   gap: var(--spacing-sm);
+  align-content: start;
+}
+
+.support-service-card h2,
+.support-service-card h3 {
+  margin: 0 0 0.4rem;
 }
 
 .support-service-card p {
-  margin: 0;
+  margin: 0.25rem 0 0;
 }
 
 .support-service-card ul {
@@ -97,7 +104,8 @@
   display: grid;
   gap: var(--spacing-lg);
   grid-template-columns: minmax(0, 1fr);
-  max-width: 920px;
+  width: 100%;
+  max-width: none;
 }
 
 .support-form-card {
