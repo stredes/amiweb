@@ -29,6 +29,23 @@
   box-shadow: 0 8px 32px rgba(139, 0, 0, 0.3);
 }
 
+.carousel-item.has-image::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, rgba(24, 6, 9, 0.2) 8%, rgba(24, 6, 9, 0.76) 100%);
+  pointer-events: none;
+}
+
+.carousel-item-media {
+  position: absolute;
+  inset: 0;
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  transform: scale(1.02);
+}
+
 .carousel-item:active {
   cursor: grabbing;
 }
@@ -69,6 +86,8 @@
 }
 
 .carousel-item-header {
+  position: relative;
+  z-index: 1;
   margin-bottom: 32px;
   padding: 48px 48px 0;
 }
@@ -91,6 +110,8 @@
 }
 
 .carousel-item-content {
+  position: relative;
+  z-index: 1;
   padding: 0 48px 48px;
 }
 

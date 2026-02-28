@@ -1,0 +1,23 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cobertura y soporte técnico">
+  <defs>
+    <linearGradient id="bg3" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#2F0715"/>
+      <stop offset="55%" stop-color="#7D1633"/>
+      <stop offset="100%" stop-color="#C02E53"/>
+    </linearGradient>
+  </defs>
+  <rect width="1600" height="1000" fill="url(#bg3)"/>
+  <circle cx="320" cy="260" r="170" fill="#FFFFFF" fill-opacity="0.13"/>
+  <circle cx="1320" cy="740" r="220" fill="#FFFFFF" fill-opacity="0.12"/>
+  <path d="M230 650C370 470 630 470 770 650" fill="none" stroke="#FFF" stroke-opacity="0.42" stroke-width="18"/>
+  <path d="M830 650C970 470 1230 470 1370 650" fill="none" stroke="#FFF" stroke-opacity="0.38" stroke-width="18"/>
+  <rect x="260" y="530" width="220" height="230" rx="30" fill="#FFF" fill-opacity="0.22"/>
+  <rect x="690" y="530" width="220" height="230" rx="30" fill="#FFF" fill-opacity="0.2"/>
+  <rect x="1120" y="530" width="220" height="230" rx="30" fill="#FFF" fill-opacity="0.18"/>
+  <circle cx="370" cy="620" r="38" fill="#FFF" fill-opacity="0.88"/>
+  <circle cx="800" cy="620" r="38" fill="#FFF" fill-opacity="0.76"/>
+  <circle cx="1230" cy="620" r="38" fill="#FFF" fill-opacity="0.64"/>
+  <rect x="325" y="680" width="90" height="16" rx="8" fill="#FFF" fill-opacity="0.9"/>
+  <rect x="755" y="680" width="90" height="16" rx="8" fill="#FFF" fill-opacity="0.8"/>
+  <rect x="1185" y="680" width="90" height="16" rx="8" fill="#FFF" fill-opacity="0.7"/>
+</svg>

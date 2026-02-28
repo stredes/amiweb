@@ -1,9 +1,37 @@
 import { Link } from 'react-router-dom';
+import { FiActivity, FiCpu, FiTruck } from 'react-icons/fi';
 import ProductCategoryGrid from '../../components/products/ProductCategoryGrid';
 import Carousel from '../../components/ui/Carousel';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { productCategories } from '../../features/catalog/mockData';
 import { ROUTES } from '../../config/routes';
+import carouselLab1 from '../../assets/images/carousel-lab-1.svg';
+import carouselLab2 from '../../assets/images/carousel-lab-2.svg';
+import carouselLab3 from '../../assets/images/carousel-lab-3.svg';
+
+const HERO_CAROUSEL_ITEMS = [
+  {
+    id: 'diagnostico',
+    title: 'Diagnostico confiable',
+    description: 'Equipos y reactivos de alta precision para laboratorios clinicos.',
+    icon: <FiActivity className="carousel-icon" />,
+    imageUrl: carouselLab1
+  },
+  {
+    id: 'tecnologia',
+    title: 'Tecnologia especializada',
+    description: 'Portafolio actualizado para analisis, automatizacion y control.',
+    icon: <FiCpu className="carousel-icon" />,
+    imageUrl: carouselLab2
+  },
+  {
+    id: 'soporte',
+    title: 'Soporte en todo Chile',
+    description: 'Cobertura tecnica y logistica para mantener la operacion continua.',
+    icon: <FiTruck className="carousel-icon" />,
+    imageUrl: carouselLab3
+  }
+];
 
 // Página de inicio con navegación rápida a catálogo y soporte.
 function HomePage() {
@@ -28,6 +56,7 @@ function HomePage() {
         <div className="hero__visual">
           <div className="hero-carousel">
             <Carousel
+              items={HERO_CAROUSEL_ITEMS}
               baseWidth={600}
               autoplay={true}
               autoplayDelay={5000}

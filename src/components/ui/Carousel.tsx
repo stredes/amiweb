@@ -47,6 +47,7 @@ type CarouselItemData = {
   description: string;
   id: number | string;
   icon: React.ReactNode;
+  imageUrl?: string;
 };
 
 type CarouselProps = {
@@ -85,7 +86,7 @@ function CarouselItem({
   return (
     <motion.div
       key={`${item?.id ?? index}-${index}`}
-      className={`carousel-item ${round ? 'round' : ''}`}
+      className={`carousel-item ${round ? 'round' : ''} ${item.imageUrl ? 'has-image' : ''}`}
       style={{
         width: itemWidth,
         height: round ? itemWidth : '100%',
@@ -94,6 +95,13 @@ function CarouselItem({
       }}
       transition={transition}
     >
+      {item.imageUrl && (
+        <div
+          className="carousel-item-media"
+          style={{ backgroundImage: `url(${item.imageUrl})` }}
+          aria-hidden="true"
+        />
+      )}
       <div className={`carousel-item-header ${round ? 'round' : ''}`}>
         <span className="carousel-icon-container">{item.icon}</span>
       </div>
