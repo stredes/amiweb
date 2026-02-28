@@ -8,14 +8,14 @@
   --color-secondary: #DC143C;      /* Rojo carmesí */
   --color-accent: #B22222;         /* Rojo ladrillo */
   --color-white: #FFFFFF;          /* Blanco puro */
-  --color-light: #E0E0E0;          /* Gris claro */
-  --color-light-gray: #E0E0E0;     /* Gris claro */
-  --color-footer: #0D1B2A;         /* Azul oscuro */
+  --color-light: #F5F5DC;          /* Blanco palo/beige */
+  --color-light-gray: #E8E8D8;     /* Beige grisáceo */
+  --color-footer: #4B0082;         /* Lila oscuro */
   --color-text: #000000;           /* Texto principal sobre fondo claro */
-  --color-text-light: #111111;     /* Texto secundario (alto contraste) */
+  --color-text-light: #1A1A1A;     /* Texto secundario sobre fondo claro */
   --color-text-primary: #000000;
-  --color-text-secondary: #111111;
-  --color-muted: #111111;
+  --color-text-secondary: #1A1A1A;
+  --color-muted: #333333;
   --color-error: #DC2626;
   --color-success: #16A34A;
   --color-warning: #D97706;
@@ -54,29 +54,29 @@
 
 /* Dark mode */
 [data-theme='dark'] {
-  --color-primary: #5A8BFF;
-  --color-primary-light: #8FB0FF;
-  --color-primary-dark: #0D1B2A;
-  --color-secondary: #64FFDA;
-  --color-accent: #64FFDA;
-  --color-white: #0D1B2A;
-  --color-light: #111827;
-  --color-light-gray: #334155;
-  --color-footer: #0B1220;
+  --color-primary: #D45D79;
+  --color-primary-light: #E17A93;
+  --color-primary-dark: #B23D5A;
+  --color-secondary: #FF6B8A;
+  --color-accent: #FF4F6D;
+  --color-white: #1A1A1A;
+  --color-light: #0F0F0F;
+  --color-light-gray: #2A2A2A;
+  --color-footer: #1A1A1A;
   --color-text: #FFFFFF;
-  --color-text-light: #F3F4F6;
+  --color-text-light: #F1F1F1;
   --color-text-primary: #FFFFFF;
-  --color-text-secondary: #F3F4F6;
-  --color-muted: #E5E7EB;
+  --color-text-secondary: #F1F1F1;
+  --color-muted: #DDDDDD;
   --color-error: #F87171;
   --color-success: #4ADE80;
   --color-warning: #FBBF24;
   --color-info: #60A5FA;
   --color-heading: #FFFFFF;
-  --color-bg-primary: #0D1B2A;
-  --color-bg-secondary: #0B1220;
-  --color-border: #475569;
-  --color-focus: #5A8BFF;
+  --color-bg-primary: #1A1A1A;
+  --color-bg-secondary: #0F0F0F;
+  --color-border: #3A3A3A;
+  --color-focus: #D45D79;
   
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.3);
   --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.4);
@@ -185,9 +185,13 @@ textarea {
 }
 
 .navbar__logo {
-  font-weight: 700;
-  font-size: 1.35rem;
-  letter-spacing: 0.05em;
+  font-weight: 800;
+  font-size: 1.9rem;
+  letter-spacing: 0.18em;
+  display: inline-block;
+  transform: scaleX(1.28);
+  transform-origin: left center;
+  line-height: 1;
 }
 
 .navbar__nav {
