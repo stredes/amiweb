@@ -622,6 +622,18 @@ textarea {
   box-shadow: var(--shadow-md);
 }
 
+.btn--primary {
+  background: var(--color-secondary);
+  color: var(--color-white);
+  border-color: var(--color-secondary);
+}
+
+.btn--primary:hover:not(:disabled) {
+  background: var(--color-primary);
+  border-color: var(--color-primary);
+  box-shadow: var(--shadow-md);
+}
+
 .home-cta-catalog {
   background: #000000;
   color: #FFFFFF;
