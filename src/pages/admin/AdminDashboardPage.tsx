@@ -15,6 +15,7 @@ import { PieChart } from '../../components/analytics/PieChart';
 import Loader from '../../components/ui/Loader';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { toast } from '../../components/ui/Toast';
+import { userManagementApi } from '../../features/auth/userManagementApi';
 import { Navigate } from 'react-router-dom';
 import './AdminDashboard.css';
 
@@ -24,8 +25,11 @@ export function AdminDashboardPage() {
   const [users, setUsers] = useState<Array<Omit<User, 'password'>>>([]);
   const [stockItems, setStockItems] = useState<StockItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'orders' | 'users' | 'inventory' | 'executive' | 'clients' | 'operations'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'orders' | 'users' | 'inventory' | 'executive' | 'clients' | 'operations' | 'portfolio'>('overview');
   const [createUserTrigger, setCreateUserTrigger] = useState(0);
+  const [selectedVendorId, setSelectedVendorId] = useState('');
+  const [selectedClientId, setSelectedClientId] = useState('');
+  const [isAssigningPortfolio, setIsAssigningPortfolio] = useState(false);
 
   useEffect(() => {
     if (!user || (user.role !== 'admin' && user.role !== 'root')) {
@@ -125,6 +129,11 @@ export function AdminDashboardPage() {
   )
     .sort((a, b) => b.total - a.total)
     .slice(0, 8);
+
+  const vendors = users.filter((currentUser) => currentUser.role === 'vendedor' && currentUser.isActive !== false);
+  const clientUsers = users.filter((currentUser) => currentUser.role === 'socio');
+  const selectedClient = clientUsers.find((currentUser) => currentUser.id === selectedClientId);
+  const selectedVendor = vendors.find((currentUser) => currentUser.id === selectedVendorId);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-CL', {
@@ -237,6 +246,34 @@ export function AdminDashboardPage() {
     toast.success('Reporte ejecutivo exportado');
   };
 
+  const handleAssignClientToVendor = async () => {
+    if (!selectedVendorId || !selectedClientId) {
+      toast.error('Debes seleccionar vendedor y cliente');
+      return;
+    }
+
+    const clientToAssign = clientUsers.find((currentUser) => currentUser.id === selectedClientId);
+    if (!clientToAssign) {
+      toast.error('Cliente no encontrado');
+      return;
+    }
+
+    setIsAssigningPortfolio(true);
+    try {
+      await userManagementApi.updateUser(selectedClientId, {
+        role: 'socio',
+        vendorId: selectedVendorId,
+      });
+      toast.success('Cliente vinculado al vendedor correctamente');
+      setSelectedClientId('');
+      await loadData();
+    } catch (error: any) {
+      toast.error(error?.message || 'No se pudo vincular el cliente');
+    } finally {
+      setIsAssigningPortfolio(false);
+    }
+  };
+
   const handleOpenCreateUser = () => {
     if (user.role !== 'root') {
       toast.error('Solo root puede crear usuarios');
@@ -326,6 +363,12 @@ export function AdminDashboardPage() {
               onClick={() => setActiveTab('operations')}
             >
               🏢 Operaciones
+            </button>
+            <button
+              className={`dashboard-sidebar__item ${activeTab === 'portfolio' ? 'active' : ''}`}
+              onClick={() => setActiveTab('portfolio')}
+            >
+              ➕ Añadir a la cartera
             </button>
             {user.role === 'root' && (
               <button
@@ -609,6 +652,72 @@ export function AdminDashboardPage() {
                 </button>
                 <button className="btn btn--primary" onClick={handleRefreshDashboard}>
                   Actualizar operación
+                </button>
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'portfolio' && (
+            <section className="admin-section root-tools-panel">
+              <h2>Añadir a la Cartera</h2>
+              <p className="muted">
+                Vincula un cliente (socio) a un vendedor para que aparezca en su cartera comercial.
+              </p>
+              <div className="portfolio-assignment-form">
+                <div className="portfolio-assignment-field">
+                  <label htmlFor="portfolio-vendor">Vendedor</label>
+                  <select
+                    id="portfolio-vendor"
+                    value={selectedVendorId}
+                    onChange={(event) => setSelectedVendorId(event.target.value)}
+                  >
+                    <option value="">Seleccionar vendedor</option>
+                    {vendors.map((currentVendor) => (
+                      <option key={currentVendor.id} value={currentVendor.id}>
+                        {currentVendor.name} - {currentVendor.email}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                <div className="portfolio-assignment-field">
+                  <label htmlFor="portfolio-client">Cliente (Socio)</label>
+                  <select
+                    id="portfolio-client"
+                    value={selectedClientId}
+                    onChange={(event) => setSelectedClientId(event.target.value)}
+                  >
+                    <option value="">Seleccionar cliente</option>
+                    {clientUsers.map((currentClient) => (
+                      <option key={currentClient.id} value={currentClient.id}>
+                        {currentClient.name} - {currentClient.email}
+                        {currentClient.vendorId ? ' (ya asignado)' : ''}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+              <div className="portfolio-assignment-preview">
+                <strong>Resumen:</strong>{' '}
+                {selectedClient ? selectedClient.name : 'Cliente no seleccionado'} →{' '}
+                {selectedVendor ? selectedVendor.name : 'Vendedor no seleccionado'}
+              </div>
+              <div className="root-tools-actions">
+                <button
+                  className="btn btn--secondary"
+                  onClick={() => {
+                    setSelectedVendorId('');
+                    setSelectedClientId('');
+                  }}
+                  disabled={isAssigningPortfolio}
+                >
+                  Limpiar selección
+                </button>
+                <button
+                  className="btn btn--primary"
+                  onClick={handleAssignClientToVendor}
+                  disabled={isAssigningPortfolio || !selectedVendorId || !selectedClientId}
+                >
+                  {isAssigningPortfolio ? 'Vinculando...' : 'Vincular cliente'}
                 </button>
               </div>
             </section>

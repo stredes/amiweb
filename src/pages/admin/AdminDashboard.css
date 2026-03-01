@@ -362,6 +362,42 @@
   flex-wrap: wrap;
 }
 
+.portfolio-assignment-form {
+  margin-top: 0.85rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 0.85rem;
+}
+
+.portfolio-assignment-field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.portfolio-assignment-field label {
+  font-weight: 600;
+  color: var(--color-text);
+}
+
+.portfolio-assignment-field select {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  background: var(--color-white);
+}
+
+.portfolio-assignment-preview {
+  margin-top: 0.9rem;
+  background: linear-gradient(135deg, #f8f9fc 0%, #edf3ff 100%);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius-md);
+  padding: 0.75rem 0.85rem;
+  color: var(--color-text);
+  font-size: 0.9rem;
+}
+
 .admin-overview {
   display: flex;
   flex-direction: column;
