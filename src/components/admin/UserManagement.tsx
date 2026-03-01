@@ -1,4 +1,4 @@
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { User } from '../../features/auth/types';
 import { FiPlus, FiEdit2, FiTrash2, FiKey, FiPower, FiSearch, FiClock } from 'react-icons/fi';
 import { toast } from '../ui/Toast';
@@ -13,6 +13,7 @@ interface UserManagementProps {
   users: Array<Omit<User, 'password'>>;
   currentUser: User;
   onUsersChange?: () => void;
+  createUserTrigger?: number;
 }
 
 const roleLabels = {
@@ -25,7 +26,7 @@ const roleLabels = {
   'soporte': { label: 'Soporte/Ingeniero', color: '#4CAF50', icon: '🔧' }
 };
 
-export function UserManagement({ users, currentUser, onUsersChange }: UserManagementProps) {
+export function UserManagement({ users, currentUser, onUsersChange, createUserTrigger = 0 }: UserManagementProps) {
   const [showModal, setShowModal] = useState(false);
   const [showAuditModal, setShowAuditModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
@@ -85,6 +86,12 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
     });
     setShowModal(true);
   };
+
+  useEffect(() => {
+    if (createUserTrigger > 0) {
+      handleCreateUser();
+    }
+  }, [createUserTrigger]);
 
   const handleEditUser = (user: User) => {
     setEditingUser(user);

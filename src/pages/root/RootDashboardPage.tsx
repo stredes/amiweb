@@ -6,15 +6,20 @@ import { User } from '../../features/auth/types';
 import Loader from '../../components/ui/Loader';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { UserManagement } from '../../components/admin/UserManagement';
+import { toast } from '../../components/ui/Toast';
+import { checkBackendConnection } from '../../lib/httpClient';
+import { API_BASE_URL } from '../../config/env';
 import '../../pages/admin/AdminDashboard.css';
 
 type ManagedUser = Omit<User, 'password'>;
+type RootSection = 'overview' | 'users' | 'diagnostics' | 'security';
 
 export function RootDashboardPage() {
   const { user, logout } = useAuth();
   const [users, setUsers] = useState<ManagedUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeSection, setActiveSection] = useState<'overview' | 'users'>('users');
+  const [activeSection, setActiveSection] = useState<RootSection>('users');
+  const [createUserTrigger, setCreateUserTrigger] = useState(0);
 
   const loadUsers = useCallback(async () => {
     setIsLoading(true);
@@ -42,6 +47,67 @@ export function RootDashboardPage() {
       return acc;
     }, {});
   }, [users]);
+
+  const inactiveUsers = useMemo(() => users.filter((currentUser) => currentUser.isActive === false).length, [users]);
+
+  const handleRefreshUsers = async () => {
+    await loadUsers();
+    toast.success('Usuarios actualizados');
+  };
+
+  const handleExportUsers = () => {
+    if (!users.length) {
+      toast.error('No hay usuarios para exportar');
+      return;
+    }
+
+    const rows = [
+      ['id', 'name', 'email', 'role', 'isActive', 'company', 'phone', 'department'],
+      ...users.map((currentUser) => [
+        currentUser.id,
+        currentUser.name,
+        currentUser.email,
+        currentUser.role,
+        currentUser.isActive === false ? 'false' : 'true',
+        currentUser.company || '',
+        currentUser.phone || '',
+        currentUser.department || '',
+      ]),
+    ];
+
+    const csvContent = rows
+      .map((row) =>
+        row
+          .map((value) => `"${String(value).replace(/"/g, '""')}"`)
+          .join(',')
+      )
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const downloadUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = downloadUrl;
+    anchor.download = `usuarios-root-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(downloadUrl);
+    toast.success('Exportación CSV completada');
+  };
+
+  const handleBackendCheck = async () => {
+    const isConnected = await checkBackendConnection();
+    if (isConnected) {
+      toast.success('Backend operativo');
+    } else {
+      toast.error('Backend no disponible en este momento');
+    }
+  };
+
+  const handleOpenCreateUser = () => {
+    setActiveSection('users');
+    setCreateUserTrigger((previous) => previous + 1);
+  };
 
   if (!user) return null;
   if (user.role !== 'root') {
@@ -86,13 +152,43 @@ export function RootDashboardPage() {
                 className={`dashboard-sidebar__item ${activeSection === 'overview' ? 'active' : ''}`}
                 onClick={() => setActiveSection('overview')}
               >
-                📊 Resumen
+                <span>📊 Resumen</span>
               </button>
               <button
                 className={`dashboard-sidebar__item ${activeSection === 'users' ? 'active' : ''}`}
                 onClick={() => setActiveSection('users')}
               >
-                👥 CRUD Usuarios ({users.length})
+                <span>👥 CRUD Usuarios</span>
+                <span className="dashboard-sidebar__counter">{users.length}</span>
+              </button>
+              <button
+                className={`dashboard-sidebar__item ${activeSection === 'diagnostics' ? 'active' : ''}`}
+                onClick={() => setActiveSection('diagnostics')}
+              >
+                <span>🩺 Diagnóstico</span>
+              </button>
+              <button
+                className={`dashboard-sidebar__item ${activeSection === 'security' ? 'active' : ''}`}
+                onClick={() => setActiveSection('security')}
+              >
+                <span>🔐 Seguridad</span>
+              </button>
+
+              <div className="dashboard-sidebar__group-title">Acciones rápidas</div>
+              <button className="dashboard-sidebar__action" onClick={handleRefreshUsers}>
+                🔄 Recargar usuarios
+              </button>
+              <button className="dashboard-sidebar__action" onClick={handleOpenCreateUser}>
+                ➕ Crear nuevo usuario
+              </button>
+              <button className="dashboard-sidebar__action" onClick={handleExportUsers}>
+                📥 Exportar CSV
+              </button>
+              <button className="dashboard-sidebar__action" onClick={handleBackendCheck}>
+                🛰️ Verificar backend
+              </button>
+              <button className="dashboard-sidebar__action dashboard-sidebar__action--danger" onClick={logout}>
+                ⏻ Cerrar sesión root
               </button>
             </aside>
 
@@ -142,7 +238,74 @@ export function RootDashboardPage() {
                 </div>
               )}
               {activeSection === 'users' && (
-                <UserManagement users={users} currentUser={user} onUsersChange={loadUsers} />
+                <UserManagement
+                  users={users}
+                  currentUser={user}
+                  onUsersChange={loadUsers}
+                  createUserTrigger={createUserTrigger}
+                />
+              )}
+              {activeSection === 'diagnostics' && (
+                <section className="admin-section root-tools-panel">
+                  <h2>Diagnóstico de Integración</h2>
+                  <div className="root-tools-grid">
+                    <article className="root-tool-card">
+                      <h3>Origen actual</h3>
+                      <p>{window.location.origin}</p>
+                    </article>
+                    <article className="root-tool-card">
+                      <h3>Backend configurado</h3>
+                      <p>{API_BASE_URL || 'No configurado'}</p>
+                    </article>
+                    <article className="root-tool-card">
+                      <h3>Usuarios inactivos</h3>
+                      <p>{inactiveUsers}</p>
+                    </article>
+                    <article className="root-tool-card">
+                      <h3>Cobertura de roles</h3>
+                      <p>{Object.keys(usersByRole).length} roles activos</p>
+                    </article>
+                  </div>
+                  <div className="root-tools-actions">
+                    <button className="btn btn--secondary" onClick={handleBackendCheck}>
+                      Revalidar backend
+                    </button>
+                    <button className="btn btn--primary" onClick={handleRefreshUsers}>
+                      Refrescar datos
+                    </button>
+                  </div>
+                </section>
+              )}
+              {activeSection === 'security' && (
+                <section className="admin-section root-tools-panel">
+                  <h2>Seguridad Root</h2>
+                  <div className="root-tools-grid">
+                    <article className="root-tool-card">
+                      <h3>Política de acceso</h3>
+                      <p>Solo root puede crear, eliminar y cambiar roles críticos.</p>
+                    </article>
+                    <article className="root-tool-card">
+                      <h3>Auditoría</h3>
+                      <p>Revisa historial por usuario desde el módulo CRUD (icono reloj).</p>
+                    </article>
+                    <article className="root-tool-card">
+                      <h3>Cuenta actual</h3>
+                      <p>{user.email}</p>
+                    </article>
+                    <article className="root-tool-card">
+                      <h3>Estado de sesión</h3>
+                      <p>Sesión activa con privilegios máximos.</p>
+                    </article>
+                  </div>
+                  <div className="root-tools-actions">
+                    <button className="btn btn--secondary" onClick={() => setActiveSection('users')}>
+                      Ir a gestión de usuarios
+                    </button>
+                    <button className="btn btn--primary" onClick={logout}>
+                      Cerrar sesión segura
+                    </button>
+                  </div>
+                </section>
               )}
             </div>
           </div>

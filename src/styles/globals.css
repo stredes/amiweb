@@ -165,9 +165,18 @@ textarea {
   width: 100%;
 }
 
+.app-content--wide {
+  max-width: 1860px;
+  padding-inline: 0.75rem;
+}
+
 @media (min-width: 768px) {
   .app-content {
     padding: var(--spacing-2xl) var(--spacing-xl);
+  }
+
+  .app-content--wide {
+    padding-inline: 1rem;
   }
 }
 
