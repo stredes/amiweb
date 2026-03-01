@@ -31,7 +31,7 @@ export const blogCategories: BlogCategory[] = [
   },
 ];
 
-export const mockBlogPosts: BlogPost[] = [
+export const blogPosts: BlogPost[] = [
   {
     id: '1',
     title: 'Sistemas de Control de Acceso: Tendencias 2024',

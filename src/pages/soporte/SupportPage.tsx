@@ -11,7 +11,6 @@ import { SupportRequest } from '../../features/support/types';
 import { sendSupportRequest } from '../../features/support/supportApi';
 import './SupportPage.css';
 
-// Página de soporte con bloques de servicio y formulario validado (mock).
 function SupportPage() {
   const [form, setForm] = useState<SupportRequest>({
     type: '',
@@ -46,9 +45,6 @@ function SupportPage() {
     if (!validate()) return;
     setSubmitting(true);
     setSuccess(false);
-    // Simula una espera de red para UX.
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    // TODO: reemplazar por llamada real al backend (supportApi.sendSupportRequest).
     await sendSupportRequest(form);
     setSubmitting(false);
     setSuccess(true);
@@ -243,7 +239,7 @@ function SupportPage() {
                   <Button type="submit" disabled={submitting}>
                     {submitting ? 'Enviando...' : 'Enviar solicitud'}
                   </Button>
-                  {success && <p className="success">Solicitud enviada (mock). Te contactaremos pronto.</p>}
+                  {success && <p className="success">Solicitud enviada. Te contactaremos pronto.</p>}
                 </div>
               </form>
             </div>

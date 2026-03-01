@@ -34,6 +34,10 @@ const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }
     addItem(product);
   }, [addItem, product]);
 
+  const handleQuote = useCallback(() => {
+    onQuote(product);
+  }, [onQuote, product]);
+
   return (
     <GlareHover
       className="product-card-wrapper"
@@ -110,6 +114,9 @@ const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }
               Ver detalle
             </Button>
           </Link>
+          <Button variant="secondary" size="md" onClick={handleQuote}>
+            Cotizar
+          </Button>
           <button 
             type="button" 
             onClick={handleAddToCart}

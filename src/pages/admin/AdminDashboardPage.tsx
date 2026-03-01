@@ -25,12 +25,12 @@ export function AdminDashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'orders' | 'users' | 'inventory'>('overview');
 
-  // Verificar permisos
-  if (user && user.role !== 'admin' && user.role !== 'root') {
-    return <Navigate to="/portal-socios" replace />;
-  }
-
   useEffect(() => {
+    if (!user || (user.role !== 'admin' && user.role !== 'root')) {
+      setIsLoading(false);
+      return;
+    }
+
     loadData();
     
     // Suscribirse a cambios en el inventario
@@ -42,7 +42,7 @@ export function AdminDashboardPage() {
     setStockItems(inventoryStore.getItems());
     
     return () => unsubscribe();
-  }, []);
+  }, [user]);
 
   const loadData = async () => {
     setIsLoading(true);
@@ -61,6 +61,9 @@ export function AdminDashboardPage() {
   };
 
   if (!user) return null;
+  if (user.role !== 'admin' && user.role !== 'root') {
+    return <Navigate to="/portal-socios" replace />;
+  }
 
   // Calcular estadísticas
   const totalRevenue = orders.reduce((sum, order) => {

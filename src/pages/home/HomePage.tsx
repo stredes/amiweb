@@ -3,11 +3,13 @@ import { FiActivity, FiCpu, FiTruck } from 'react-icons/fi';
 import ProductCategoryGrid from '../../components/products/ProductCategoryGrid';
 import Carousel from '../../components/ui/Carousel';
 import { FadeIn } from '../../components/ui/FadeIn';
-import { productCategories } from '../../features/catalog/mockData';
+import { getCategories } from '../../features/catalog/catalogApi';
 import { ROUTES } from '../../config/routes';
 import carouselLab1 from '../../assets/images/carousel-lab-1.svg';
 import carouselLab2 from '../../assets/images/carousel-lab-2.svg';
 import carouselLab3 from '../../assets/images/carousel-lab-3.svg';
+import { useEffect, useState } from 'react';
+import type { ProductCategory } from '../../features/catalog/types';
 
 const HERO_CAROUSEL_ITEMS = [
   {
@@ -35,6 +37,14 @@ const HERO_CAROUSEL_ITEMS = [
 
 // Página de inicio con navegación rápida a catálogo y soporte.
 function HomePage() {
+  const [categories, setCategories] = useState<ProductCategory[]>([]);
+
+  useEffect(() => {
+    getCategories()
+      .then(setCategories)
+      .catch(() => setCategories([]));
+  }, []);
+
   return (
     <div className="page">
       <FadeIn direction="up">
@@ -70,7 +80,7 @@ function HomePage() {
       </FadeIn>
 
       <FadeIn direction="up" delay={0.2}>
-        <ProductCategoryGrid categories={productCategories} />
+        <ProductCategoryGrid categories={categories} />
       </FadeIn>
 
       <FadeIn direction="up" delay={0.3}>

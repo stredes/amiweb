@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../features/auth/authStore';
 import { authApi } from '../../features/auth/authApi';
 import { Order, User } from '../../features/auth/types';
@@ -18,19 +18,7 @@ export function VendorDashboardPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'overview' | 'quotations' | 'clients' | 'orders'>('overview');
 
-  // Verificar permisos
-  if (user && user.role !== 'vendedor') {
-    if (user.role === 'admin' || user.role === 'root') {
-      return <Navigate to="/admin" replace />;
-    }
-    return <Navigate to="/portal-socios" replace />;
-  }
-
-  useEffect(() => {
-    loadData();
-  }, [user]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!user) return;
     
     setIsLoading(true);
@@ -46,9 +34,23 @@ export function VendorDashboardPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    if (!user || user.role !== 'vendedor') {
+      setIsLoading(false);
+      return;
+    }
+    loadData();
+  }, [loadData, user]);
 
   if (!user) return null;
+  if (user.role !== 'vendedor') {
+    if (user.role === 'admin' || user.role === 'root') {
+      return <Navigate to="/admin" replace />;
+    }
+    return <Navigate to="/portal-socios" replace />;
+  }
 
   // Calcular métricas
   const totalSales = orders.reduce((sum, order) => {

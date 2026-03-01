@@ -1,5 +1,6 @@
 import { API_BASE_URL } from '../../config/env';
 import { Order, OrderProduct, ShippingAddress } from '../auth/types';
+import { auth } from '../../lib/firebase';
 
 export interface CreateOrderRequest {
   customerName: string;
@@ -113,11 +114,13 @@ class BackendApiService {
     options: RequestInit = {}
   ): Promise<T> {
     const url = `${this.baseUrl}${endpoint}`;
-    
+    const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+
     const config: RequestInit = {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         ...options.headers,
       },
     };

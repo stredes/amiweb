@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useAuth } from '../../features/auth/authStore';
 import { authApi } from '../../features/auth/authApi';
 import { Order, Vendor, SupportContact } from '../../features/auth/types';
@@ -15,11 +15,7 @@ export function PartnerPortalPage() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'orders' | 'contacts'>('orders');
 
-  useEffect(() => {
-    loadData();
-  }, [user]);
-
-  const loadData = async () => {
+  const loadData = useCallback(async () => {
     if (!user) return;
     
     setIsLoading(true);
@@ -41,7 +37,11 @@ export function PartnerPortalPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [user]);
+
+  useEffect(() => {
+    loadData();
+  }, [loadData]);
 
   const activeOrders = orders.filter(o => o.status !== 'entregado' && o.status !== 'cancelado');
   const completedOrders = orders.filter(o => o.status === 'entregado' || o.status === 'cancelado');

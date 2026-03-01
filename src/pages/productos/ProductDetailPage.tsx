@@ -8,7 +8,7 @@ import { Product, ProductCategory } from '../../features/catalog/types';
 import { ROUTES } from '../../config/routes';
 import QuoteRequestModal from '../../components/products/QuoteRequestModal';
 
-// Página de detalle de producto con datos mock y modal de cotización.
+// Página de detalle de producto con carga de catálogo y modal de cotización.
 function ProductDetailPage() {
   const { productId } = useParams();
   const [product, setProduct] = useState<Product | null>(null);
@@ -20,7 +20,6 @@ function ProductDetailPage() {
     const load = async () => {
       if (!productId) return;
       setLoading(true);
-      // TODO: reemplazar por fetch al backend.
       const [data, catalogCategories] = await Promise.all([
         getProductById(productId),
         getCategories()
@@ -89,7 +88,6 @@ function ProductDetailPage() {
             )}
           </div>
           <p className="muted">
-            {/* TODO: cargar fichas técnicas y PDFs desde el backend. */}
             Documentos y fichas técnicas (placeholder).
           </p>
         </div>

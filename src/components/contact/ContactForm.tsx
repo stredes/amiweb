@@ -42,8 +42,6 @@ function ContactForm() {
     setSubmitting(true);
     setSuccess(false);
     const payload: ContactMessage = { ...formData };
-    // TODO: enviar mensaje al backend mediante contactApi.sendContactMessage
-    await new Promise((resolve) => setTimeout(resolve, 600));
     await sendContactMessage(payload);
     setSubmitting(false);
     setSuccess(true);
@@ -91,7 +89,7 @@ function ContactForm() {
       <Button type="submit" disabled={submitting}>
         {submitting ? 'Enviando...' : 'Enviar mensaje'}
       </Button>
-      {success && <p className="success">Mensaje enviado (mock). Gracias por contactarnos.</p>}
+      {success && <p className="success">Mensaje enviado. Gracias por contactarnos.</p>}
     </form>
   );
 }

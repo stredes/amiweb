@@ -1,6 +1,7 @@
 import { API_BASE_URL as RAW_API_BASE_URL, API_TIMEOUT_MS } from '../config/env';
 import { logger } from './logger';
 import { logApiEvent } from './eventLogger';
+import { auth } from './firebase';
 
 // Normalizar URL: remover trailing slash si existe
 const API_BASE_URL = RAW_API_BASE_URL?.endsWith('/')
@@ -88,11 +89,11 @@ export async function checkBackendConnection(): Promise<boolean> {
     const now = Date.now();
     if (now - lastErrorLogged > ERROR_LOG_THROTTLE) {
       if (import.meta.env.DEV) {
-        logger.debug('Backend not available - using mock data', { url: API_BASE_URL });
+        logger.debug('Backend not available', { url: API_BASE_URL });
         console.log(
           '%cℹ MODO DESARROLLO',
           'color: #3b82f6; font-weight: bold; font-size: 14px; background: #eff6ff; padding: 8px 12px; border-radius: 4px;',
-          `\n  Backend no disponible, usando datos mock\n  Configura VITE_API_URL cuando el backend esté listo`
+          `\n  Backend no disponible\n  Verifica VITE_API_URL/VITE_API_BASE_URL y el estado de la API`
         );
       } else {
         logger.error('Backend connection failed', {
@@ -120,23 +121,65 @@ export async function httpRequest<T>(
 ): Promise<T> {
   const startTime = performance.now();
   const url = buildUrl(endpoint);
+  const controller = new AbortController();
+  const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
   
   logApiEvent.request(endpoint, method);
   
   try {
-    // TODO: reemplazar por fetch/axios apuntando al backend real.
-    logger.debug('HTTP mock request', {
+    const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
+
+    const response = await fetch(url, {
+      method,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
+        ...headers,
+      },
+      body: body !== undefined ? JSON.stringify(body) : undefined,
+      signal: controller.signal,
+    });
+
+    const duration = performance.now() - startTime;
+    const contentType = response.headers.get('content-type') || '';
+    const payload = contentType.includes('application/json')
+      ? await response.json()
+      : await response.text();
+
+    if (!response.ok) {
+      const errorMessage =
+        typeof payload === 'object' && payload && 'error' in payload
+          ? String((payload as { error?: string }).error || 'Request failed')
+          : `HTTP ${response.status}`;
+
+      logger.error('HTTP request failed', {
+        url,
+        method,
+        status: response.status,
+        error: errorMessage,
+      });
+      logApiEvent.error(endpoint, method, response.status, errorMessage);
+      throw new Error(errorMessage);
+    }
+
+    logger.debug('HTTP request success', {
       url,
       method,
-      body,
-      headers,
-      timeout: API_TIMEOUT_MS
+      status: response.status,
+      duration: Math.round(duration),
     });
-    
-    const duration = performance.now() - startTime;
+
     logApiEvent.success(endpoint, method, duration);
-    
-    return Promise.resolve({} as T);
+
+    if (typeof payload === 'object' && payload && 'success' in payload) {
+      const responsePayload = payload as { success: boolean; data?: unknown; error?: string };
+      if (!responsePayload.success) {
+        throw new Error(responsePayload.error || 'Request failed');
+      }
+      return responsePayload.data as T;
+    }
+
+    return payload as T;
   } catch (error) {
     const errorMessage = error instanceof Error ? error.message : 'Unknown error';
     logger.error('HTTP request failed', {
@@ -146,5 +189,7 @@ export async function httpRequest<T>(
     });
     logApiEvent.error(endpoint, method, 0, errorMessage);
     throw error;
+  } finally {
+    window.clearTimeout(timeoutId);
   }
 }

@@ -19,19 +19,6 @@ export function WarehouseDashboardPage() {
     shipped: 0
   });
 
-  console.log('WarehouseDashboardPage - Renderizando', { user, isLoading, orders: orders.length });
-
-  // Verificar permisos
-  if (user && user.role !== 'bodega') {
-    if (user.role === 'admin' || user.role === 'root') {
-      return <Navigate to="/admin" replace />;
-    }
-    if (user.role === 'vendedor') {
-      return <Navigate to="/vendedor" replace />;
-    }
-    return <Navigate to="/portal-socios" replace />;
-  }
-
   const loadOrders = async () => {
     setIsLoading(true);
     try {
@@ -58,22 +45,30 @@ export function WarehouseDashboardPage() {
   };
 
   useEffect(() => {
-    console.log('WarehouseDashboardPage - useEffect ejecutándose');
+    if (!user || user.role !== 'bodega') {
+      setIsLoading(false);
+      return;
+    }
     loadOrders();
-  }, []);
-
-  console.log('WarehouseDashboardPage - Antes del return', { isLoading, ordersLength: orders.length });
+  }, [user]);
 
   if (isLoading) {
-    console.log('WarehouseDashboardPage - Mostrando Loader');
     return (
       <div className="warehouse-dashboard__loading">
         <Loader />
       </div>
     );
   }
-
-  console.log('WarehouseDashboardPage - Renderizando contenido principal');
+  if (!user) return null;
+  if (user.role !== 'bodega') {
+    if (user.role === 'admin' || user.role === 'root') {
+      return <Navigate to="/admin" replace />;
+    }
+    if (user.role === 'vendedor') {
+      return <Navigate to="/vendedor" replace />;
+    }
+    return <Navigate to="/portal-socios" replace />;
+  }
 
   // Filtrar pedidos según la pestaña activa
   const preparationOrders = orders.filter(

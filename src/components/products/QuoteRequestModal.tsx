@@ -2,6 +2,7 @@ import { FormEvent, useState } from 'react';
 import Button from '../ui/Button';
 import TextInput from '../ui/TextInput';
 import { Product } from '../../features/catalog/types';
+import { backendApi } from '../../features/api/backendApiService';
 
 type QuoteRequestModalProps = {
   product: Product | null;
@@ -18,7 +19,6 @@ type QuoteForm = {
 
 type QuoteFormErrors = Partial<Record<keyof QuoteForm, string>>;
 
-// Modal simple para solicitar cotización. Usa estado local y mock de envío.
 function QuoteRequestModal({ product, onClose }: QuoteRequestModalProps) {
   const [form, setForm] = useState<QuoteForm>({
     name: '',
@@ -49,11 +49,34 @@ function QuoteRequestModal({ product, onClose }: QuoteRequestModalProps) {
     if (!validate()) return;
     setSubmitting(true);
     setSuccess(false);
-    // TODO: reemplazar por llamada real a backend para crear solicitud de cotización.
-    await new Promise((resolve) => setTimeout(resolve, 800));
-    setSubmitting(false);
-    setSuccess(true);
-    setForm({ name: '', organization: '', email: '', phone: '', comment: '' });
+    try {
+      const response = await backendApi.createQuote({
+        customerName: form.name,
+        customerEmail: form.email,
+        customerPhone: form.phone || 'N/A',
+        organization: form.organization,
+        customerMessage: form.comment,
+        items: [
+          {
+            productId: product.id,
+            productName: product.name,
+            quantity: 1,
+          },
+        ],
+      });
+
+      if (!response.success) {
+        throw new Error(response.error || 'No se pudo enviar la cotización');
+      }
+
+      setSuccess(true);
+      setForm({ name: '', organization: '', email: '', phone: '', comment: '' });
+    } catch (error) {
+      const message = error instanceof Error ? error.message : 'Error enviando cotización';
+      setErrors((current) => ({ ...current, comment: message }));
+    } finally {
+      setSubmitting(false);
+    }
   };
 
   return (
@@ -121,7 +144,7 @@ function QuoteRequestModal({ product, onClose }: QuoteRequestModalProps) {
           </div>
           {success && (
             <p className="success">
-              Solicitud enviada (mock). Un ejecutivo de AMILAB te contactará.
+              Solicitud enviada. Un ejecutivo de AMILAB te contactará.
             </p>
           )}
         </form>

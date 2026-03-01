@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { blogCategories, mockBlogPosts } from '../../features/blog/mockData';
+import { blogCategories, blogPosts } from '../../features/blog/contentData';
 import { BlogCard } from '../../components/blog/BlogCard';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { FiSearch, FiFilter } from 'react-icons/fi';
@@ -9,9 +9,9 @@ export function BlogPage() {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
   const [searchQuery, setSearchQuery] = useState('');
 
-  const featuredPosts = mockBlogPosts.filter((post) => post.featured);
+  const featuredPosts = blogPosts.filter((post) => post.featured);
   
-  const filteredPosts = mockBlogPosts.filter((post) => {
+  const filteredPosts = blogPosts.filter((post) => {
     const matchesCategory = selectedCategory === 'all' || post.category === selectedCategory;
     const matchesSearch =
       post.title.toLowerCase().includes(searchQuery.toLowerCase()) ||

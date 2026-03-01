@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { User } from '../../features/auth/types';
-import { FiPlus, FiEdit2, FiTrash2, FiUserCheck, FiUserX } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
 import { toast } from '../ui/Toast';
 import { userManagementApi, CreateUserRequest, UpdateUserRequest } from '../../features/auth/userManagementApi';
 
@@ -114,21 +114,6 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
       toast.error(error.message || 'Error al procesar la solicitud');
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const handleToggleActive = async (userId: string, userName: string, isActive: boolean) => {
-    if (!isRoot) {
-      toast.error('Solo el usuario root puede gestionar usuarios');
-      return;
-    }
-    
-    try {
-      await userManagementApi.toggleUserStatus(userId, !isActive);
-      toast.success(`Usuario ${userName} ${!isActive ? 'activado' : 'desactivado'}`);
-      onUsersChange?.();
-    } catch (error: any) {
-      toast.error(error.message || 'Error al actualizar usuario');
     }
   };
 

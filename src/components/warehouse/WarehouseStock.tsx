@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useState } from 'react';
 import { backendApi, WarehouseStockSummary } from '../../features/api/backendApiService';
 import { API_BASE_URL } from '../../config/env';
 import './WarehouseStock.css';
@@ -61,7 +61,7 @@ export function WarehouseStock() {
     };
   }, [items, summary]);
 
-  const buildStockParams = (override: Partial<typeof filters> = {}) => {
+  const buildStockParams = useCallback((override: Partial<typeof filters> = {}) => {
     const merged = { ...filters, ...override };
     return {
       ...merged,
@@ -69,7 +69,7 @@ export function WarehouseStock() {
       page,
       pageSize
     };
-  };
+  }, [filters, page, pageSize, searchTerm]);
 
   const handleExport = (format: 'csv' | 'xlsx') => {
     const params = buildStockParams();
@@ -162,7 +162,7 @@ export function WarehouseStock() {
     }, 300);
 
     return () => clearTimeout(timer);
-  }, [filters, page, pageSize, searchTerm]);
+  }, [buildStockParams, filters, page, pageSize, searchTerm]);
 
   useEffect(() => {
     setPage(1);

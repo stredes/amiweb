@@ -11,15 +11,14 @@ function CrimePreventionModelPage() {
       </p>
       </FadeIn>
       <FadeIn direction="up" delay={0.2}>
-        <a
-          href="#"
-        onClick={(e) => e.preventDefault()}
-        className="btn btn-primary"
-        aria-label="Descargar Modelo de Prevención de Delitos"
-      >
-        {/* TODO: reemplazar por URL real al PDF */}
-        Descargar documento
-        </a>
+        <button
+          type="button"
+          className="btn btn-primary"
+          aria-label="Descarga disponible próximamente"
+          disabled
+        >
+          Descarga disponible próximamente
+        </button>
       </FadeIn>
     </div>
   );

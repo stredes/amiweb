@@ -27,7 +27,7 @@ export function LoginPage() {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseToken = await userCredential.user.getIdToken();
       
-      // 2. Obtener datos del usuario del backend/mock
+      // 2. Obtener datos del usuario desde backend
       const response = await authApi.login({ email, password });
       
       // 3. Guardar en el contexto (con token de Firebase)
@@ -108,12 +108,7 @@ export function LoginPage() {
 
           <div className="login-footer">
             <p className="muted">
-              <strong>Credenciales de prueba:</strong><br />
-              <strong>Socio:</strong> socio@amilab.com / demo123<br />
-              <strong>Vendedor:</strong> vendedor1@amilab.com / vende123<br />
-              <strong>Bodega:</strong> bodega@amilab.com / bodega123<br />
-              <strong>Admin:</strong> admin@amilab.com / admin123<br />
-              <strong>Root:</strong> root@amilab.com / root2026
+              Inicia sesión con tu cuenta corporativa de AMIWEB.
             </p>
           </div>
           </div>

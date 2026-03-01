@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { FiChevronLeft, FiChevronRight } from 'react-icons/fi';
 import { Rating } from './Rating';
 import './Testimonials.css';
@@ -28,13 +28,13 @@ export function Testimonials({
 }: TestimonialsProps) {
   const [currentIndex, setCurrentIndex] = useState(0);
 
-  const next = () => {
+  const next = useCallback(() => {
     setCurrentIndex((prev) => (prev + 1) % testimonials.length);
-  };
+  }, [testimonials.length]);
 
-  const prev = () => {
+  const prev = useCallback(() => {
     setCurrentIndex((prev) => (prev - 1 + testimonials.length) % testimonials.length);
-  };
+  }, [testimonials.length]);
 
   const goTo = (index: number) => {
     setCurrentIndex(index);
@@ -47,7 +47,7 @@ export function Testimonials({
       return () => clearInterval(timer);
     }
     return undefined;
-  }, [autoPlay, interval, testimonials.length]);
+  }, [autoPlay, interval, testimonials.length, next]);
 
   if (testimonials.length === 0) return null;
 

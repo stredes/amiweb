@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { orderService } from '../../features/cart/services/orderService';
 import { Order } from '../../features/auth/types';
@@ -25,11 +25,7 @@ export function OrderDetailPage() {
   const [error, setError] = useState<string | null>(null);
   const [isConfirming, setIsConfirming] = useState(false);
 
-  useEffect(() => {
-    loadOrder();
-  }, [orderId]);
-
-  const loadOrder = async () => {
+  const loadOrder = useCallback(async () => {
     if (!orderId) return;
 
     setIsLoading(true);
@@ -48,7 +44,11 @@ export function OrderDetailPage() {
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [orderId]);
+
+  useEffect(() => {
+    loadOrder();
+  }, [loadOrder]);
 
   const handleConfirmDelivery = async () => {
     if (!order) return;

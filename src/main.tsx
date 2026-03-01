@@ -5,21 +5,15 @@ import { MotionConfig } from 'motion/react';
 import App from './App';
 import './styles/globals.css';
 import './styles/layout.css';
-import { SearchProvider } from './features/search/searchStore';
 import { AuthProvider } from './features/auth/authStore';
 import './lib/firebase';
-import { checkBackendConnection } from './lib/httpClient';
-
-checkBackendConnection();
 
 ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
   <React.StrictMode>
     <MotionConfig reducedMotion="never">
       <BrowserRouter>
         <AuthProvider>
-          <SearchProvider>
-            <App />
-          </SearchProvider>
+          <App />
         </AuthProvider>
       </BrowserRouter>
     </MotionConfig>

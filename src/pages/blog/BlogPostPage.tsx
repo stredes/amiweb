@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { mockBlogPosts } from '../../features/blog/mockData';
+import { blogPosts } from '../../features/blog/contentData';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { FiClock, FiEye, FiArrowLeft, FiShare2 } from 'react-icons/fi';
 import { toast } from '../../components/ui/Toast';
@@ -9,7 +9,7 @@ export function BlogPostPage() {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   
-  const post = mockBlogPosts.find((p) => p.slug === slug);
+  const post = blogPosts.find((p) => p.slug === slug);
 
   if (!post) {
     return (
@@ -44,7 +44,7 @@ export function BlogPostPage() {
     }
   };
 
-  const relatedPosts = mockBlogPosts
+  const relatedPosts = blogPosts
     .filter((p) => p.id !== post.id && p.category === post.category)
     .slice(0, 3);
 

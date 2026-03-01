@@ -232,10 +232,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
     const trueDuplicateCounts = new Map<string, number>(); // Para ajustar slugs de duplicados verdaderos
 
     products.forEach((product, index) => {
-      const baseSlugKey = product.slug.toLowerCase();
-      
       // Detectar duplicados verdaderos (mismo nombre y SKU)
-      let isRealDuplicate = false;
       let realDupeCount = 0;
       if (product.name && product.sku) {
         const trueKey = `${product.name.toLowerCase()}|${product.sku.toLowerCase()}`;
@@ -257,7 +254,6 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
           trueDuplicateCounts.set(trueKey, count + 1);
           
           if (count > 0) {
-            isRealDuplicate = true;
             realDupeCount = count + 1;
             // Modificar el slug para que sea único
             product = { ...product, slug: `${product.slug}-v${realDupeCount}` };
@@ -512,17 +508,7 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
       setUploadResult(aggregateResult);
       onUploadComplete([]);
       
-      // Detectar si se usó el modo mock
-      const usingMock = API_BASE_URL.includes('localhost') || !API_BASE_URL || 
-                       aggregateResult.data.successful === deduped.length;
-      
       let successMessage = `✅ Carga completada: ${aggregateResult.data.successful} exitosos, ${aggregateResult.data.failed} fallidos`;
-      
-      if (usingMock || aggregateResult.data.successful === deduped.length) {
-        successMessage += '\n\n🔧 Modo MOCK: Los datos se procesaron localmente. ' +
-                         'Para guardar en la base de datos real, configura el backend en producción.';
-      }
-      
       setSuccess(successMessage);
       setProgress(100);
       setProgressLabel('Carga finalizada');
@@ -565,12 +551,12 @@ export function StockUploader({ onUploadComplete }: StockUploaderProps) {
         </p>
       </div>
 
-      {/* Alerta de estado del backend */}
+      {/* Alerta de configuración de backend */}
       {(!API_BASE_URL || API_BASE_URL.includes('localhost')) && (
         <div className="alert alert-info" style={{ backgroundColor: '#e3f2fd', borderColor: '#2196f3', color: '#1565c0' }}>
-          <strong>ℹ️ Modo Desarrollo</strong>
+          <strong>ℹ️ Verifica configuración</strong>
           <p style={{ marginTop: '0.5rem', marginBottom: 0 }}>
-            El backend no está configurado o está en localhost. Los productos se procesarán en modo mock.
+            El backend está configurado en entorno local. Verifica que el API esté activo antes de cargar productos.
             <br />
             <small>
               Backend configurado: <code>{API_BASE_URL || 'No configurado'}</code>

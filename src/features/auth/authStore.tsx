@@ -2,6 +2,7 @@ import { createContext, ReactNode, useContext, useState, useEffect } from 'react
 import { User } from './types';
 import { auth } from '../../lib/firebase';
 import { onAuthStateChanged, signOut } from 'firebase/auth';
+import { httpRequest } from '../../lib/httpClient';
 
 type AuthContextValue = {
   user: User | null;
@@ -34,6 +35,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
             // Obtener token fresco de Firebase
             const freshToken = await firebaseUser.getIdToken();
             setToken(freshToken);
+          } else {
+            const freshToken = await firebaseUser.getIdToken();
+            setToken(freshToken);
+            const profile = await httpRequest<{ user: User }>('/api/auth/me', { method: 'GET' });
+            setUser(profile.user);
+            localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify({ user: profile.user, token: freshToken }));
           }
         } else {
           // No hay sesión Firebase, limpiar
