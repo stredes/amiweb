@@ -120,47 +120,49 @@ export function AdminDashboardPage() {
         </FadeIn>
       )}
 
-      <FadeIn direction="up" delay={0.2}>
-        <div className="admin-tabs">
-        <button
-          className={`admin-tab ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          📊 Resumen
-        </button>
-        <button
-          className={`admin-tab ${activeTab === 'approvals' ? 'active' : ''}`}
-          onClick={() => setActiveTab('approvals')}
-        >
-          ✅ Aprobaciones {pendingApprovals > 0 && <span className="badge">{pendingApprovals}</span>}
-        </button>
-        <button
-          className={`admin-tab ${activeTab === 'orders' ? 'active' : ''}`}
-          onClick={() => setActiveTab('orders')}
-        >
-          📦 Pedidos ({orders.length})
-        </button>
-        <button
-          className={`admin-tab ${activeTab === 'users' ? 'active' : ''}`}
-          onClick={() => setActiveTab('users')}
-        >
-          👥 Usuarios ({users.length})
-        </button>
-        {user.role === 'root' && (
-          <button
-            className={`admin-tab ${activeTab === 'inventory' ? 'active' : ''}`}
-            onClick={() => setActiveTab('inventory')}
-          >
-            🏭 Inventario ({stockItems.length})
-          </button>
-        )}
-        </div>
-      </FadeIn>
-
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="admin-content">
+        <div className="dashboard-shell">
+          <aside className="dashboard-sidebar">
+            <h3 className="dashboard-sidebar__title">
+              {user.role === 'root' ? 'Herramientas Root' : 'Herramientas Admin'}
+            </h3>
+            <button
+              className={`dashboard-sidebar__item ${activeTab === 'overview' ? 'active' : ''}`}
+              onClick={() => setActiveTab('overview')}
+            >
+              📊 Resumen
+            </button>
+            <button
+              className={`dashboard-sidebar__item ${activeTab === 'approvals' ? 'active' : ''}`}
+              onClick={() => setActiveTab('approvals')}
+            >
+              ✅ Aprobaciones {pendingApprovals > 0 && <span className="badge">{pendingApprovals}</span>}
+            </button>
+            <button
+              className={`dashboard-sidebar__item ${activeTab === 'orders' ? 'active' : ''}`}
+              onClick={() => setActiveTab('orders')}
+            >
+              📦 Pedidos ({orders.length})
+            </button>
+            <button
+              className={`dashboard-sidebar__item ${activeTab === 'users' ? 'active' : ''}`}
+              onClick={() => setActiveTab('users')}
+            >
+              👥 Usuarios ({users.length})
+            </button>
+            {user.role === 'root' && (
+              <button
+                className={`dashboard-sidebar__item ${activeTab === 'inventory' ? 'active' : ''}`}
+                onClick={() => setActiveTab('inventory')}
+              >
+                🏭 Inventario ({stockItems.length})
+              </button>
+            )}
+          </aside>
+
+          <div className="dashboard-main admin-content">
           {activeTab === 'overview' && (
             <div className="admin-overview">
               <div className="admin-stats-grid">
@@ -315,6 +317,7 @@ export function AdminDashboardPage() {
               )}
             </div>
           )}
+          </div>
         </div>
       )}
     </div>

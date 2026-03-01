@@ -14,6 +14,7 @@ export function RootDashboardPage() {
   const { user, logout } = useAuth();
   const [users, setUsers] = useState<ManagedUser[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [activeSection, setActiveSection] = useState<'overview' | 'users'>('users');
 
   const loadUsers = useCallback(async () => {
     setIsLoading(true);
@@ -78,42 +79,72 @@ export function RootDashboardPage() {
         <Loader />
       ) : (
         <FadeIn direction="up" delay={0.2}>
-          <div className="admin-content">
-            <div className="admin-overview">
-              <div className="admin-stats-grid">
-                <div className="admin-stat-card">
-                  <div className="admin-stat-card__icon">👥</div>
-                  <div className="admin-stat-card__content">
-                    <h3 className="admin-stat-card__title">Total Usuarios</h3>
-                    <div className="admin-stat-card__value">{users.length}</div>
-                  </div>
-                </div>
-                <div className="admin-stat-card">
-                  <div className="admin-stat-card__icon">🤝</div>
-                  <div className="admin-stat-card__content">
-                    <h3 className="admin-stat-card__title">Socios</h3>
-                    <div className="admin-stat-card__value">{usersByRole.socio || 0}</div>
-                  </div>
-                </div>
-                <div className="admin-stat-card">
-                  <div className="admin-stat-card__icon">👑</div>
-                  <div className="admin-stat-card__content">
-                    <h3 className="admin-stat-card__title">Admin/Root</h3>
-                    <div className="admin-stat-card__value">{(usersByRole.admin || 0) + (usersByRole.root || 0)}</div>
-                  </div>
-                </div>
-                <div className="admin-stat-card">
-                  <div className="admin-stat-card__icon">🛠️</div>
-                  <div className="admin-stat-card__content">
-                    <h3 className="admin-stat-card__title">Operación</h3>
-                    <div className="admin-stat-card__value">
-                      {(usersByRole.vendedor || 0) + (usersByRole.bodega || 0) + (usersByRole.soporte || 0) + (usersByRole.callcenter || 0)}
+          <div className="dashboard-shell">
+            <aside className="dashboard-sidebar">
+              <h3 className="dashboard-sidebar__title">Herramientas Root</h3>
+              <button
+                className={`dashboard-sidebar__item ${activeSection === 'overview' ? 'active' : ''}`}
+                onClick={() => setActiveSection('overview')}
+              >
+                📊 Resumen
+              </button>
+              <button
+                className={`dashboard-sidebar__item ${activeSection === 'users' ? 'active' : ''}`}
+                onClick={() => setActiveSection('users')}
+              >
+                👥 CRUD Usuarios ({users.length})
+              </button>
+            </aside>
+
+            <div className="dashboard-main admin-content">
+              {activeSection === 'overview' && (
+                <div className="admin-overview">
+                  <div className="admin-stats-grid">
+                    <div className="admin-stat-card">
+                      <div className="admin-stat-card__icon">👥</div>
+                      <div className="admin-stat-card__content">
+                        <h3 className="admin-stat-card__title">Total Usuarios</h3>
+                        <div className="admin-stat-card__value">{users.length}</div>
+                      </div>
+                    </div>
+                    <div className="admin-stat-card">
+                      <div className="admin-stat-card__icon">🤝</div>
+                      <div className="admin-stat-card__content">
+                        <h3 className="admin-stat-card__title">Socios</h3>
+                        <div className="admin-stat-card__value">{usersByRole.socio || 0}</div>
+                      </div>
+                    </div>
+                    <div className="admin-stat-card">
+                      <div className="admin-stat-card__icon">👑</div>
+                      <div className="admin-stat-card__content">
+                        <h3 className="admin-stat-card__title">Admin/Root</h3>
+                        <div className="admin-stat-card__value">{(usersByRole.admin || 0) + (usersByRole.root || 0)}</div>
+                      </div>
+                    </div>
+                    <div className="admin-stat-card">
+                      <div className="admin-stat-card__icon">🛠️</div>
+                      <div className="admin-stat-card__content">
+                        <h3 className="admin-stat-card__title">Operación</h3>
+                        <div className="admin-stat-card__value">
+                          {(usersByRole.vendedor || 0) + (usersByRole.bodega || 0) + (usersByRole.soporte || 0) + (usersByRole.callcenter || 0)}
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </div>
-              </div>
+              )}
+              {activeSection === 'users' && (
+                <div className="admin-section" style={{ marginBottom: '1rem' }}>
+                  <h2>Gestión de Usuarios (CRUD)</h2>
+                  <p className="muted">
+                    Crea, edita, activa/desactiva, resetea claves y audita usuarios desde esta sección.
+                  </p>
+                </div>
+              )}
+              {activeSection === 'users' && (
+                <UserManagement users={users} currentUser={user} onUsersChange={loadUsers} />
+              )}
             </div>
-            <UserManagement users={users} currentUser={user} onUsersChange={loadUsers} />
           </div>
         </FadeIn>
       )}
