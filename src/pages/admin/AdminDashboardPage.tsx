@@ -14,6 +14,7 @@ import { SalesChart } from '../../components/analytics/SalesChart';
 import { PieChart } from '../../components/analytics/PieChart';
 import Loader from '../../components/ui/Loader';
 import { FadeIn } from '../../components/ui/FadeIn';
+import { toast } from '../../components/ui/Toast';
 import { Navigate } from 'react-router-dom';
 import './AdminDashboard.css';
 
@@ -23,7 +24,8 @@ export function AdminDashboardPage() {
   const [users, setUsers] = useState<Array<Omit<User, 'password'>>>([]);
   const [stockItems, setStockItems] = useState<StockItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'orders' | 'users' | 'inventory'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'orders' | 'users' | 'inventory' | 'executive' | 'clients' | 'operations'>('overview');
+  const [createUserTrigger, setCreateUserTrigger] = useState(0);
 
   useEffect(() => {
     if (!user || (user.role !== 'admin' && user.role !== 'root')) {
@@ -83,12 +85,167 @@ export function AdminDashboardPage() {
     o => o.status === 'pendiente_admin' || o.status === 'aprobado_vendedor'
   ).length;
 
+  const validOrders = orders.filter((order) => order.status !== 'cancelado');
+  const cancelledOrders = orders.filter((order) => order.status === 'cancelado').length;
+  const averageTicket = validOrders.length ? totalRevenue / validOrders.length : 0;
+  const completionRateBase = completedOrders + cancelledOrders;
+  const completionRate = completionRateBase > 0 ? (completedOrders / completionRateBase) * 100 : 0;
+  const pendingOperationalOrders = orders.filter(
+    (order) => order.status === 'pendiente' || order.status === 'confirmado' || order.status === 'procesando'
+  ).length;
+  const shippedOrders = orders.filter((order) => order.status === 'enviado').length;
+  const currentMonth = new Date().getMonth();
+  const currentYear = new Date().getFullYear();
+  const monthOrders = validOrders.filter((order) => {
+    const date = new Date(order.date);
+    return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+  }).length;
+  const monthRevenue = validOrders
+    .filter((order) => {
+      const date = new Date(order.date);
+      return date.getMonth() === currentMonth && date.getFullYear() === currentYear;
+    })
+    .reduce((sum, order) => sum + order.total, 0);
+
+  const topClients = Object.values(
+    validOrders.reduce<Record<string, { email: string; name: string; total: number; orders: number }>>((acc, order) => {
+      const key = order.customerEmail || order.customerName || order.id;
+      if (!acc[key]) {
+        acc[key] = {
+          email: order.customerEmail || 'sin-email',
+          name: order.customerName || 'Cliente sin nombre',
+          total: 0,
+          orders: 0,
+        };
+      }
+      acc[key].total += order.total;
+      acc[key].orders += 1;
+      return acc;
+    }, {})
+  )
+    .sort((a, b) => b.total - a.total)
+    .slice(0, 8);
+
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-CL', {
       style: 'currency',
       currency: 'CLP',
       minimumFractionDigits: 0
     }).format(amount);
+  };
+
+  const inactiveUsers = users.filter((currentUser) => currentUser.isActive === false).length;
+
+  const handleRefreshDashboard = async () => {
+    await loadData();
+    toast.success('Dashboard actualizado');
+  };
+
+  const handleExportOrders = () => {
+    if (!orders.length) {
+      toast.error('No hay pedidos para exportar');
+      return;
+    }
+
+    const rows = [
+      ['id', 'orderNumber', 'customerName', 'customerEmail', 'status', 'total', 'date'],
+      ...orders.map((order) => [
+        order.id,
+        order.orderNumber,
+        order.customerName,
+        order.customerEmail,
+        order.status,
+        order.total,
+        order.date,
+      ]),
+    ];
+
+    const csvContent = rows
+      .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const downloadUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = downloadUrl;
+    anchor.download = `pedidos-admin-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(downloadUrl);
+    toast.success('Exportación de pedidos completada');
+  };
+
+  const handleExportClientPortfolio = () => {
+    if (!topClients.length) {
+      toast.error('No hay cartera de clientes para exportar');
+      return;
+    }
+
+    const rows = [
+      ['name', 'email', 'orders', 'total', 'ticketPromedio'],
+      ...topClients.map((client) => [
+        client.name,
+        client.email,
+        client.orders,
+        client.total,
+        client.orders > 0 ? Math.round(client.total / client.orders) : 0,
+      ]),
+    ];
+
+    const csvContent = rows
+      .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const downloadUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = downloadUrl;
+    anchor.download = `cartera-clientes-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(downloadUrl);
+    toast.success('Cartera de clientes exportada');
+  };
+
+  const handleExportExecutiveReport = () => {
+    const report = [
+      ['metric', 'value'],
+      ['Ingresos totales', totalRevenue],
+      ['Pedidos activos', activeOrders],
+      ['Pedidos completados', completedOrders],
+      ['Pedidos cancelados', cancelledOrders],
+      ['Ticket promedio', Math.round(averageTicket)],
+      ['Ventas del mes', monthRevenue],
+      ['Pedidos del mes', monthOrders],
+      ['Tasa de cumplimiento (%)', completionRate.toFixed(2)],
+      ['Pendientes operativos', pendingOperationalOrders],
+      ['Enviados sin cierre', shippedOrders],
+    ];
+
+    const csvContent = report.map((row) => row.join(',')).join('\n');
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const downloadUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = downloadUrl;
+    anchor.download = `reporte-ejecutivo-${new Date().toISOString().slice(0, 10)}.csv`;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(downloadUrl);
+    toast.success('Reporte ejecutivo exportado');
+  };
+
+  const handleOpenCreateUser = () => {
+    if (user.role !== 'root') {
+      toast.error('Solo root puede crear usuarios');
+      setActiveTab('users');
+      return;
+    }
+
+    setActiveTab('users');
+    setCreateUserTrigger((previous) => previous + 1);
   };
 
   return (
@@ -152,6 +309,24 @@ export function AdminDashboardPage() {
             >
               👥 Usuarios ({users.length})
             </button>
+            <button
+              className={`dashboard-sidebar__item ${activeTab === 'executive' ? 'active' : ''}`}
+              onClick={() => setActiveTab('executive')}
+            >
+              💼 Ejecutivo
+            </button>
+            <button
+              className={`dashboard-sidebar__item ${activeTab === 'clients' ? 'active' : ''}`}
+              onClick={() => setActiveTab('clients')}
+            >
+              🤝 Clientes
+            </button>
+            <button
+              className={`dashboard-sidebar__item ${activeTab === 'operations' ? 'active' : ''}`}
+              onClick={() => setActiveTab('operations')}
+            >
+              🏢 Operaciones
+            </button>
             {user.role === 'root' && (
               <button
                 className={`dashboard-sidebar__item ${activeTab === 'inventory' ? 'active' : ''}`}
@@ -160,6 +335,29 @@ export function AdminDashboardPage() {
                 🏭 Inventario ({stockItems.length})
               </button>
             )}
+
+            <div className="dashboard-sidebar__group-title">Acciones rápidas</div>
+            <button className="dashboard-sidebar__action" onClick={handleRefreshDashboard}>
+              🔄 Refrescar panel
+            </button>
+            <button className="dashboard-sidebar__action" onClick={() => setActiveTab('approvals')}>
+              ✅ Ir a aprobaciones
+            </button>
+            <button className="dashboard-sidebar__action" onClick={handleExportExecutiveReport}>
+              📊 Exportar reporte ejecutivo
+            </button>
+            <button className="dashboard-sidebar__action" onClick={handleExportOrders}>
+              📥 Exportar pedidos
+            </button>
+            <button className="dashboard-sidebar__action" onClick={handleExportClientPortfolio}>
+              🤝 Exportar cartera clientes
+            </button>
+            <button className="dashboard-sidebar__action" onClick={handleOpenCreateUser}>
+              ➕ Crear usuario
+            </button>
+            <button className="dashboard-sidebar__action dashboard-sidebar__action--danger" onClick={logout}>
+              ⏻ Cerrar sesión
+            </button>
           </aside>
 
           <div className="dashboard-main admin-content">
@@ -306,7 +504,12 @@ export function AdminDashboardPage() {
           )}
 
           {activeTab === 'users' && user && (
-            <UserManagement users={users} currentUser={user} onUsersChange={loadData} />
+            <UserManagement
+              users={users}
+              currentUser={user}
+              onUsersChange={loadData}
+              createUserTrigger={createUserTrigger}
+            />
           )}
 
           {activeTab === 'inventory' && user.role === 'root' && (
@@ -316,6 +519,99 @@ export function AdminDashboardPage() {
                 <InventoryManagement items={stockItems} />
               )}
             </div>
+          )}
+
+          {activeTab === 'executive' && (
+            <section className="admin-section root-tools-panel">
+              <h2>Resumen Ejecutivo</h2>
+              <div className="root-tools-grid">
+                <article className="root-tool-card">
+                  <h3>Ingresos del mes</h3>
+                  <p>{formatCurrency(monthRevenue)}</p>
+                </article>
+                <article className="root-tool-card">
+                  <h3>Pedidos del mes</h3>
+                  <p>{monthOrders}</p>
+                </article>
+                <article className="root-tool-card">
+                  <h3>Ticket promedio</h3>
+                  <p>{formatCurrency(averageTicket)}</p>
+                </article>
+                <article className="root-tool-card">
+                  <h3>Tasa de cumplimiento</h3>
+                  <p>{completionRate.toFixed(1)}%</p>
+                </article>
+              </div>
+              <div className="root-tools-actions">
+                <button className="btn btn--secondary" onClick={handleExportExecutiveReport}>
+                  Exportar reporte
+                </button>
+                <button className="btn btn--primary" onClick={handleRefreshDashboard}>
+                  Refrescar datos
+                </button>
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'clients' && (
+            <section className="admin-section root-tools-panel">
+              <h2>Cartera de Clientes</h2>
+              <div className="root-tools-grid">
+                {topClients.length === 0 && (
+                  <article className="root-tool-card">
+                    <h3>Sin datos de clientes</h3>
+                    <p>No hay ventas activas para calcular cartera.</p>
+                  </article>
+                )}
+                {topClients.map((client) => (
+                  <article key={client.email} className="root-tool-card">
+                    <h3>{client.name}</h3>
+                    <p>{client.email}</p>
+                    <p>{client.orders} pedidos · {formatCurrency(client.total)}</p>
+                  </article>
+                ))}
+              </div>
+              <div className="root-tools-actions">
+                <button className="btn btn--secondary" onClick={handleExportClientPortfolio}>
+                  Exportar cartera
+                </button>
+                <button className="btn btn--primary" onClick={() => setActiveTab('orders')}>
+                  Ir a pedidos
+                </button>
+              </div>
+            </section>
+          )}
+
+          {activeTab === 'operations' && (
+            <section className="admin-section root-tools-panel">
+              <h2>Control Operativo</h2>
+              <div className="root-tools-grid">
+                <article className="root-tool-card">
+                  <h3>Pendientes operativos</h3>
+                  <p>{pendingOperationalOrders}</p>
+                </article>
+                <article className="root-tool-card">
+                  <h3>En revisión de aprobación</h3>
+                  <p>{pendingApprovals}</p>
+                </article>
+                <article className="root-tool-card">
+                  <h3>En tránsito</h3>
+                  <p>{shippedOrders}</p>
+                </article>
+                <article className="root-tool-card">
+                  <h3>Usuarios inactivos</h3>
+                  <p>{inactiveUsers}</p>
+                </article>
+              </div>
+              <div className="root-tools-actions">
+                <button className="btn btn--secondary" onClick={() => setActiveTab('approvals')}>
+                  Gestionar aprobaciones
+                </button>
+                <button className="btn btn--primary" onClick={handleRefreshDashboard}>
+                  Actualizar operación
+                </button>
+              </div>
+            </section>
           )}
           </div>
         </div>
