@@ -129,13 +129,18 @@ export async function httpRequest<T>(
   try {
     const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
 
+    const resolvedHeaders: Record<string, string> = {
+      ...(token ? { Authorization: `Bearer ${token}` } : {}),
+      ...headers,
+    };
+
+    if (body !== undefined && !resolvedHeaders['Content-Type']) {
+      resolvedHeaders['Content-Type'] = 'application/json';
+    }
+
     const response = await fetch(url, {
       method,
-      headers: {
-        'Content-Type': 'application/json',
-        ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        ...headers,
-      },
+      headers: resolvedHeaders,
       body: body !== undefined ? JSON.stringify(body) : undefined,
       signal: controller.signal,
     });
