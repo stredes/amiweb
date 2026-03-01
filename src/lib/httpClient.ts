@@ -121,6 +121,9 @@ export async function httpRequest<T>(
 ): Promise<T> {
   const startTime = performance.now();
   const url = buildUrl(endpoint);
+  if (!url) {
+    throw new Error('Backend no configurado. Define VITE_API_URL o VITE_API_BASE_URL.');
+  }
   const controller = new AbortController();
   const timeoutId = window.setTimeout(() => controller.abort(), API_TIMEOUT_MS);
   
@@ -186,7 +189,11 @@ export async function httpRequest<T>(
 
     return payload as T;
   } catch (error) {
-    const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+    const rawMessage = error instanceof Error ? error.message : 'Unknown error';
+    const errorMessage =
+      rawMessage.includes('Failed to fetch') || rawMessage.includes('NetworkError')
+        ? `No se pudo conectar con el backend (${API_BASE_URL}). Verifica conectividad, CORS y URL.`
+        : rawMessage;
     logger.error('HTTP request failed', {
       url,
       method,

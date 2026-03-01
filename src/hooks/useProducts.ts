@@ -10,6 +10,7 @@ function useProducts(selectedCategoryId?: string, termOverride?: string) {
   const [categories, setCategories] = useState<ProductCategory[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [reloadKey, setReloadKey] = useState(0);
 
   const searchTerm = termOverride ?? term;
 
@@ -19,8 +20,6 @@ function useProducts(selectedCategoryId?: string, termOverride?: string) {
       setError(null);
       
       try {
-        console.log('🔍 useProducts: Iniciando carga...', { searchTerm, selectedCategoryId });
-        
         // Construir filtros solo si tienen valores reales
         const filters: any = {};
         if (searchTerm && searchTerm.trim() !== '') {
@@ -30,32 +29,35 @@ function useProducts(selectedCategoryId?: string, termOverride?: string) {
           filters.categoryId = selectedCategoryId;
         }
         
-        console.log('📋 Filtros construidos:', filters);
-        
         const [catalog, availableCategories] = await Promise.all([
           getProducts(Object.keys(filters).length > 0 ? filters : undefined),
           getCategories()
         ]);
-        
-        console.log('📦 useProducts: Datos recibidos', {
-          productos: catalog.length,
-          categorias: availableCategories.length
-        });
-        
+
         setProducts(catalog);
         setCategories(availableCategories);
       } catch (err) {
         console.error('❌ useProducts: Error al cargar datos', err);
-        setError(err instanceof Error ? err.message : 'Error desconocido');
+        if (err instanceof Error && err.message.toLowerCase().includes('fetch')) {
+          setError('No se pudo conectar con el backend del catálogo.');
+        } else {
+          setError(err instanceof Error ? err.message : 'Error desconocido');
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [searchTerm, selectedCategoryId]);
+  }, [searchTerm, selectedCategoryId, reloadKey]);
 
-  return { products, categories, loading, error };
+  return {
+    products,
+    categories,
+    loading,
+    error,
+    refetch: () => setReloadKey((prev) => prev + 1),
+  };
 }
 
 export default useProducts;

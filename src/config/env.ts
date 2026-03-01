@@ -1,7 +1,19 @@
-export const API_BASE_URL =
-  (import.meta.env.VITE_API_URL as string | undefined) ??
-  (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
-  'http://localhost:3000';
+function normalizeBaseUrl(raw?: string): string {
+  if (!raw) return '';
+  const trimmed = raw.trim();
+  const unquoted =
+    (trimmed.startsWith('"') && trimmed.endsWith('"')) ||
+    (trimmed.startsWith("'") && trimmed.endsWith("'"))
+      ? trimmed.slice(1, -1)
+      : trimmed;
+  return unquoted.replace(/\/+$/, '');
+}
+
+export const API_BASE_URL = normalizeBaseUrl(
+  ((import.meta.env.VITE_API_URL as string | undefined) ??
+    (import.meta.env.VITE_API_BASE_URL as string | undefined) ??
+    'http://localhost:3000')
+);
 export const API_TIMEOUT_MS = 10000;
 
 export const ENABLE_LOGIN_MOCK =

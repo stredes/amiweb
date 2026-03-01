@@ -17,7 +17,7 @@ function ProductsPage() {
   const [maxPrice, setMaxPrice] = useState('');
   const [quotedProduct, setQuotedProduct] = useState<Product | null>(null);
   const [searchParams, setSearchParams] = useSearchParams();
-  const { products, categories, loading, error } = useProducts(
+  const { products, categories, loading, error, refetch } = useProducts(
     selectedCategory || undefined,
     searchTerm
   );
@@ -143,6 +143,13 @@ function ProductsPage() {
             <p style={{ marginTop: '1rem', fontSize: '0.9rem', color: 'var(--color-muted)' }}>
               Verifica la consola del navegador para más detalles.
             </p>
+            <button
+              className="btn btn-secondary"
+              style={{ marginTop: '1rem' }}
+              onClick={refetch}
+            >
+              Reintentar
+            </button>
           </div>
         </FadeIn>
       ) : (
