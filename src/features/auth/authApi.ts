@@ -65,6 +65,19 @@ type BackendQuote = {
   updatedAt?: unknown;
 };
 
+type UserListPayload = {
+  users?: Array<Omit<User, 'password'>>;
+  items?: Array<Omit<User, 'password'>>;
+};
+
+function extractUsers(payload: UserListPayload): Array<Omit<User, 'password'>> {
+  if (Array.isArray(payload.items)) {
+    return payload.items;
+  }
+
+  return payload.users || [];
+}
+
 function toIsoDate(input: unknown): string {
   if (!input) return new Date().toISOString();
   if (typeof input === 'string') return input;
@@ -338,16 +351,16 @@ export const authApi = {
   },
 
   async getAllUsers(): Promise<Array<Omit<User, 'password'>>> {
-    const response = await httpRequest<{ users: Array<Omit<User, 'password'>> }>('/api/users', { method: 'GET' });
-    return response.users;
+    const response = await httpRequest<UserListPayload>('/api/users', { method: 'GET' });
+    return extractUsers(response);
   },
 
   async getVendorClients(vendorId: string): Promise<Array<Omit<User, 'password'>>> {
-    const response = await httpRequest<{ users: Array<Omit<User, 'password'>> }>(
+    const response = await httpRequest<UserListPayload>(
       `/api/users/role/socio?vendorId=${encodeURIComponent(vendorId)}`,
       { method: 'GET' }
     );
-    return response.users;
+    return extractUsers(response);
   },
 
   async getVendorOrders(vendorId: string): Promise<Order[]> {
@@ -377,11 +390,11 @@ export const authApi = {
 
   async getSupportContacts(): Promise<SupportContact[]> {
     const [support, callcenter] = await Promise.all([
-      httpRequest<{ users: Array<Omit<User, 'password'>> }>('/api/users/role/soporte', { method: 'GET' }).catch(() => ({ users: [] })),
-      httpRequest<{ users: Array<Omit<User, 'password'>> }>('/api/users/role/callcenter', { method: 'GET' }).catch(() => ({ users: [] })),
+      httpRequest<UserListPayload>('/api/users/role/soporte', { method: 'GET' }).catch(() => ({ users: [] })),
+      httpRequest<UserListPayload>('/api/users/role/callcenter', { method: 'GET' }).catch(() => ({ users: [] })),
     ]);
 
-    return [...support.users, ...callcenter.users].map((user) => ({
+    return [...extractUsers(support), ...extractUsers(callcenter)].map((user) => ({
       id: user.id,
       name: user.name,
       department: user.department || (user.role === 'soporte' ? 'Soporte Técnico' : 'Call Center'),

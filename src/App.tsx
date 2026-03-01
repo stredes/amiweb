@@ -18,7 +18,7 @@ import { TourTrigger } from './components/tour/TourTrigger';
 import { OfflineIndicator } from './components/ui/OfflineIndicator';
 import { useEffect } from 'react';
 import { registerServiceWorker } from './lib/serviceWorker';
-import { checkBackendConnection } from './lib/httpClient';
+import { checkBackendConnection, logApiRuntimeDiagnostics } from './lib/httpClient';
 import { ErrorBoundary } from './components/debug/ErrorBoundary';
 import { usePageTracking } from './hooks/useLogger';
 import { logger } from './lib/logger';
@@ -29,6 +29,7 @@ function App() {
   
   useEffect(() => {
     logger.info('App initialized');
+    logApiRuntimeDiagnostics();
     registerServiceWorker();
     checkBackendConnection();
   }, []);

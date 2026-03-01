@@ -32,13 +32,26 @@ export interface UserAuditEntry {
   metadata?: Record<string, unknown>;
 }
 
+type UserListPayload = {
+  users?: Array<Omit<User, 'password'>>;
+  items?: Array<Omit<User, 'password'>>;
+};
+
+function extractUsers(payload: UserListPayload): Array<Omit<User, 'password'>> {
+  if (Array.isArray(payload.items)) {
+    return payload.items;
+  }
+
+  return payload.users || [];
+}
+
 export const userManagementApi = {
   /**
    * Obtener todos los usuarios (solo root)
    */
   async getAllUsers(): Promise<Array<Omit<User, 'password'>>> {
-    const response = await httpRequest<{ users: Array<Omit<User, 'password'>> }>('/api/users', { method: 'GET' });
-    return response.users;
+    const response = await httpRequest<UserListPayload>('/api/users', { method: 'GET' });
+    return extractUsers(response);
   },
 
   /**
@@ -85,10 +98,10 @@ export const userManagementApi = {
    * Obtener usuarios por rol
    */
   async getUsersByRole(role: User['role']): Promise<Array<Omit<User, 'password'>>> {
-    const response = await httpRequest<{ users: Array<Omit<User, 'password'>> }>(`/api/users/role/${role}`, { 
+    const response = await httpRequest<UserListPayload>(`/api/users/role/${role}`, {
       method: 'GET' 
     });
-    return response.users;
+    return extractUsers(response);
   },
 
   /**

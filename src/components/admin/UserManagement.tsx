@@ -265,9 +265,9 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
         )}
       </div>
 
-      <div className="admin-section" style={{ marginBottom: '1rem' }}>
-        <div style={{ display: 'grid', gap: '0.75rem', gridTemplateColumns: '2fr 1fr 1fr' }}>
-          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+      <div className="admin-section admin-section--compact">
+        <div className="user-filters">
+          <label className="user-filters__search">
             <FiSearch />
             <input
               type="text"

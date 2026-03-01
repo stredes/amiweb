@@ -1,6 +1,7 @@
-import { API_BASE_URL } from '../../config/env';
+import { API_BASE_URL, API_VERSION, ENABLE_API_DIAGNOSTICS } from '../../config/env';
 import { Order, OrderProduct, ShippingAddress } from '../auth/types';
 import { auth } from '../../lib/firebase';
+import { ApiRequestError, mapApiErrorMessage, resolveApiEndpoint } from '../../lib/apiContract';
 
 export interface CreateOrderRequest {
   customerName: string;
@@ -113,7 +114,8 @@ class BackendApiService {
     endpoint: string,
     options: RequestInit = {}
   ): Promise<T> {
-    const url = `${this.baseUrl}${endpoint}`;
+    const resolvedEndpoint = resolveApiEndpoint(endpoint, API_VERSION);
+    const url = `${this.baseUrl}${resolvedEndpoint}`;
     const token = auth.currentUser ? await auth.currentUser.getIdToken() : null;
 
     const config: RequestInit = {
@@ -126,11 +128,53 @@ class BackendApiService {
     };
 
     try {
+      if (ENABLE_API_DIAGNOSTICS) {
+        console.info('[BackendApi request]', {
+          endpoint,
+          resolvedEndpoint,
+          url,
+          method: config.method || 'GET',
+          origin: window.location.origin,
+        });
+      }
+
       const response = await fetch(url, config);
-      const data = await response.json();
+      const requestId = response.headers.get('x-request-id') || response.headers.get('x-vercel-id') || undefined;
+      const contentType = response.headers.get('content-type') || '';
+      const data = contentType.includes('application/json') ? await response.json() : await response.text();
+
+      if (ENABLE_API_DIAGNOSTICS) {
+        console.info('[BackendApi response]', {
+          endpoint,
+          resolvedEndpoint,
+          url,
+          status: response.status,
+          requestId,
+        });
+      }
 
       if (!response.ok) {
-        throw new Error(data.error || `Error ${response.status}: ${response.statusText}`);
+        const code =
+          data && typeof data === 'object' && 'code' in (data as Record<string, unknown>)
+            ? String((data as Record<string, unknown>).code || '')
+            : undefined;
+        const fallbackMessage =
+          data && typeof data === 'object' && 'error' in (data as Record<string, unknown>)
+            ? String((data as Record<string, unknown>).error || `Error ${response.status}: ${response.statusText}`)
+            : `Error ${response.status}: ${response.statusText}`;
+        const message = mapApiErrorMessage(code, fallbackMessage);
+        throw new ApiRequestError({
+          message: requestId ? `${message} (requestId: ${requestId})` : message,
+          endpoint,
+          url,
+          code,
+          status: response.status,
+          requestId,
+          details:
+            data && typeof data === 'object' && 'details' in (data as Record<string, unknown>)
+              ? ((data as Record<string, unknown>).details as Record<string, unknown>)
+              : undefined,
+        });
       }
 
       return data;

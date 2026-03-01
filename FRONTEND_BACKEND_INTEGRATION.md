@@ -267,3 +267,55 @@ Agregar UI para que admin/vendedor puedan convertir quote aprobada a orden:
 
 **Estado Actual**: ✅ Frontend listo para integrarse con backend de cotizaciones
 **Siguiente Paso**: Conectar componentes de aprobación con quoteService
+
+---
+
+## Front-Backend Sync Contract (Implementación Front 2026-03-01)
+
+### Implementado en frontend
+- Cliente HTTP estandarizado para contrato `{ success, data }` y errores `{ success:false, code, details }`.
+- Soporte de versionado por entorno:
+  - `VITE_API_VERSION=legacy` -> usa `/api/*`
+  - `VITE_API_VERSION=v1` -> reescribe `/api/*` a `/api/v1/*` automáticamente.
+- Errores enriquecidos con:
+  - `code`
+  - `status`
+  - `requestId` (`x-request-id` o `x-vercel-id`)
+  - `endpoint` y `url`
+- Mensajería de UI mapeada por `code` estable (`TOKEN_EXPIRED`, `FORBIDDEN`, `VALIDATION_ERROR`, etc.).
+- Modo diagnóstico opcional (`VITE_ENABLE_API_DIAGNOSTICS=true`):
+  - imprime `origin`, `API_BASE_URL`, versión API
+  - registra request/response final con status y requestId.
+- Normalización de listados de usuarios para aceptar tanto `items` como `users` durante migración.
+- Smoke test de integración API:
+  - `npm run smoke:api`
+  - verifica `health`, `products`, `auth/me` y muestra `x-request-id`.
+
+### Variables de entorno front
+- `VITE_API_URL` o `VITE_API_BASE_URL`
+- `VITE_API_VERSION` (`legacy` | `v1`)
+- `VITE_ENABLE_API_DIAGNOSTICS` (`true` | `false`)
+
+## Requerimientos obligatorios para backend
+
+1. Respuesta uniforme en todos los endpoints:
+   - éxito: `{ "success": true, "data": ... }`
+   - error: `{ "success": false, "error": "...", "code": "...", "details": { "requestId": "..." } }`
+2. Header de trazabilidad en todas las respuestas: `x-request-id`.
+3. Mantener CORS consistente para frontend de producción y previews (incluyendo preflight `OPTIONS -> 204`).
+4. Mantener semántica auth estricta:
+   - `401` para token faltante/inválido/expirado (`TOKEN_MISSING`, `TOKEN_INVALID`, `TOKEN_EXPIRED`)
+   - `403` para permisos insuficientes.
+5. Endpoints de usuarios con paginación estándar y payload estable:
+   - preferido: `data.items`
+   - transición: aceptar temporalmente `data.users`.
+6. Mantener paridad funcional en legacy y v1 durante migración para evitar breaking en front.
+7. Publicar changelog por release con endpoints afectados y fecha efectiva.
+8. En incidentes, permitir rastreo cruzado por `x-request-id` en logs backend.
+
+### Tabla rápida endpoint -> handler front
+- `GET /api/health` -> `checkBackendConnection` en `src/lib/httpClient.ts`
+- `GET /api/products` -> `catalogApi` (`src/features/catalog/catalogApi.ts`)
+- `GET /api/auth/me` -> `authApi.getCurrentUserFromApi` (`src/features/auth/authApi.ts`)
+- `GET/POST/PUT/PATCH/DELETE /api/users*` -> `userManagementApi` (`src/features/auth/userManagementApi.ts`)
+- `GET /api/users/role/:role` -> `authApi` y `userManagementApi` (ambos con normalización `items/users`)

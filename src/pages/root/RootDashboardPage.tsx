@@ -49,7 +49,7 @@ export function RootDashboardPage() {
   }
 
   return (
-    <div className="admin-dashboard">
+    <div className="admin-dashboard root-dashboard">
       <FadeIn direction="up">
         <div className="admin-header">
           <div className="admin-header__info">
@@ -134,7 +134,7 @@ export function RootDashboardPage() {
                 </div>
               )}
               {activeSection === 'users' && (
-                <div className="admin-section" style={{ marginBottom: '1rem' }}>
+                <div className="admin-section admin-section--compact">
                   <h2>Gestión de Usuarios (CRUD)</h2>
                   <p className="muted">
                     Crea, edita, activa/desactiva, resetea claves y audita usuarios desde esta sección.
