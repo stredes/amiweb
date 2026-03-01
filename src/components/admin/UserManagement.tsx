@@ -43,6 +43,7 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
     email: '',
     password: '',
     role: 'socio' as User['role'],
+    vendorId: '',
     company: '',
     phone: '',
     department: ''
@@ -73,6 +74,20 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
     });
   }, [users, search, roleFilter, statusFilter]);
 
+  const vendors = useMemo(
+    () => users.filter((user) => user.role === 'vendedor' && user.isActive !== false),
+    [users]
+  );
+
+  const vendorById = useMemo(
+    () =>
+      vendors.reduce<Record<string, Omit<User, 'password'>>>((acc, vendor) => {
+        acc[vendor.id] = vendor;
+        return acc;
+      }, {}),
+    [vendors]
+  );
+
   const handleCreateUser = () => {
     setEditingUser(null);
     setFormData({
@@ -80,6 +95,7 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
       email: '',
       password: '',
       role: 'socio',
+      vendorId: '',
       company: '',
       phone: '',
       department: ''
@@ -100,6 +116,7 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
       email: user.email,
       password: '',
       role: user.role,
+      vendorId: user.vendorId || '',
       company: user.company || '',
       phone: user.phone || '',
       department: user.department || ''
@@ -115,6 +132,11 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
       return;
     }
 
+    if (formData.role === 'socio' && !formData.vendorId) {
+      toast.error('Debes asignar un vendedor al cliente');
+      return;
+    }
+
     setIsSubmitting(true);
     try {
       if (editingUser) {
@@ -123,6 +145,7 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
           name: formData.name,
           email: formData.email,
           role: formData.role,
+          vendorId: formData.role === 'socio' ? formData.vendorId : undefined,
           company: formData.company || undefined,
           phone: formData.phone || undefined,
           department: formData.department || undefined
@@ -142,6 +165,7 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
           email: formData.email,
           password: formData.password,
           role: formData.role,
+          vendorId: formData.role === 'socio' ? formData.vendorId : undefined,
           company: formData.company || undefined,
           phone: formData.phone || undefined,
           department: formData.department || undefined
@@ -396,6 +420,13 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
                     <span>{user.company}</span>
                   </div>
                 )}
+
+                {user.role === 'socio' && (
+                  <div className="user-detail">
+                    <span className="user-detail__label">Vendedor:</span>
+                    <span>{user.vendorId && vendorById[user.vendorId] ? vendorById[user.vendorId].name : 'Sin asignar'}</span>
+                  </div>
+                )}
                 
                 {user.phone && (
                   <div className="user-detail">
@@ -472,7 +503,13 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
                 <select
                   id="role"
                   value={formData.role}
-                  onChange={(e) => setFormData({ ...formData, role: e.target.value as User['role'] })}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      role: e.target.value as User['role'],
+                      vendorId: e.target.value === 'socio' ? prev.vendorId : '',
+                    }))
+                  }
                   required
                 >
                   <option value="socio">{roleLabels.socio.icon} Socio/Cliente - Pueden crear pedidos y cotizaciones</option>
@@ -484,6 +521,25 @@ export function UserManagement({ users, currentUser, onUsersChange, createUserTr
                   {isRoot && <option value="root">{roleLabels.root.icon} Root - Control total del sistema</option>}
                 </select>
               </div>
+
+              {formData.role === 'socio' && (
+                <div className="form-group">
+                  <label htmlFor="vendorId">Vendedor Asignado *</label>
+                  <select
+                    id="vendorId"
+                    value={formData.vendorId}
+                    onChange={(e) => setFormData({ ...formData, vendorId: e.target.value })}
+                    required
+                  >
+                    <option value="">Seleccionar vendedor</option>
+                    {vendors.map((vendor) => (
+                      <option key={vendor.id} value={vendor.id}>
+                        {vendor.name} - {vendor.email}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+              )}
 
               <div className="form-group">
                 <label htmlFor="phone">Teléfono</label>

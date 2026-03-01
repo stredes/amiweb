@@ -6,6 +6,7 @@ export interface CreateUserRequest {
   email: string;
   password: string;
   role: User['role'];
+  vendorId?: string;
   company?: string;
   phone?: string;
   department?: string;
@@ -16,6 +17,7 @@ export interface UpdateUserRequest {
   email?: string;
   password?: string;
   role?: User['role'];
+  vendorId?: string;
   company?: string;
   phone?: string;
   department?: string;
