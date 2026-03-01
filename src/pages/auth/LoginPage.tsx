@@ -198,16 +198,24 @@ export function LoginPage() {
             <li>📈 Visualiza tu historial de compras</li>
           </ul>
           {ENABLE_LOGIN_MOCK && (
-            <>
-              <h3 style={{ marginTop: '1rem' }}>Credenciales Mock (desarrollo)</h3>
-              <ul>
+            <div
+              style={{
+                marginTop: '1rem',
+                padding: '0.9rem',
+                border: '1px solid #f0c36d',
+                background: '#fff8e6',
+                borderRadius: '0.75rem',
+              }}
+            >
+              <h3 style={{ margin: '0 0 0.6rem 0' }}>Credenciales Mock (desarrollo)</h3>
+              <ul style={{ margin: 0, paddingLeft: '1rem' }}>
                 {MOCK_USERS.map((mockUser) => (
-                  <li key={mockUser.id}>
+                  <li key={mockUser.id} style={{ marginBottom: '0.25rem' }}>
                     <strong>{mockUser.role}</strong>: {mockUser.email} / {mockUser.password}
                   </li>
                 ))}
               </ul>
-            </>
+            </div>
           )}
           </div>
         </FadeIn>
