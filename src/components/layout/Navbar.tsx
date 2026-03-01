@@ -49,9 +49,13 @@ function Navbar() {
         </NavLink>
         {isAuthenticated ? (
           <>
-            {(user?.role === 'admin' || user?.role === 'root') ? (
+            {user?.role === 'root' ? (
+              <NavLink to={ROUTES.rootDashboard} className={linkClassName}>
+                🔐 Root
+              </NavLink>
+            ) : user?.role === 'admin' ? (
               <NavLink to={ROUTES.adminDashboard} className={linkClassName}>
-                {user.role === 'root' ? '🔧' : '👑'} Admin
+                👑 Admin
               </NavLink>
             ) : user?.role === 'vendedor' ? (
               <NavLink to={ROUTES.vendorDashboard} className={linkClassName}>

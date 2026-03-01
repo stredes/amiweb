@@ -1,8 +1,13 @@
-import { useState } from 'react';
+import { useMemo, useState } from 'react';
 import { User } from '../../features/auth/types';
-import { FiPlus, FiEdit2, FiTrash2 } from 'react-icons/fi';
+import { FiPlus, FiEdit2, FiTrash2, FiKey, FiPower, FiSearch, FiClock } from 'react-icons/fi';
 import { toast } from '../ui/Toast';
-import { userManagementApi, CreateUserRequest, UpdateUserRequest } from '../../features/auth/userManagementApi';
+import {
+  userManagementApi,
+  CreateUserRequest,
+  UpdateUserRequest,
+  UserAuditEntry
+} from '../../features/auth/userManagementApi';
 
 interface UserManagementProps {
   users: Array<Omit<User, 'password'>>;
@@ -22,8 +27,16 @@ const roleLabels = {
 
 export function UserManagement({ users, currentUser, onUsersChange }: UserManagementProps) {
   const [showModal, setShowModal] = useState(false);
+  const [showAuditModal, setShowAuditModal] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [processingUserId, setProcessingUserId] = useState<string | null>(null);
+  const [auditLoading, setAuditLoading] = useState(false);
+  const [selectedAuditUser, setSelectedAuditUser] = useState<Omit<User, 'password'> | null>(null);
+  const [auditEntries, setAuditEntries] = useState<UserAuditEntry[]>([]);
+  const [search, setSearch] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'all' | User['role']>('all');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -35,6 +48,29 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
   });
 
   const isRoot = currentUser.role === 'root';
+  const filteredUsers = useMemo(() => {
+    const normalizedSearch = search.trim().toLowerCase();
+
+    return users.filter((user) => {
+      if (roleFilter !== 'all' && user.role !== roleFilter) {
+        return false;
+      }
+
+      if (statusFilter === 'active' && user.isActive === false) {
+        return false;
+      }
+
+      if (statusFilter === 'inactive' && user.isActive !== false) {
+        return false;
+      }
+
+      if (!normalizedSearch) {
+        return true;
+      }
+
+      return `${user.name} ${user.email}`.toLowerCase().includes(normalizedSearch);
+    });
+  }, [users, search, roleFilter, statusFilter]);
 
   const handleCreateUser = () => {
     setEditingUser(null);
@@ -136,6 +172,88 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
     }
   };
 
+  const handleToggleUserStatus = async (userToUpdate: Omit<User, 'password'>) => {
+    if (!isRoot) {
+      toast.error('Solo el usuario root puede cambiar estado de usuarios');
+      return;
+    }
+
+    if (!confirm(`¿Deseas ${userToUpdate.isActive === false ? 'activar' : 'desactivar'} a ${userToUpdate.name}?`)) {
+      return;
+    }
+
+    setProcessingUserId(userToUpdate.id);
+    try {
+      await userManagementApi.toggleUserStatus(userToUpdate.id, userToUpdate.isActive === false);
+      toast.success(`Usuario ${userToUpdate.isActive === false ? 'activado' : 'desactivado'} exitosamente`);
+      onUsersChange?.();
+    } catch (error: any) {
+      toast.error(error.message || 'Error al cambiar estado del usuario');
+    } finally {
+      setProcessingUserId(null);
+    }
+  };
+
+  const handleResetPassword = async (userToUpdate: Omit<User, 'password'>) => {
+    if (!isRoot) {
+      toast.error('Solo el usuario root puede resetear contraseñas');
+      return;
+    }
+
+    const newPassword = prompt(`Ingresa nueva contraseña temporal para ${userToUpdate.name} (mínimo 8 caracteres):`);
+    if (!newPassword) return;
+
+    if (newPassword.length < 8) {
+      toast.error('La contraseña temporal debe tener al menos 8 caracteres');
+      return;
+    }
+
+    if (!confirm('¿Confirmas resetear la contraseña de este usuario?')) {
+      return;
+    }
+
+    setProcessingUserId(userToUpdate.id);
+    try {
+      await userManagementApi.resetPassword(userToUpdate.id, newPassword);
+      toast.success('Contraseña reseteada exitosamente');
+    } catch (error: any) {
+      toast.error(error.message || 'Error al resetear contraseña');
+    } finally {
+      setProcessingUserId(null);
+    }
+  };
+
+  const handleShowAudit = async (userToInspect: Omit<User, 'password'>) => {
+    setSelectedAuditUser(userToInspect);
+    setShowAuditModal(true);
+    setAuditLoading(true);
+    try {
+      const items = await userManagementApi.getUserAudit(userToInspect.id);
+      setAuditEntries(items);
+    } catch (error: any) {
+      toast.error(error.message || 'No se pudo cargar la auditoría del usuario');
+      setAuditEntries([]);
+    } finally {
+      setAuditLoading(false);
+    }
+  };
+
+  const formatAuditDate = (value: unknown): string => {
+    if (!value) return 'Sin fecha';
+    if (typeof value === 'string') return new Date(value).toLocaleString('es-CL');
+    if (typeof value === 'number') return new Date(value).toLocaleString('es-CL');
+    if (typeof value === 'object' && value !== null) {
+      const raw = value as Record<string, unknown>;
+      if (typeof raw.seconds === 'number') {
+        return new Date(raw.seconds * 1000).toLocaleString('es-CL');
+      }
+      if (typeof raw._seconds === 'number') {
+        return new Date(raw._seconds * 1000).toLocaleString('es-CL');
+      }
+    }
+    return 'Fecha no disponible';
+  };
+
   return (
     <div className="user-management">
       <div className="user-management__header">
@@ -145,6 +263,33 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
             <FiPlus /> Crear Usuario
           </button>
         )}
+      </div>
+
+      <div className="admin-section" style={{ marginBottom: '1rem' }}>
+        <div style={{ display: 'grid', gap: '0.75rem', gridTemplateColumns: '2fr 1fr 1fr' }}>
+          <label style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+            <FiSearch />
+            <input
+              type="text"
+              placeholder="Buscar por nombre o email"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+            />
+          </label>
+          <select value={roleFilter} onChange={(event) => setRoleFilter(event.target.value as 'all' | User['role'])}>
+            <option value="all">Todos los roles</option>
+            {Object.entries(roleLabels).map(([role, info]) => (
+              <option key={role} value={role}>
+                {info.label}
+              </option>
+            ))}
+          </select>
+          <select value={statusFilter} onChange={(event) => setStatusFilter(event.target.value as 'all' | 'active' | 'inactive')}>
+            <option value="all">Todos los estados</option>
+            <option value="active">Activos</option>
+            <option value="inactive">Inactivos</option>
+          </select>
+        </div>
       </div>
 
       <div className="user-management__stats">
@@ -160,9 +305,10 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
       </div>
 
       <div className="user-grid">
-        {users.map(user => {
+        {filteredUsers.map(user => {
           const roleInfo = roleLabels[user.role] || { label: user.role, color: '#757575', icon: '👤' };
           const canManage = isRoot && user.id !== currentUser.id;
+          const isProcessing = processingUserId === user.id;
           
           return (
             <div key={user.id} className="user-card-admin">
@@ -183,10 +329,35 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                     >
                       <FiEdit2 />
                     </button>
+                    <button
+                      className="btn-icon"
+                      onClick={() => handleShowAudit(user)}
+                      title="Ver historial de auditoría"
+                      disabled={isProcessing}
+                    >
+                      <FiClock />
+                    </button>
+                    <button
+                      className="btn-icon"
+                      onClick={() => handleToggleUserStatus(user)}
+                      title={user.isActive === false ? 'Activar usuario' : 'Desactivar usuario'}
+                      disabled={isProcessing}
+                    >
+                      <FiPower />
+                    </button>
+                    <button
+                      className="btn-icon"
+                      onClick={() => handleResetPassword(user)}
+                      title="Resetear contraseña"
+                      disabled={isProcessing}
+                    >
+                      <FiKey />
+                    </button>
                     <button 
                       className="btn-icon btn-icon--danger" 
                       onClick={() => handleDeleteUser(user.id, user.name)}
                       title="Eliminar usuario"
+                      disabled={isProcessing}
                     >
                       <FiTrash2 />
                     </button>
@@ -202,6 +373,13 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                     style={{ backgroundColor: roleInfo.color }}
                   >
                     {roleInfo.icon} {roleInfo.label}
+                  </span>
+                </div>
+
+                <div className="user-detail">
+                  <span className="user-detail__label">Estado:</span>
+                  <span className={`badge ${user.isActive === false ? '' : 'badge--success'}`}>
+                    {user.isActive === false ? 'Inactivo' : 'Activo'}
                   </span>
                 </div>
                 
@@ -230,6 +408,12 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
           );
         })}
       </div>
+
+      {filteredUsers.length === 0 && (
+        <div className="admin-section">
+          <p className="muted">No se encontraron usuarios con los filtros aplicados.</p>
+        </div>
+      )}
 
       {showModal && (
         <div className="modal-overlay" onClick={() => setShowModal(false)}>
@@ -272,7 +456,7 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                   value={formData.password}
                   onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                   required={!editingUser}
-                  minLength={6}
+                  minLength={8}
                 />
               </div>
 
@@ -344,6 +528,43 @@ export function UserManagement({ users, currentUser, onUsersChange }: UserManage
                 </button>
               </div>
             </form>
+          </div>
+        </div>
+      )}
+
+      {showAuditModal && selectedAuditUser && (
+        <div className="modal-overlay" onClick={() => setShowAuditModal(false)}>
+          <div className="modal" onClick={(e) => e.stopPropagation()}>
+            <div className="modal__header">
+              <h3>Auditoría de {selectedAuditUser.name}</h3>
+              <button className="btn-close" onClick={() => setShowAuditModal(false)}>×</button>
+            </div>
+            <div className="modal__body">
+              {auditLoading ? (
+                <p className="muted">Cargando historial...</p>
+              ) : auditEntries.length === 0 ? (
+                <p className="muted">No hay eventos de auditoría para este usuario.</p>
+              ) : (
+                <div className="activity-list">
+                  {auditEntries.map((entry) => (
+                    <div key={entry.id} className="activity-item">
+                      <div className="activity-item__icon">🧾</div>
+                      <div className="activity-item__content">
+                        <strong>{entry.action}</strong>
+                        <span className="muted">
+                          {entry.actorEmail || 'Sistema'} · {formatAuditDate(entry.createdAt)}
+                        </span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+            <div className="modal__footer">
+              <button type="button" className="btn btn--secondary" onClick={() => setShowAuditModal(false)}>
+                Cerrar
+              </button>
+            </div>
           </div>
         </div>
       )}

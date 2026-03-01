@@ -22,6 +22,16 @@ export interface UpdateUserRequest {
   isActive?: boolean;
 }
 
+export interface UserAuditEntry {
+  id: string;
+  action: string;
+  actorId?: string;
+  actorEmail?: string;
+  actorRole?: string;
+  createdAt?: unknown;
+  metadata?: Record<string, unknown>;
+}
+
 export const userManagementApi = {
   /**
    * Obtener todos los usuarios (solo root)
@@ -89,5 +99,15 @@ export const userManagementApi = {
       method: 'POST', 
       body: { password: newPassword } 
     });
+  },
+
+  /**
+   * Historial de auditoría por usuario
+   */
+  async getUserAudit(userId: string): Promise<UserAuditEntry[]> {
+    const response = await httpRequest<{ items: UserAuditEntry[] }>(`/api/users/${userId}/audit`, {
+      method: 'GET',
+    });
+    return response.items || [];
   }
 };

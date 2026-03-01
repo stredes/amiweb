@@ -9,6 +9,7 @@ export const ROUTES = {
   login: '/login',
   partnerPortal: '/portal-socios',
   adminDashboard: '/admin',
+  rootDashboard: '/root',
   vendorDashboard: '/vendedor',
   warehouseDashboard: '/bodega',
   notFound: '*'

@@ -7,6 +7,72 @@ import { FadeIn } from '../../components/ui/FadeIn';
 import TextInput from '../../components/ui/TextInput';
 import { signInWithEmailAndPassword } from 'firebase/auth';
 import { auth } from '../../lib/firebase';
+import { ENABLE_LOGIN_MOCK } from '../../config/env';
+import type { User } from '../../features/auth/types';
+
+type MockUser = User & { password: string };
+
+const MOCK_USERS: MockUser[] = [
+  {
+    id: 'mock-root',
+    email: 'root@amilab.com',
+    password: 'Root1234!',
+    name: 'Usuario Root',
+    role: 'root',
+    company: 'AMILAB',
+    isActive: true,
+  },
+  {
+    id: 'mock-admin',
+    email: 'admin@amilab.com',
+    password: 'Admin1234!',
+    name: 'Usuario Admin',
+    role: 'admin',
+    company: 'AMILAB',
+    isActive: true,
+  },
+  {
+    id: 'mock-vendedor',
+    email: 'vendedor@amilab.com',
+    password: 'Vendedor1234!',
+    name: 'Usuario Vendedor',
+    role: 'vendedor',
+    company: 'AMILAB',
+    isActive: true,
+  },
+  {
+    id: 'mock-bodega',
+    email: 'bodega@amilab.com',
+    password: 'Bodega1234!',
+    name: 'Usuario Bodega',
+    role: 'bodega',
+    company: 'AMILAB',
+    isActive: true,
+  },
+  {
+    id: 'mock-socio',
+    email: 'socio@amilab.com',
+    password: 'Socio1234!',
+    name: 'Usuario Socio',
+    role: 'socio',
+    company: 'Cliente Demo',
+    isActive: true,
+  },
+];
+
+function navigateByRole(role: User['role'], navigate: ReturnType<typeof useNavigate>) {
+  if (role === 'root') {
+    navigate('/root');
+  } else if (role === 'admin') {
+    navigate('/admin');
+  } else if (role === 'vendedor') {
+    navigate('/vendedor');
+  } else if (role === 'bodega') {
+    navigate('/bodega');
+  } else {
+    navigate('/portal-socios');
+  }
+}
 
 export function LoginPage() {
   const navigate = useNavigate();
@@ -23,6 +89,21 @@ export function LoginPage() {
     setIsLoading(true);
 
     try {
+      if (ENABLE_LOGIN_MOCK) {
+        const foundMock = MOCK_USERS.find(
+          (mockUser) =>
+            mockUser.email.toLowerCase() === email.trim().toLowerCase() &&
+            mockUser.password === password
+        );
+
+        if (foundMock) {
+          const { password: _password, ...user } = foundMock;
+          login(user, 'mock-token-dev');
+          navigateByRole(user.role, navigate);
+          return;
+        }
+      }
+
       // 1. Autenticar con Firebase Auth
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const firebaseToken = await userCredential.user.getIdToken();
@@ -32,17 +113,9 @@ export function LoginPage() {
       
       // 3. Guardar en el contexto (con token de Firebase)
       login(response.user, firebaseToken);
-      
+
       // 4. Redirigir según el rol
-      if (response.user.role === 'admin' || response.user.role === 'root') {
-        navigate('/admin');
-      } else if (response.user.role === 'vendedor') {
-        navigate('/vendedor');
-      } else if (response.user.role === 'bodega') {
-        navigate('/bodega');
-      } else {
-        navigate('/portal-socios');
-      }
+      navigateByRole(response.user.role, navigate);
     } catch (err: any) {
       // Manejar errores de Firebase Auth
       if (err.code === 'auth/user-not-found' || err.code === 'auth/wrong-password') {
@@ -124,6 +197,18 @@ export function LoginPage() {
             <li>💬 Accede a soporte técnico</li>
             <li>📈 Visualiza tu historial de compras</li>
           </ul>
+          {ENABLE_LOGIN_MOCK && (
+            <>
+              <h3 style={{ marginTop: '1rem' }}>Credenciales Mock (desarrollo)</h3>
+              <ul>
+                {MOCK_USERS.map((mockUser) => (
+                  <li key={mockUser.id}>
+                    <strong>{mockUser.role}</strong>: {mockUser.email} / {mockUser.password}
+                  </li>
+                ))}
+              </ul>
+            </>
+          )}
           </div>
         </FadeIn>
       </div>

@@ -9,6 +9,7 @@ import { QuotationApproval } from '../../components/vendor/QuotationApproval';
 import Loader from '../../components/ui/Loader';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { Navigate } from 'react-router-dom';
+import { ROUTES } from '../../config/routes';
 import './VendorDashboard.css';
 
 export function VendorDashboardPage() {
@@ -46,10 +47,13 @@ export function VendorDashboardPage() {
 
   if (!user) return null;
   if (user.role !== 'vendedor') {
-    if (user.role === 'admin' || user.role === 'root') {
-      return <Navigate to="/admin" replace />;
+    if (user.role === 'root') {
+      return <Navigate to={ROUTES.rootDashboard} replace />;
     }
-    return <Navigate to="/portal-socios" replace />;
+    if (user.role === 'admin') {
+      return <Navigate to={ROUTES.adminDashboard} replace />;
+    }
+    return <Navigate to={ROUTES.partnerPortal} replace />;
   }
 
   // Calcular métricas

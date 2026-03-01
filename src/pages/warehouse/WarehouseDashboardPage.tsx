@@ -5,6 +5,7 @@ import { authApi } from '../../features/auth/authApi';
 import Loader from '../../components/ui/Loader';
 import { OrderPreparation, ShippingManagement, WarehouseStock } from '../../components/warehouse';
 import { Navigate } from 'react-router-dom';
+import { ROUTES } from '../../config/routes';
 import './WarehouseDashboardPage.css';
 
 export function WarehouseDashboardPage() {
@@ -61,13 +62,16 @@ export function WarehouseDashboardPage() {
   }
   if (!user) return null;
   if (user.role !== 'bodega') {
-    if (user.role === 'admin' || user.role === 'root') {
-      return <Navigate to="/admin" replace />;
+    if (user.role === 'root') {
+      return <Navigate to={ROUTES.rootDashboard} replace />;
+    }
+    if (user.role === 'admin') {
+      return <Navigate to={ROUTES.adminDashboard} replace />;
     }
     if (user.role === 'vendedor') {
-      return <Navigate to="/vendedor" replace />;
+      return <Navigate to={ROUTES.vendorDashboard} replace />;
     }
-    return <Navigate to="/portal-socios" replace />;
+    return <Navigate to={ROUTES.partnerPortal} replace />;
   }
 
   // Filtrar pedidos según la pestaña activa
