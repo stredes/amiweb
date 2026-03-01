@@ -17,7 +17,7 @@ type ProductCardProps = {
 const fallbackImage =
   'data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="640" height="420" viewBox="0 0 640 420"><rect width="640" height="420" fill="%23f8f9fa"/><rect x="40" y="40" width="560" height="340" rx="24" fill="%23ffffff" stroke="%23dee2e6" stroke-width="2"/><text x="50%25" y="50%25" dominant-baseline="middle" text-anchor="middle" font-family="Arial" font-size="28" fill="%238b1538">AMILAB</text></svg>';
 
-const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }: ProductCardProps) {
+const ProductCard = memo(function ProductCard({ product, categoryName: _categoryName, onQuote }: ProductCardProps) {
   const { addItem } = useCart();
   
   const detailPath = useMemo(
@@ -29,6 +29,14 @@ const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }
     const candidate = product.imageUrl?.trim();
     return candidate ? candidate : fallbackImage;
   }, [product.imageUrl]);
+
+  const productCode = useMemo(() => product.code?.trim() || 'Sin código', [product.code]);
+  const stockLabel = useMemo(() => {
+    if (typeof product.stock !== 'number') {
+      return 'Stock no informado';
+    }
+    return `${product.stock} en stock`;
+  }, [product.stock]);
 
   const handleAddToCart = useCallback(() => {
     addItem(product);
@@ -68,43 +76,15 @@ const ProductCard = memo(function ProductCard({ product, categoryName, onQuote }
             }}
           />
           <div className="product-card__badge">{product.brand || 'AMILAB'}</div>
-        </div>
-
-        {/* Contenido del producto */}
-        <div className="product-card__content">
-          <h3 className="product-card__title" title={product.name}>
-            {product.name}
-          </h3>
-          
-          <div className="product-card__meta">
-            {categoryName && (
-              <span className="product-card__category">
-                📦 {categoryName}
-              </span>
-            )}
+          <div className="product-card__summary">
+            <h3 className="product-card__title" title={product.name}>
+              {product.name}
+            </h3>
+            <p className="product-card__code" title={productCode}>
+              Código: {productCode}
+            </p>
+            <p className="product-card__stock">{stockLabel}</p>
           </div>
-
-          {useMemo(() => {
-            if (!product.shortDescription) return null;
-            const desc = product.shortDescription.length > 100
-              ? `${product.shortDescription.substring(0, 100)}...`
-              : product.shortDescription;
-            return <p className="product-card__description">{desc}</p>;
-          }, [product.shortDescription])}
-
-          {/* Información adicional si existe */}
-          {(product.familia || product.subfamilia) && (
-            <div className="product-card__tags">
-              {product.familia && (
-                <span className="product-card__tag">{product.familia}</span>
-              )}
-              {product.subfamilia && (
-                <span className="product-card__tag product-card__tag--secondary">
-                  {product.subfamilia}
-                </span>
-              )}
-            </div>
-          )}
         </div>
 
         {/* Acciones */}
