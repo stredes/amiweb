@@ -8,6 +8,7 @@ import { VendorOrderList } from '../../components/vendor/VendorOrderList';
 import { QuotationApproval } from '../../components/vendor/QuotationApproval';
 import Loader from '../../components/ui/Loader';
 import { FadeIn } from '../../components/ui/FadeIn';
+import { toast } from '../../components/ui/Toast';
 import { Navigate } from 'react-router-dom';
 import { ROUTES } from '../../config/routes';
 import './VendorDashboard.css';
@@ -17,7 +18,7 @@ export function VendorDashboardPage() {
   const [clients, setClients] = useState<Array<Omit<User, 'password'>>>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'quotations' | 'clients' | 'orders'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'quotations' | 'clients' | 'orders' | 'pipeline' | 'agenda'>('overview');
 
   const loadData = useCallback(async () => {
     if (!user) return;
@@ -84,6 +85,87 @@ export function VendorDashboardPage() {
     }).format(amount);
   };
 
+  const quotationReview = orders.filter((order) => order.status === 'aprobado_vendedor').length;
+  const quotedOrders = orders.filter((order) => order.status === 'cotizacion' || order.status === 'pendiente_vendedor').length;
+  const inNegotiation = orders.filter((order) => order.status === 'pendiente_admin' || order.status === 'aprobado_vendedor').length;
+  const shippingOrders = orders.filter((order) => order.status === 'enviado').length;
+  const atRiskOrders = orders.filter((order) => order.status === 'cancelado').length;
+  const bestClient = clients[0];
+
+  const handleRefreshDashboard = async () => {
+    await loadData();
+    toast.success('Panel de vendedor actualizado');
+  };
+
+  const exportRowsToCsv = (rows: Array<Array<string | number>>, fileName: string) => {
+    const csvContent = rows
+      .map((row) => row.map((value) => `"${String(value).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+
+    const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+    const downloadUrl = URL.createObjectURL(blob);
+    const anchor = document.createElement('a');
+    anchor.href = downloadUrl;
+    anchor.download = fileName;
+    document.body.appendChild(anchor);
+    anchor.click();
+    document.body.removeChild(anchor);
+    URL.revokeObjectURL(downloadUrl);
+  };
+
+  const handleExportOrders = () => {
+    if (!orders.length) {
+      toast.error('No hay pedidos para exportar');
+      return;
+    }
+
+    exportRowsToCsv(
+      [
+        ['orderNumber', 'customer', 'email', 'status', 'total', 'date'],
+        ...orders.map((order) => [
+          order.orderNumber,
+          order.customerName,
+          order.customerEmail,
+          order.status,
+          order.total,
+          order.date,
+        ]),
+      ],
+      `pedidos-vendedor-${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    toast.success('Pedidos exportados');
+  };
+
+  const handleExportClients = () => {
+    if (!clients.length) {
+      toast.error('No hay clientes para exportar');
+      return;
+    }
+
+    exportRowsToCsv(
+      [
+        ['name', 'email', 'company', 'phone', 'isActive'],
+        ...clients.map((client) => [
+          client.name,
+          client.email,
+          client.company || '',
+          client.phone || '',
+          client.isActive === false ? 'false' : 'true',
+        ]),
+      ],
+      `clientes-vendedor-${new Date().toISOString().slice(0, 10)}.csv`
+    );
+    toast.success('Clientes exportados');
+  };
+
+  const handleNextAction = () => {
+    if (!bestClient) {
+      toast.error('No tienes clientes asignados');
+      return;
+    }
+    toast.info(`Siguiente acción sugerida: contactar a ${bestClient.name}`);
+  };
+
   return (
     <div className="vendor-dashboard">
       <FadeIn direction="up">
@@ -101,39 +183,43 @@ export function VendorDashboardPage() {
         </div>
       </FadeIn>
 
-      <FadeIn direction="up" delay={0.1}>
-        <div className="vendor-tabs">
-        <button
-          className={`vendor-tab ${activeTab === 'overview' ? 'active' : ''}`}
-          onClick={() => setActiveTab('overview')}
-        >
-          📊 Resumen
-        </button>
-        <button
-          className={`vendor-tab ${activeTab === 'quotations' ? 'active' : ''}`}
-          onClick={() => setActiveTab('quotations')}
-        >
-          📋 Cotizaciones {pendingQuotations > 0 && <span className="badge">{pendingQuotations}</span>}
-        </button>
-        <button
-          className={`vendor-tab ${activeTab === 'clients' ? 'active' : ''}`}
-          onClick={() => setActiveTab('clients')}
-        >
-          👥 Mis Clientes ({clients.length})
-        </button>
-        <button
-          className={`vendor-tab ${activeTab === 'orders' ? 'active' : ''}`}
-          onClick={() => setActiveTab('orders')}
-        >
-          📦 Pedidos ({orders.length})
-        </button>
-        </div>
-      </FadeIn>
-
       {isLoading ? (
         <Loader />
       ) : (
-        <div className="vendor-content">
+        <div className="vendor-shell">
+          <aside className="vendor-sidebar">
+            <h3 className="vendor-sidebar__title">Herramientas Vendedor</h3>
+            <button className={`vendor-sidebar__item ${activeTab === 'overview' ? 'active' : ''}`} onClick={() => setActiveTab('overview')}>
+              📊 Resumen
+            </button>
+            <button className={`vendor-sidebar__item ${activeTab === 'quotations' ? 'active' : ''}`} onClick={() => setActiveTab('quotations')}>
+              <span>📋 Cotizaciones</span>
+              {pendingQuotations > 0 && <span className="vendor-sidebar__counter">{pendingQuotations}</span>}
+            </button>
+            <button className={`vendor-sidebar__item ${activeTab === 'clients' ? 'active' : ''}`} onClick={() => setActiveTab('clients')}>
+              <span>👥 Mis Clientes</span>
+              <span className="vendor-sidebar__counter">{clients.length}</span>
+            </button>
+            <button className={`vendor-sidebar__item ${activeTab === 'orders' ? 'active' : ''}`} onClick={() => setActiveTab('orders')}>
+              <span>📦 Pedidos</span>
+              <span className="vendor-sidebar__counter">{orders.length}</span>
+            </button>
+            <button className={`vendor-sidebar__item ${activeTab === 'pipeline' ? 'active' : ''}`} onClick={() => setActiveTab('pipeline')}>
+              💼 Pipeline
+            </button>
+            <button className={`vendor-sidebar__item ${activeTab === 'agenda' ? 'active' : ''}`} onClick={() => setActiveTab('agenda')}>
+              🗓️ Agenda
+            </button>
+
+            <div className="vendor-sidebar__group-title">Acciones rápidas</div>
+            <button className="vendor-sidebar__action" onClick={handleRefreshDashboard}>🔄 Refrescar panel</button>
+            <button className="vendor-sidebar__action" onClick={handleExportOrders}>📥 Exportar pedidos</button>
+            <button className="vendor-sidebar__action" onClick={handleExportClients}>📥 Exportar clientes</button>
+            <button className="vendor-sidebar__action" onClick={() => setActiveTab('quotations')}>✅ Revisar cotizaciones</button>
+            <button className="vendor-sidebar__action" onClick={handleNextAction}>📞 Siguiente acción</button>
+          </aside>
+
+          <div className="vendor-main vendor-content">
           {activeTab === 'overview' && (
             <div className="vendor-overview">
               <div className="sales-metrics-grid">
@@ -180,7 +266,6 @@ export function VendorDashboardPage() {
                     <button 
                       className="btn btn-secondary"
                       onClick={() => setActiveTab('clients')}
-                      style={{ marginTop: 'var(--spacing-lg)' }}
                     >
                       Ver Todos los Clientes
                     </button>
@@ -246,8 +331,8 @@ export function VendorDashboardPage() {
               <div className="vendor-section">
                 <div className="section-header">
                   <h2>Mi Cartera de Clientes</h2>
-                  <button className="btn btn-primary">
-                    + Solicitar Nuevo Cliente
+                  <button className="btn btn-primary" onClick={handleNextAction}>
+                    + Acción Comercial
                   </button>
                 </div>
                 <div className="clients-grid">
@@ -271,6 +356,75 @@ export function VendorDashboardPage() {
               </div>
             </div>
           )}
+
+          {activeTab === 'pipeline' && (
+            <div className="vendor-pipeline">
+              <section className="vendor-section">
+                <h2>Pipeline Comercial</h2>
+                <div className="vendor-tools-grid">
+                  <article className="vendor-tool-card">
+                    <h3>Nuevas cotizaciones</h3>
+                    <p>{quotedOrders}</p>
+                  </article>
+                  <article className="vendor-tool-card">
+                    <h3>En negociación</h3>
+                    <p>{inNegotiation}</p>
+                  </article>
+                  <article className="vendor-tool-card">
+                    <h3>En aprobación interna</h3>
+                    <p>{quotationReview}</p>
+                  </article>
+                  <article className="vendor-tool-card">
+                    <h3>Riesgo de pérdida</h3>
+                    <p>{atRiskOrders}</p>
+                  </article>
+                </div>
+                <div className="vendor-tools-actions">
+                  <button className="btn btn-secondary" onClick={() => setActiveTab('quotations')}>
+                    Gestionar cotizaciones
+                  </button>
+                  <button className="btn btn-primary" onClick={handleExportOrders}>
+                    Exportar pipeline
+                  </button>
+                </div>
+              </section>
+            </div>
+          )}
+
+          {activeTab === 'agenda' && (
+            <div className="vendor-agenda">
+              <section className="vendor-section">
+                <h2>Agenda Comercial</h2>
+                <div className="vendor-tools-grid">
+                  <article className="vendor-tool-card">
+                    <h3>Seguimientos hoy</h3>
+                    <p>{Math.max(1, Math.min(5, pendingQuotations))}</p>
+                  </article>
+                  <article className="vendor-tool-card">
+                    <h3>Pedidos en tránsito</h3>
+                    <p>{shippingOrders}</p>
+                  </article>
+                  <article className="vendor-tool-card">
+                    <h3>Clientes activos</h3>
+                    <p>{clients.filter((client) => client.isActive !== false).length}</p>
+                  </article>
+                  <article className="vendor-tool-card">
+                    <h3>Meta mensual</h3>
+                    <p>{totalSales > 0 ? 'En progreso' : 'Sin iniciar'}</p>
+                  </article>
+                </div>
+                <div className="vendor-tools-actions">
+                  <button className="btn btn-secondary" onClick={handleNextAction}>
+                    Marcar próximo contacto
+                  </button>
+                  <button className="btn btn-primary" onClick={() => setActiveTab('clients')}>
+                    Ir a clientes
+                  </button>
+                </div>
+              </section>
+            </div>
+          )}
+          </div>
         </div>
       )}
     </div>

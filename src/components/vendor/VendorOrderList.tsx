@@ -5,6 +5,12 @@ interface VendorOrderListProps {
 }
 
 const statusConfig = {
+  'cotizacion': { label: 'Cotización', color: '#8B5CF6', icon: '📋' },
+  'pendiente_vendedor': { label: 'Pendiente Vendedor', color: '#F59E0B', icon: '⏳' },
+  'aprobado_vendedor': { label: 'Aprobado Vendedor', color: '#3B82F6', icon: '✅' },
+  'pendiente_admin': { label: 'Pendiente Admin', color: '#F97316', icon: '🧾' },
+  'aprobado_admin': { label: 'Aprobado Admin', color: '#0EA5E9', icon: '✔️' },
+  'rechazado': { label: 'Rechazado', color: '#EF4444', icon: '❌' },
   'pendiente': { label: 'Pendiente', color: '#FFA500', icon: '⏳' },
   'confirmado': { label: 'Confirmado', color: '#00BCD4', icon: '✓' },
   'procesando': { label: 'Procesando', color: '#2196F3', icon: '📦' },
@@ -39,7 +45,7 @@ export function VendorOrderList({ orders }: VendorOrderListProps) {
           </thead>
           <tbody>
             {orders.map(order => {
-              const status = statusConfig[order.status];
+              const status = statusConfig[order.status] || { label: order.status, color: '#6B7280', icon: 'ℹ️' };
               return (
                 <tr key={order.id}>
                   <td>
