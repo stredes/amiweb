@@ -10,6 +10,7 @@ import { OrderApproval } from '../../components/admin/OrderApproval';
 import { UserManagement } from '../../components/admin/UserManagement';
 import { StockUploader } from '../../components/admin/StockUploader';
 import { InventoryManagement } from '../../components/admin/InventoryManagement';
+import { AdminAssistantPanel } from '../../components/admin/AdminAssistantPanel';
 import { SalesChart } from '../../components/analytics/SalesChart';
 import { PieChart } from '../../components/analytics/PieChart';
 import Loader from '../../components/ui/Loader';
@@ -25,7 +26,7 @@ export function AdminDashboardPage() {
   const [users, setUsers] = useState<Array<Omit<User, 'password'>>>([]);
   const [stockItems, setStockItems] = useState<StockItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'orders' | 'users' | 'inventory' | 'executive' | 'clients' | 'operations' | 'portfolio'>('overview');
+  const [activeTab, setActiveTab] = useState<'overview' | 'approvals' | 'orders' | 'users' | 'inventory' | 'executive' | 'clients' | 'operations' | 'portfolio' | 'assistant'>('overview');
   const [createUserTrigger, setCreateUserTrigger] = useState(0);
   const [selectedVendorId, setSelectedVendorId] = useState('');
   const [selectedClientId, setSelectedClientId] = useState('');
@@ -365,6 +366,12 @@ export function AdminDashboardPage() {
               🏢 Operaciones
             </button>
             <button
+              className={`dashboard-sidebar__item ${activeTab === 'assistant' ? 'active' : ''}`}
+              onClick={() => setActiveTab('assistant')}
+            >
+              🤖 IA Admin
+            </button>
+            <button
               className={`dashboard-sidebar__item ${activeTab === 'portfolio' ? 'active' : ''}`}
               onClick={() => setActiveTab('portfolio')}
             >
@@ -394,6 +401,9 @@ export function AdminDashboardPage() {
             </button>
             <button className="dashboard-sidebar__action" onClick={handleExportClientPortfolio}>
               🤝 Exportar cartera clientes
+            </button>
+            <button className="dashboard-sidebar__action" onClick={() => setActiveTab('assistant')}>
+              🤖 Abrir asistente IA
             </button>
             <button className="dashboard-sidebar__action" onClick={handleOpenCreateUser}>
               ➕ Crear usuario
@@ -721,6 +731,13 @@ export function AdminDashboardPage() {
                 </button>
               </div>
             </section>
+          )}
+
+          {activeTab === 'assistant' && (
+            <AdminAssistantPanel
+              userName={user.name}
+              userRole={user.role === 'root' ? 'root' : 'admin'}
+            />
           )}
           </div>
         </div>
