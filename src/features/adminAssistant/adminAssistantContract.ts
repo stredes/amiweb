@@ -1,7 +1,5 @@
 export type AdminAssistantUserRole = 'admin' | 'root';
 
-export type AdminAssistantVisualization = 'text' | 'table' | 'kpi' | 'chart';
-
 export interface AdminAssistantSuggestion {
   id: string;
   label: string;
@@ -10,26 +8,23 @@ export interface AdminAssistantSuggestion {
   domain: 'sales' | 'clients' | 'orders' | 'inventory' | 'vendors';
 }
 
-export interface AdminAssistantQueryRequest {
-  question: string;
-  context: {
-    scope: 'admin';
-    userRole: AdminAssistantUserRole;
-    page: 'admin-dashboard';
-    requestedAt: string;
-  };
+export interface AdminAssistantChatRequest {
+  message: string;
+  sessionId?: string;
 }
 
-export interface AdminAssistantQueryResponse {
-  answer: string;
-  queryLabel: string;
-  visualization: AdminAssistantVisualization;
+export interface AdminAssistantTable {
   columns: string[];
   rows: Array<Record<string, string | number | null>>;
-  requestId?: string;
-  metadata: {
-    status: 'backend_pending' | 'connected';
-    backendEndpoint: string;
+}
+
+export interface AdminAssistantChatResponse {
+  answer: string;
+  table: AdminAssistantTable;
+  meta: {
+    requestId?: string;
+    sessionId?: string;
+    status?: 'backend_pending' | 'connected';
   };
 }
 
@@ -92,35 +87,49 @@ export function getAdminAssistantSuggestions(): AdminAssistantSuggestion[] {
 }
 
 export function buildAdminAssistantRequest(
-  question: string,
-  userRole: AdminAssistantUserRole
-): AdminAssistantQueryRequest {
+  message: string,
+  sessionId?: string
+): AdminAssistantChatRequest {
+  const normalizedMessage = message.trim();
+
   return {
-    question: question.trim(),
-    context: {
-      scope: 'admin',
-      userRole,
-      page: 'admin-dashboard',
-      requestedAt: new Date().toISOString(),
+    message: normalizedMessage,
+    ...(sessionId ? { sessionId } : {}),
+  };
+}
+
+export function normalizeAdminAssistantResponse(
+  response: Partial<AdminAssistantChatResponse>
+): AdminAssistantChatResponse {
+  return {
+    answer: response.answer || 'Sin respuesta del asistente.',
+    table: {
+      columns: response.table?.columns || [],
+      rows: response.table?.rows || [],
+    },
+    meta: {
+      requestId: response.meta?.requestId,
+      sessionId: response.meta?.sessionId,
+      status: response.meta?.status || 'connected',
     },
   };
 }
 
-export function createPendingAssistantResponse(question: string): AdminAssistantQueryResponse {
+export function createPendingAssistantResponse(question: string): AdminAssistantChatResponse {
   return {
     answer:
       'La interfaz ya esta lista, pero el backend del asistente aun no esta conectado. Esta consulta quedara disponible cuando exista el endpoint productivo.',
-    queryLabel: `Consulta pendiente de backend: ${question.trim()}`,
-    visualization: 'table',
-    columns: ['campo', 'valor_esperado'],
-    rows: [
-      { campo: 'endpoint', valor_esperado: ADMIN_ASSISTANT_ENDPOINT },
-      { campo: 'estado', valor_esperado: 'Esperando integracion backend' },
-      { campo: 'formato', valor_esperado: 'success/data con answer, columns, rows y requestId' },
-    ],
-    metadata: {
+    table: {
+      columns: ['campo', 'valor_esperado'],
+      rows: [
+        { campo: 'consulta', valor_esperado: question.trim() },
+        { campo: 'endpoint', valor_esperado: ADMIN_ASSISTANT_ENDPOINT },
+        { campo: 'estado', valor_esperado: 'Esperando integracion backend' },
+      ],
+    },
+    meta: {
+      requestId: 'pending-backend',
       status: 'backend_pending',
-      backendEndpoint: ADMIN_ASSISTANT_ENDPOINT,
     },
   };
 }

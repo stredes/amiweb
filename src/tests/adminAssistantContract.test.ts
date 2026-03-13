@@ -3,17 +3,15 @@ import {
   buildAdminAssistantRequest,
   createPendingAssistantResponse,
   getAdminAssistantSuggestions,
+  normalizeAdminAssistantResponse,
 } from '../features/adminAssistant/adminAssistantContract';
 
 describe('adminAssistantContract', () => {
   it('builds a normalized assistant request payload', () => {
-    const payload = buildAdminAssistantRequest('  Ventas del mes por vendedor  ', 'admin');
+    const payload = buildAdminAssistantRequest('  Ventas del mes por vendedor  ', 'session-1');
 
-    expect(payload.question).toBe('Ventas del mes por vendedor');
-    expect(payload.context.scope).toBe('admin');
-    expect(payload.context.userRole).toBe('admin');
-    expect(payload.context.page).toBe('admin-dashboard');
-    expect(payload.context.requestedAt).toBeTruthy();
+    expect(payload.message).toBe('Ventas del mes por vendedor');
+    expect(payload.sessionId).toBe('session-1');
   });
 
   it('provides curated suggestions for the admin assistant', () => {
@@ -27,8 +25,22 @@ describe('adminAssistantContract', () => {
   it('creates a backend pending response for the UI placeholder state', () => {
     const response = createPendingAssistantResponse('Clientes sin compra en 60 días');
 
-    expect(response.queryLabel).toContain('Clientes sin compra en 60 días');
-    expect(response.metadata.status).toBe('backend_pending');
+    expect(response.table.rows[0].valor_esperado).toContain('Clientes sin compra en 60 días');
+    expect(response.meta.status).toBe('backend_pending');
     expect(response.answer).toContain('backend');
+  });
+
+  it('normalizes backend responses when table data is missing', () => {
+    const response = normalizeAdminAssistantResponse({
+      answer: 'Sin tabla',
+      meta: {
+        requestId: 'req-1',
+      },
+    });
+
+    expect(response.answer).toBe('Sin tabla');
+    expect(response.table.columns).toEqual([]);
+    expect(response.table.rows).toEqual([]);
+    expect(response.meta.requestId).toBe('req-1');
   });
 });

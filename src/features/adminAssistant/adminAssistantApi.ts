@@ -1,13 +1,18 @@
 import {
   ADMIN_ASSISTANT_ENDPOINT,
-  AdminAssistantQueryRequest,
-  AdminAssistantQueryResponse,
+  AdminAssistantChatRequest,
+  AdminAssistantChatResponse,
+  normalizeAdminAssistantResponse,
 } from './adminAssistantContract';
+import { httpRequest } from '../../lib/httpClient';
 
 export async function queryAdminAssistant(
-  _payload: AdminAssistantQueryRequest
-): Promise<AdminAssistantQueryResponse> {
-  throw new Error(
-    `Admin assistant backend not connected. Expected endpoint: ${ADMIN_ASSISTANT_ENDPOINT}`
-  );
+  payload: AdminAssistantChatRequest
+): Promise<AdminAssistantChatResponse> {
+  const response = await httpRequest<AdminAssistantChatResponse>(ADMIN_ASSISTANT_ENDPOINT, {
+    method: 'POST',
+    body: payload,
+  });
+
+  return normalizeAdminAssistantResponse(response);
 }
