@@ -9,11 +9,11 @@ import TextInput from '../../components/ui/TextInput';
 import Button from '../../components/ui/Button';
 import { SupportRequest } from '../../features/support/types';
 import { sendSupportRequest } from '../../features/support/supportApi';
-import equiposClinicosImage from '../../assets/images/amilab/equipos-clinicos.png';
-import hematologiaImage from '../../assets/images/amilab/hematologia.png';
-import microbiologiaImage from '../../assets/images/amilab/microbiologia.png';
-import electrolitosImage from '../../assets/images/amilab/electrolitos.png';
-import tbcImage from '../../assets/images/amilab/tbc.png';
+import supportCentrifugeMainImage from '../../assets/images/amilab/support-centrifuge-main.jpg';
+import supportMicroscopeOverheadImage from '../../assets/images/amilab/support-microscope-overhead.jpg';
+import supportAutoclaveLoadingImage from '../../assets/images/amilab/support-autoclave-loading.jpg';
+import supportPipetteTestTubesImage from '../../assets/images/amilab/support-pipette-test-tubes.jpg';
+import supportSampleTubeHandlingImage from '../../assets/images/amilab/support-sample-tube-handling.jpg';
 import './SupportPage.css';
 
 function SupportPage() {
@@ -83,25 +83,25 @@ function SupportPage() {
           </div>
           <div className="support-hero__visual" aria-hidden="true">
             <article className="support-visual-card support-visual-card--main">
-              <img src={equiposClinicosImage} alt="" />
+              <img src={supportCentrifugeMainImage} alt="" />
               <div className="support-visual-card__content">
-                <span>Continuidad operacional</span>
-                <strong>Equipos clínicos y respuesta técnica local</strong>
+                <span>Operación crítica</span>
+                <strong>Técnicos manipulando equipos y muestras en laboratorio</strong>
               </div>
             </article>
             <div className="support-visual-stack">
               <article className="support-visual-card">
-                <img src={hematologiaImage} alt="" />
+                <img src={supportMicroscopeOverheadImage} alt="" />
                 <div className="support-visual-card__content">
                   <span>Aplicaciones</span>
-                  <strong>Hematología y validación analítica</strong>
+                  <strong>Microscopía, revisión y validación de resultados</strong>
                 </div>
               </article>
               <article className="support-visual-card">
-                <img src={microbiologiaImage} alt="" />
+                <img src={supportAutoclaveLoadingImage} alt="" />
                 <div className="support-visual-card__content">
-                  <span>Terreno</span>
-                  <strong>Microbiología, continuidad y soporte preventivo</strong>
+                  <span>Equipamiento</span>
+                  <strong>Manipulación de equipos y preparación técnica segura</strong>
                 </div>
               </article>
             </div>
@@ -135,24 +135,24 @@ function SupportPage() {
       <FadeIn direction="up" delay={0.05}>
         <section className="support-image-band" aria-label="Capacidades de soporte AMILAB">
           <article className="support-image-band__card support-image-band__card--wide">
-            <img src={tbcImage} alt="Área técnica especializada para diagnóstico TBC" />
+            <img src={supportAutoclaveLoadingImage} alt="Técnica preparando equipo de laboratorio para operación o mantenimiento" />
             <div className="support-image-band__overlay">
-              <span>Diagnóstico especializado</span>
-              <strong>TBC, microbiología y continuidad técnica</strong>
+              <span>Preparación técnica</span>
+              <strong>Equipos listos para operación, limpieza y continuidad</strong>
             </div>
           </article>
           <article className="support-image-band__card">
-            <img src={microbiologiaImage} alt="Soporte técnico de microbiología" />
+            <img src={supportPipetteTestTubesImage} alt="Manipulación de pipetas y tubos para procesamiento de muestras" />
             <div className="support-image-band__overlay">
-              <span>Soporte en terreno</span>
-              <strong>Microbiología y hemocultivos</strong>
+              <span>Procesamiento de muestras</span>
+              <strong>Pipeteo, reactivos y flujo técnico controlado</strong>
             </div>
           </article>
           <article className="support-image-band__card">
-            <img src={hematologiaImage} alt="Soporte clínico para hematología" />
+            <img src={supportSampleTubeHandlingImage} alt="Técnico manipulando un tubo de muestra en entorno de laboratorio" />
             <div className="support-image-band__overlay">
-              <span>Aplicaciones clínicas</span>
-              <strong>Hematología y validación diaria</strong>
+              <span>Validación diaria</span>
+              <strong>Muestras, trazabilidad y revisión en mesa técnica</strong>
             </div>
           </article>
         </section>
@@ -162,19 +162,19 @@ function SupportPage() {
         <div className="support-service-grid">
           <div className="card support-service-card">
             <div className="support-service-card__media">
-              <img src={equiposClinicosImage} alt="Servicio de pre venta para equipos clínicos" />
+              <img src={supportMicroscopeOverheadImage} alt="Especialista revisando muestras y equipamiento de laboratorio" />
             </div>
             <PreSaleSection />
           </div>
           <div className="card support-service-card">
             <div className="support-service-card__media">
-              <img src={hematologiaImage} alt="Servicio post venta para equipos de laboratorio" />
+              <img src={supportCentrifugeMainImage} alt="Técnica operando equipo de laboratorio durante atención post venta" />
             </div>
             <PostSaleSection />
           </div>
           <div className="card support-service-card support-service-card--accent">
             <div className="support-service-card__media">
-              <img src={microbiologiaImage} alt="Flujo de trabajo de soporte AMILAB" />
+              <img src={supportSampleTubeHandlingImage} alt="Proceso técnico de manipulación y seguimiento de muestras" />
             </div>
             <h2>Cómo trabajamos</h2>
             <p>
@@ -310,7 +310,7 @@ function SupportPage() {
             </div>
             <aside className="card support-aside-card">
               <div className="support-aside-card__media">
-                <img src={electrolitosImage} alt="Cobertura de soporte para electrolitos y áreas críticas" />
+                <img src={supportPipetteTestTubesImage} alt="Preparación de muestras y reactivos antes de solicitar soporte" />
               </div>
               <div className="support-aside-card__content">
                 <h3>Antes de solicitar soporte</h3>
