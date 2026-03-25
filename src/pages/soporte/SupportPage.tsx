@@ -313,6 +313,7 @@ function SupportPage() {
                 <img src={supportPipetteTestTubesImage} alt="Preparación de muestras y reactivos antes de solicitar soporte" />
               </div>
               <div className="support-aside-card__content">
+                <span className="support-aside-card__eyebrow">Preparación previa</span>
                 <h3>Antes de solicitar soporte</h3>
                 <p>
                   Ten disponible la información del equipo, el contexto del problema y el horario
@@ -326,7 +327,7 @@ function SupportPage() {
                 </ul>
               </div>
               <div className="support-aside-card__media support-aside-card__media--secondary">
-                <img src={tbcImage} alt="Soporte técnico AMILAB para áreas de diagnóstico especializado" />
+                <img src={supportMicroscopeOverheadImage} alt="Revisión técnica y validación de muestras en laboratorio" />
               </div>
             </aside>
           </div>
