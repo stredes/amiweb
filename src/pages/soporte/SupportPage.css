@@ -3,14 +3,29 @@
     radial-gradient(circle at top right, rgba(139, 21, 56, 0.16), transparent 28%),
     linear-gradient(135deg, rgba(139, 21, 56, 0.12), rgba(139, 21, 56, 0.02));
   border-radius: var(--radius-xl);
-  padding: var(--spacing-xl);
+  padding: clamp(1.5rem, 2.4vw, 2.35rem);
   display: grid;
   gap: var(--spacing-lg);
 }
 
 .support-hero__copy {
   display: grid;
-  gap: var(--spacing-sm);
+  align-content: center;
+  gap: 0.9rem;
+  max-width: 35rem;
+}
+
+.support-hero__copy h1 {
+  margin: 0;
+  line-height: 0.96;
+  font-size: clamp(2.45rem, 4.2vw, 4.1rem);
+}
+
+.support-hero__copy p {
+  margin: 0;
+  max-width: 31ch;
+  font-size: clamp(1.02rem, 1.2vw, 1.18rem);
+  line-height: 1.55;
 }
 
 .support-hero__eyebrow {
@@ -34,6 +49,7 @@
 .support-hero__visual {
   display: grid;
   gap: var(--spacing-md);
+  align-content: start;
 }
 
 .support-visual-card {
@@ -93,6 +109,7 @@
 .support-highlights {
   display: grid;
   gap: var(--spacing-md);
+  margin-top: 0.25rem;
 }
 
 .support-image-band {
@@ -393,15 +410,16 @@
 
 @media (min-width: 900px) {
   .support-hero {
-    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+    grid-template-columns: minmax(320px, 0.94fr) minmax(0, 1.06fr);
     grid-template-areas:
       'copy visual'
       'highlights highlights';
-    align-items: start;
+    align-items: center;
   }
 
   .support-hero__copy {
     grid-area: copy;
+    padding-right: clamp(0.6rem, 1.7vw, 1.5rem);
   }
 
   .support-hero__visual {
