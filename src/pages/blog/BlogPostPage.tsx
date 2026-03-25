@@ -1,5 +1,5 @@
 import { useParams, Link, useNavigate } from 'react-router-dom';
-import { blogPosts } from '../../features/blog/contentData';
+import { blogCategories, blogPosts } from '../../features/blog/contentData';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { FiClock, FiEye, FiArrowLeft, FiShare2 } from 'react-icons/fi';
 import { toast } from '../../components/ui/Toast';
@@ -25,6 +25,7 @@ export function BlogPostPage() {
     month: 'long',
     day: 'numeric',
   });
+  const categoryName = blogCategories.find((category) => category.slug === post.category)?.name || post.category;
 
   const handleShare = async () => {
     if (navigator.share) {
@@ -59,7 +60,7 @@ export function BlogPostPage() {
 
           <FadeIn direction="up">
             <div className="blog-post-meta">
-              <span className="blog-post-category">{post.category}</span>
+              <span className="blog-post-category">{categoryName}</span>
               <span className="blog-post-date">{formattedDate}</span>
             </div>
 

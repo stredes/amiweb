@@ -5,31 +5,31 @@ import Carousel from '../../components/ui/Carousel';
 import { FadeIn } from '../../components/ui/FadeIn';
 import { getCategories } from '../../features/catalog/catalogApi';
 import { ROUTES } from '../../config/routes';
-import carouselLab1 from '../../assets/images/carousel-lab-1.svg';
-import carouselLab2 from '../../assets/images/carousel-lab-2.svg';
-import carouselLab3 from '../../assets/images/carousel-lab-3.svg';
+import carouselLab1 from '../../assets/images/amilab/equipos-clinicos.png';
+import carouselLab2 from '../../assets/images/amilab/hematologia.png';
+import carouselLab3 from '../../assets/images/amilab/electrolitos.png';
 import { useEffect, useState } from 'react';
 import type { ProductCategory } from '../../features/catalog/types';
 
 const HERO_CAROUSEL_ITEMS = [
   {
-    id: 'diagnostico',
-    title: 'Diagnostico confiable',
-    description: 'Equipos y reactivos de alta precision para laboratorios clinicos.',
+    id: 'equipos-clinicos',
+    title: 'Equipos clinicos',
+    description: 'Soluciones de analisis y diagnostico para laboratorios clinicos y centros de apoyo.',
     icon: <FiActivity className="carousel-icon" />,
     imageUrl: carouselLab1
   },
   {
-    id: 'tecnologia',
-    title: 'Tecnologia especializada',
-    description: 'Portafolio actualizado para analisis, automatizacion y control.',
+    id: 'hematologia',
+    title: 'Hematologia especializada',
+    description: 'Tecnologia de alto rendimiento para hemogramas, conteos y control de calidad diario.',
     icon: <FiCpu className="carousel-icon" />,
     imageUrl: carouselLab2
   },
   {
-    id: 'soporte',
-    title: 'Soporte en todo Chile',
-    description: 'Cobertura tecnica y logistica para mantener la operacion continua.',
+    id: 'electrolitos',
+    title: 'Electrolitos y continuidad',
+    description: 'Cobertura tecnica, logistica y soporte para areas criticas y operacion continua.',
     icon: <FiTruck className="carousel-icon" />,
     imageUrl: carouselLab3
   }

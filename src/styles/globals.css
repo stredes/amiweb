@@ -194,13 +194,22 @@ textarea {
 }
 
 .navbar__logo {
-  font-weight: 800;
-  font-size: 1.9rem;
-  letter-spacing: 0.18em;
-  display: inline-block;
-  transform: scaleX(1.28);
-  transform-origin: left center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-start;
   line-height: 1;
+  background: rgba(255, 255, 255, 0.96);
+  padding: 0.35rem 0.55rem;
+  border-radius: 14px;
+  box-shadow: 0 8px 18px rgba(63, 10, 26, 0.2);
+}
+
+.navbar__logo-image {
+  display: block;
+  height: 54px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.14));
 }
 
 .navbar__nav {

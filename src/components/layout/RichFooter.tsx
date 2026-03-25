@@ -11,6 +11,7 @@ import {
   FiSend,
 } from 'react-icons/fi';
 import { toast } from '../ui/Toast';
+import amilabLogo from '../../assets/images/amilab/logo-amilab.jpg';
 import './RichFooter.css';
 
 export function RichFooter() {
@@ -66,7 +67,7 @@ export function RichFooter() {
         <div className="rich-footer__content">
           {/* Company Info */}
           <div className="rich-footer__section">
-            <h4>AMILAB</h4>
+            <img src={amilabLogo} alt="AMILAB" className="rich-footer__logo" />
             <p className="rich-footer__description">
               Equipos, reactivos e insumos con soporte técnico especializado.
               Soluciones integrales para laboratorios clínicos con servicio preventivo y correctivo.

@@ -51,10 +51,8 @@
 
 /* Phones: stack in one column and keep controls usable */
 @media (max-width: 760px) {
-  .navbar__logo {
-    font-size: 1.55rem;
-    letter-spacing: 0.12em;
-    transform: scaleX(1.14);
+  .navbar__logo-image {
+    height: 46px;
   }
 
   .navbar {
@@ -101,10 +99,8 @@
 
 /* Very small devices */
 @media (max-width: 420px) {
-  .navbar__logo {
-    font-size: 1.35rem;
-    letter-spacing: 0.08em;
-    transform: scaleX(1.08);
+  .navbar__logo-image {
+    height: 40px;
   }
 
   .navbar__nav a {

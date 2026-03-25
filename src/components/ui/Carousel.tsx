@@ -96,11 +96,9 @@ function CarouselItem({
       transition={transition}
     >
       {item.imageUrl && (
-        <div
-          className="carousel-item-media"
-          style={{ backgroundImage: `url(${item.imageUrl})` }}
-          aria-hidden="true"
-        />
+        <div className="carousel-item-media" aria-hidden="true">
+          <img src={item.imageUrl} alt="" className="carousel-item-media__image" />
+        </div>
       )}
       <div className={`carousel-item-header ${round ? 'round' : ''}`}>
         <span className="carousel-icon-container">{item.icon}</span>

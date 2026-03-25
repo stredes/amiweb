@@ -5,6 +5,7 @@ import { useSearchStore } from '../../features/search/searchStore';
 import { useAuth } from '../../features/auth/authStore';
 import { ThemeToggle } from '../ui/ThemeToggle';
 import { NotificationCenter } from '../notifications/NotificationCenter';
+import amilabLogo from '../../assets/images/amilab/logo-amilab.jpg';
 
 function Navbar() {
   const { term, setTerm } = useSearchStore();
@@ -24,8 +25,8 @@ function Navbar() {
   return (
     <header className="navbar">
       <div className="navbar__brand" role="banner">
-        <div className="navbar__logo" aria-label="AMILAB logo placeholder">
-          AMILAB
+        <div className="navbar__logo" aria-label="AMILAB">
+          <img src={amilabLogo} alt="AMILAB" className="navbar__logo-image" />
         </div>
       </div>
       <nav className="navbar__nav" aria-label="Menú principal">

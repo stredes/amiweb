@@ -25,10 +25,10 @@ export function BlogPage() {
       <section className="blog-hero">
         <div className="blog-hero__container">
           <FadeIn direction="up">
-            <h1>Blog & Noticias</h1>
+            <h1>Blog y Conocimiento Clínico</h1>
             <p>
-              Mantente informado sobre las últimas tendencias, noticias y mejores prácticas
-              en tecnología industrial y automatización
+              Mantente informado sobre tecnologías de laboratorio clínico, continuidad operacional,
+              soporte técnico y mejores prácticas para diagnóstico.
             </p>
           </FadeIn>
         </div>

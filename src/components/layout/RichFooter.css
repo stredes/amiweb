@@ -109,6 +109,15 @@
   font-weight: 600;
 }
 
+.rich-footer__logo {
+  display: block;
+  max-width: 220px;
+  width: 100%;
+  height: auto;
+  margin-bottom: 18px;
+  border-radius: 6px;
+}
+
 .rich-footer__description {
   margin: 0 0 24px 0;
   color: var(--color-text-secondary);
