@@ -9,6 +9,11 @@ import TextInput from '../../components/ui/TextInput';
 import Button from '../../components/ui/Button';
 import { SupportRequest } from '../../features/support/types';
 import { sendSupportRequest } from '../../features/support/supportApi';
+import equiposClinicosImage from '../../assets/images/amilab/equipos-clinicos.png';
+import hematologiaImage from '../../assets/images/amilab/hematologia.png';
+import microbiologiaImage from '../../assets/images/amilab/microbiologia.png';
+import electrolitosImage from '../../assets/images/amilab/electrolitos.png';
+import tbcImage from '../../assets/images/amilab/tbc.png';
 import './SupportPage.css';
 
 function SupportPage() {
@@ -76,6 +81,31 @@ function SupportPage() {
               <a className="btn btn-secondary" href="#support-plans">Ver planes</a>
             </div>
           </div>
+          <div className="support-hero__visual" aria-hidden="true">
+            <article className="support-visual-card support-visual-card--main">
+              <img src={equiposClinicosImage} alt="" />
+              <div className="support-visual-card__content">
+                <span>Continuidad operacional</span>
+                <strong>Equipos clínicos y respuesta técnica local</strong>
+              </div>
+            </article>
+            <div className="support-visual-stack">
+              <article className="support-visual-card">
+                <img src={hematologiaImage} alt="" />
+                <div className="support-visual-card__content">
+                  <span>Aplicaciones</span>
+                  <strong>Hematología y validación analítica</strong>
+                </div>
+              </article>
+              <article className="support-visual-card">
+                <img src={microbiologiaImage} alt="" />
+                <div className="support-visual-card__content">
+                  <span>Terreno</span>
+                  <strong>Microbiología, continuidad y soporte preventivo</strong>
+                </div>
+              </article>
+            </div>
+          </div>
           <div className="support-highlights">
             <div className="support-highlight">
               <FiClock size={20} />
@@ -105,12 +135,21 @@ function SupportPage() {
       <FadeIn direction="up" delay={0.1}>
         <div className="support-service-grid">
           <div className="card support-service-card">
+            <div className="support-service-card__media">
+              <img src={equiposClinicosImage} alt="Servicio de pre venta para equipos clínicos" />
+            </div>
             <PreSaleSection />
           </div>
           <div className="card support-service-card">
+            <div className="support-service-card__media">
+              <img src={hematologiaImage} alt="Servicio post venta para equipos de laboratorio" />
+            </div>
             <PostSaleSection />
           </div>
           <div className="card support-service-card support-service-card--accent">
+            <div className="support-service-card__media">
+              <img src={microbiologiaImage} alt="Flujo de trabajo de soporte AMILAB" />
+            </div>
             <h2>Cómo trabajamos</h2>
             <p>
               Coordinamos cada caso con un flujo de atención escalable para reducir tiempos de espera,
@@ -243,6 +282,27 @@ function SupportPage() {
                 </div>
               </form>
             </div>
+            <aside className="card support-aside-card">
+              <div className="support-aside-card__media">
+                <img src={electrolitosImage} alt="Cobertura de soporte para electrolitos y áreas críticas" />
+              </div>
+              <div className="support-aside-card__content">
+                <h3>Antes de solicitar soporte</h3>
+                <p>
+                  Ten disponible la información del equipo, el contexto del problema y el horario
+                  operativo del laboratorio para acelerar la respuesta.
+                </p>
+                <ul>
+                  <li>Modelo y número de serie.</li>
+                  <li>Descripción del síntoma y frecuencia.</li>
+                  <li>Fotografía o mensaje de error, si existe.</li>
+                  <li>Persona de contacto y horario de acceso.</li>
+                </ul>
+              </div>
+              <div className="support-aside-card__media support-aside-card__media--secondary">
+                <img src={tbcImage} alt="Soporte técnico AMILAB para áreas de diagnóstico especializado" />
+              </div>
+            </aside>
           </div>
         </section>
       </FadeIn>
