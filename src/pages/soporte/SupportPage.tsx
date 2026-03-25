@@ -132,6 +132,32 @@ function SupportPage() {
         </header>
       </FadeIn>
 
+      <FadeIn direction="up" delay={0.05}>
+        <section className="support-image-band" aria-label="Capacidades de soporte AMILAB">
+          <article className="support-image-band__card support-image-band__card--wide">
+            <img src={tbcImage} alt="Área técnica especializada para diagnóstico TBC" />
+            <div className="support-image-band__overlay">
+              <span>Diagnóstico especializado</span>
+              <strong>TBC, microbiología y continuidad técnica</strong>
+            </div>
+          </article>
+          <article className="support-image-band__card">
+            <img src={microbiologiaImage} alt="Soporte técnico de microbiología" />
+            <div className="support-image-band__overlay">
+              <span>Soporte en terreno</span>
+              <strong>Microbiología y hemocultivos</strong>
+            </div>
+          </article>
+          <article className="support-image-band__card">
+            <img src={hematologiaImage} alt="Soporte clínico para hematología" />
+            <div className="support-image-band__overlay">
+              <span>Aplicaciones clínicas</span>
+              <strong>Hematología y validación diaria</strong>
+            </div>
+          </article>
+        </section>
+      </FadeIn>
+
       <FadeIn direction="up" delay={0.1}>
         <div className="support-service-grid">
           <div className="card support-service-card">

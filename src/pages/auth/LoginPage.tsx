@@ -179,6 +179,35 @@ export function LoginPage() {
             </Button>
           </form>
 
+          {ENABLE_LOGIN_MOCK && (
+            <div className="login-demo">
+              <div className="login-demo__header">
+                <h3>Demo de acceso</h3>
+                <span>Usuarios de prueba</span>
+              </div>
+              <div className="login-demo__grid">
+                {MOCK_USERS.map((mockUser) => (
+                  <button
+                    key={mockUser.id}
+                    type="button"
+                    className="login-demo__item"
+                    onClick={() => {
+                      setEmail(mockUser.email);
+                      setPassword(mockUser.password);
+                    }}
+                  >
+                    <strong>{mockUser.role}</strong>
+                    <span>{mockUser.email}</span>
+                    <code>{mockUser.password}</code>
+                  </button>
+                ))}
+              </div>
+              <p className="login-demo__hint">
+                Haz clic en cualquier usuario para autocompletar el formulario.
+              </p>
+            </div>
+          )}
+
           <div className="login-footer">
             <p className="muted">
               Inicia sesión con tu cuenta corporativa de AMIWEB.
@@ -197,26 +226,6 @@ export function LoginPage() {
             <li>💬 Accede a soporte técnico</li>
             <li>📈 Visualiza tu historial de compras</li>
           </ul>
-          {ENABLE_LOGIN_MOCK && (
-            <div
-              style={{
-                marginTop: '1rem',
-                padding: '0.9rem',
-                border: '1px solid #f0c36d',
-                background: '#fff8e6',
-                borderRadius: '0.75rem',
-              }}
-            >
-              <h3 style={{ margin: '0 0 0.6rem 0' }}>Credenciales Mock (desarrollo)</h3>
-              <ul style={{ margin: 0, paddingLeft: '1rem' }}>
-                {MOCK_USERS.map((mockUser) => (
-                  <li key={mockUser.id} style={{ marginBottom: '0.25rem' }}>
-                    <strong>{mockUser.role}</strong>: {mockUser.email} / {mockUser.password}
-                  </li>
-                ))}
-              </ul>
-            </div>
-          )}
           </div>
         </FadeIn>
       </div>
